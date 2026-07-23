@@ -189,19 +189,19 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
     let timeoutId = null;
 
     const todosLosTipos = [
-      // CRIATURAS (IMÁGENES PNG REALES DE /Criaturas/)
-      { tipo: "brote_maldad", nombre: "Brote de Maldad", img: "/Criaturas/brote de maldad.png", anim: "crecerBrote 8s ease-in-out forwards", duracion: 8000, shadow: "drop-shadow-[0_0_15px_#f43f5e]" },
-      { tipo: "escolta_muerte", nombre: "Escolta de la Muerte", img: "/Criaturas/escolta de la muerte.png", anim: "desplazarEscolta 9s ease-in-out forwards", duracion: 9000, shadow: "drop-shadow-[0_0_18px_#fbbf24]" },
-      { tipo: "espiritu_bosque", nombre: "Espíritu del Bosque", img: "/Criaturas/espiritu del bosque.png", anim: "orbitaEspirituBosque 8s ease-in-out forwards", duracion: 8000, shadow: "drop-shadow-[0_0_18px_#10b981]" },
-      { tipo: "fauna_herrante", nombre: "Fauna Herrante", img: "/Criaturas/fauna herrante.png", anim: "galopeFauna 9s linear forwards", duracion: 9000, shadow: "drop-shadow-[0_0_15px_#fde047]" },
-      { tipo: "juglar_olvidado", nombre: "Juglar Olvidado", img: "/Criaturas/juglar olvidado.png", anim: "tocarJuglar 8s ease-in-out forwards", duracion: 8000, shadow: "drop-shadow-[0_0_15px_#fb923c]" },
+      // CRIATURAS (IMÁGENES PNG REALES DE /criaturas/)
+      { tipo: "brote_maldad", nombre: "Brote de Maldad", img: "/criaturas/brote-de-maldad.png", anim: "crecerBrote 8s ease-in-out forwards", duracion: 8000, shadow: "drop-shadow-[0_0_15px_#f43f5e]" },
+      { tipo: "escolta_muerte", nombre: "Escolta de la Muerte", img: "/criaturas/escolta-de-la-muerte.png", anim: "desplazarEscolta 9s ease-in-out forwards", duracion: 9000, shadow: "drop-shadow-[0_0_18px_#fbbf24]" },
+      { tipo: "espiritu_bosque", nombre: "Espíritu del Bosque", img: "/criaturas/espiritu-del-bosque.png", anim: "orbitaEspirituBosque 8s ease-in-out forwards", duracion: 8000, shadow: "drop-shadow-[0_0_18px_#10b981]" },
+      { tipo: "fauna_herrante", nombre: "Fauna Herrante", img: "/criaturas/fauna-herrante.png", anim: "galopeFauna 9s linear forwards", duracion: 9000, shadow: "drop-shadow-[0_0_15px_#fde047]" },
+      { tipo: "juglar_olvidado", nombre: "Juglar Olvidado", img: "/criaturas/juglar-olvidado.png", anim: "tocarJuglar 8s ease-in-out forwards", duracion: 8000, shadow: "drop-shadow-[0_0_15px_#fb923c]" },
 
-      // OBJETOS Y RELIQUIAS (IMÁGENES PNG REALES DE /Objetos/)
-      { tipo: "harpa_malditos", nombre: "Harpa de los Malditos", img: "/Objetos/harpa de los malditos.png", anim: "flotarHada 8s ease-in-out forwards", duracion: 8000, shadow: "drop-shadow-[0_0_18px_#fbbf24]" },
-      { tipo: "pocion_vida", nombre: "Pócima de Vida", img: "/Objetos/pocion vida.png", anim: "asomarDuende 8s ease-in-out forwards", duracion: 8000, shadow: "drop-shadow-[0_0_18px_#34d399]" },
-      { tipo: "contenedor_almas", nombre: "Contenedor de Almas", img: "/Objetos/Contenedor de almas.png", anim: "flotarFantasma 9s ease-in-out forwards", duracion: 9000, shadow: "drop-shadow-[0_0_20px_#c084fc]" },
-      { tipo: "mapa_runico", nombre: "Mapa Rúnico", img: "/Objetos/Mapa.png", anim: "volarEspiritu 8s linear forwards", duracion: 8000, shadow: "drop-shadow-[0_0_15px_#38bdf8]" },
-      { tipo: "ikl_reliquia", nombre: "Reliquia Ikl", img: "/Objetos/Ikl.png", anim: "orbitaEspirituBosque 9s ease-in-out forwards", duracion: 9000, shadow: "drop-shadow-[0_0_18px_#22d3ee]" }
+      // OBJETOS Y RELIQUIAS (IMÁGENES PNG REALES DE /objetos/)
+      { tipo: "harpa_malditos", nombre: "Harpa de los Malditos", img: "/objetos/harpa-de-los-malditos.png", anim: "flotarHada 8s ease-in-out forwards", duracion: 8000, shadow: "drop-shadow-[0_0_18px_#fbbf24]" },
+      { tipo: "pocion_vida", nombre: "Pócima de Vida", img: "/objetos/pocion-vida.png", anim: "asomarDuende 8s ease-in-out forwards", duracion: 8000, shadow: "drop-shadow-[0_0_18px_#34d399]" },
+      { tipo: "contenedor_almas", nombre: "Contenedor de Almas", img: "/objetos/contenedor-de-almas.png", anim: "flotarFantasma 9s ease-in-out forwards", duracion: 9000, shadow: "drop-shadow-[0_0_20px_#c084fc]" },
+      { tipo: "mapa_runico", nombre: "Mapa Rúnico", img: "/objetos/mapa.png", anim: "volarEspiritu 8s linear forwards", duracion: 8000, shadow: "drop-shadow-[0_0_15px_#38bdf8]" },
+      { tipo: "ikl_reliquia", nombre: "Reliquia Ikl", img: "/objetos/ikl.png", anim: "orbitaEspirituBosque 9s ease-in-out forwards", duracion: 9000, shadow: "drop-shadow-[0_0_18px_#22d3ee]" }
     ];
 
     const spawnearElementoUnico = () => {

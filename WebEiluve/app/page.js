@@ -102,7 +102,7 @@ export default function Home() {
     titulo: "La Leyenda",
     cita: `"Cuentos de esqueletos, tabernas escondidas y magos del bosque."`,
     historia: `Invocamos la furia del metal pesado y la entrelazamos con la magia de la zanfoña, el misticismo del violín y el eco ancestral de las gaitas. Nuestro sonido es un ritual que abre portales a mundos olvidados, donde los lobos aúllan junto a tambores bestiales.`,
-    imagenRuta: "/biografia/Bio1.jpg",
+    imagenRuta: "/biografia/bio1.jpg",
     imagenAlt: "Banda Eiluvë en el bosque",
     destacados: [
       { titulo: "Esqueletos Reales", subtitulo: "Cuerdas y Hechizos", colorBorde: "#735f3d" },
@@ -171,10 +171,10 @@ export default function Home() {
   });
 
   const [galeria, setGaleria] = useState([
-    "/biografia/Bio1.jpg",
-    "/biografia/Bio2.jpg",
-    "/biografia/Bio3.jpg",
-    "/biografia/Bio4.jpg"
+    "/biografia/bio1.jpg",
+    "/biografia/bio2.jpg",
+    "/biografia/bio3.jpg",
+    "/biografia/bio4.jpg"
   ]);
 
   const [nfcCodes, setNfcCodes] = useState([
