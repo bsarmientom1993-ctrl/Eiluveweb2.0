@@ -25,47 +25,47 @@ const FRASES = [
 
 const OBJETOS_MAGICOS = [
   {
-    imagen: "/pantalla de carga/Caldero.png",
+    imagen: "/pantalla-de-carga/caldero.png",
     glow: "bg-[#8da382]/30 w-32 h-32 blur-2xl",
     animacionClass: "animate-bounce drop-shadow-[0_0_20px_rgba(74,232,217,0.7)]"
   },
   {
-    imagen: "/pantalla de carga/Pergamino.png",
+    imagen: "/pantalla-de-carga/pergamino.png",
     glow: "bg-[#d1b880]/30 w-32 h-32 blur-2xl",
     animacionClass: "animate-pulse drop-shadow-[0_0_20px_rgba(229,193,88,0.75)]"
   },
   {
-    imagen: "/pantalla de carga/Jarro.png",
+    imagen: "/pantalla-de-carga/jarro.png",
     glow: "bg-[#d1b880]/30 w-32 h-32 blur-2xl",
     animacionClass: "animate-bounce drop-shadow-[0_0_20px_rgba(229,193,88,0.75)]"
   },
   {
-    imagen: "/pantalla de carga/Escudo de guerra.png",
+    imagen: "/pantalla-de-carga/escudo-de-guerra.png",
     glow: "bg-gray-500/25 w-32 h-32 blur-2xl",
     animacionClass: "animate-pulse drop-shadow-[0_0_20px_rgba(255,255,255,0.35)]"
   },
   {
-    imagen: "/pantalla de carga/el cuervo.png",
+    imagen: "/pantalla-de-carga/el-cuervo.png",
     glow: "bg-[#8da382]/25 w-32 h-32 blur-2xl",
     animacionClass: "animate-pulse drop-shadow-[0_0_20px_rgba(74,232,217,0.55)]"
   },
   {
-    imagen: "/pantalla de carga/Anillo demoniaco.png",
+    imagen: "/pantalla-de-carga/anillo-demoniaco.png",
     glow: "bg-red-500/20 w-32 h-32 blur-2xl",
     animacionClass: "animate-bounce drop-shadow-[0_0_20px_rgba(239,68,68,0.7)]"
   },
   {
-    imagen: "/pantalla de carga/Espada.png",
+    imagen: "/pantalla-de-carga/espada.png",
     glow: "bg-blue-500/20 w-32 h-32 blur-2xl",
     animacionClass: "animate-pulse drop-shadow-[0_0_20px_rgba(96,165,250,0.7)]"
   },
   {
-    imagen: "/pantalla de carga/Reloj.png",
+    imagen: "/pantalla-de-carga/reloj.png",
     glow: "bg-amber-500/20 w-32 h-32 blur-2xl",
     animacionClass: "animate-bounce drop-shadow-[0_0_20px_rgba(245,158,11,0.75)]"
   },
   {
-    imagen: "/pantalla de carga/bola de cristal.png",
+    imagen: "/pantalla-de-carga/bola-de-cristal.png",
     glow: "bg-purple-500/25 w-32 h-32 blur-2xl",
     animacionClass: "animate-pulse drop-shadow-[0_0_20px_rgba(192,132,252,0.75)]"
   }
@@ -172,7 +172,7 @@ export default function Cargador({ alTerminarCarga = () => {}, frases = [] }) {
       {/* Fondo de pantalla de carga con zoom-in y mayor iluminación */}
       <div className="absolute inset-0 z-0 select-none pointer-events-none overflow-hidden">
         <Image
-          src="/pantalla de carga/Fondo pantalla de carga.png"
+          src="/pantalla-de-carga/fondo-pantalla-de-carga.png"
           alt="Fondo de Carga"
           fill
           unoptimized

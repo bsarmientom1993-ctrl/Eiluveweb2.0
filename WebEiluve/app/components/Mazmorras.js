@@ -182,206 +182,68 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
     setParticulas(nuevasParticulas);
   }, []);
 
-  // Efecto de aparición aleatoria de Criaturas Místicas y Reliquias en los Contornos (Máximo 4)
+  // 🧚 Y 🧪 SISTEMA EXCLUSIVO: EXACTAMENTE 1 SOLO ELEMENTO ÚNICO EN PANTALLA EN TODO MOMENTO (EN MARGENES EXTREMOS)
   useEffect(() => {
     if (!accesoConcedido || !dungeonPreparado || cerrandoPuerta) return;
 
-    const activosObjetosCount = Object.values(objetosEstado).filter(
-      (v) => v === "visible" || v === "explotando"
-    ).length;
-    
-    const totalActivos = criaturas.length + activosObjetosCount;
-    if (totalActivos >= 4) return; // Si ya hay 4 o más activos, no programamos ningún nuevo spawn
+    let timeoutId = null;
 
-    const spawnearElemento = () => {
-      const objetosEsperando = Object.keys(objetosEstado).filter(
-        (key) => objetosEstado[key] === "esperando"
-      );
+    const todosLosTipos = [
+      // CRIATURAS (IMÁGENES PNG REALES DE /Criaturas/)
+      { tipo: "brote_maldad", nombre: "Brote de Maldad", img: "/Criaturas/brote de maldad.png", anim: "crecerBrote 8s ease-in-out forwards", duracion: 8000, shadow: "drop-shadow-[0_0_15px_#f43f5e]" },
+      { tipo: "escolta_muerte", nombre: "Escolta de la Muerte", img: "/Criaturas/escolta de la muerte.png", anim: "desplazarEscolta 9s ease-in-out forwards", duracion: 9000, shadow: "drop-shadow-[0_0_18px_#fbbf24]" },
+      { tipo: "espiritu_bosque", nombre: "Espíritu del Bosque", img: "/Criaturas/espiritu del bosque.png", anim: "orbitaEspirituBosque 8s ease-in-out forwards", duracion: 8000, shadow: "drop-shadow-[0_0_18px_#10b981]" },
+      { tipo: "fauna_herrante", nombre: "Fauna Herrante", img: "/Criaturas/fauna herrante.png", anim: "galopeFauna 9s linear forwards", duracion: 9000, shadow: "drop-shadow-[0_0_15px_#fde047]" },
+      { tipo: "juglar_olvidado", nombre: "Juglar Olvidado", img: "/Criaturas/juglar olvidado.png", anim: "tocarJuglar 8s ease-in-out forwards", duracion: 8000, shadow: "drop-shadow-[0_0_15px_#fb923c]" },
 
-      // Si hay objetos esperando, damos un 50% de probabilidad de spawnear uno
-      const decidirObjeto = objetosEsperando.length > 0 && Math.random() > 0.55;
+      // OBJETOS Y RELIQUIAS (IMÁGENES PNG REALES DE /Objetos/)
+      { tipo: "harpa_malditos", nombre: "Harpa de los Malditos", img: "/Objetos/harpa de los malditos.png", anim: "flotarHada 8s ease-in-out forwards", duracion: 8000, shadow: "drop-shadow-[0_0_18px_#fbbf24]" },
+      { tipo: "pocion_vida", nombre: "Pócima de Vida", img: "/Objetos/pocion vida.png", anim: "asomarDuende 8s ease-in-out forwards", duracion: 8000, shadow: "drop-shadow-[0_0_18px_#34d399]" },
+      { tipo: "contenedor_almas", nombre: "Contenedor de Almas", img: "/Objetos/Contenedor de almas.png", anim: "flotarFantasma 9s ease-in-out forwards", duracion: 9000, shadow: "drop-shadow-[0_0_20px_#c084fc]" },
+      { tipo: "mapa_runico", nombre: "Mapa Rúnico", img: "/Objetos/Mapa.png", anim: "volarEspiritu 8s linear forwards", duracion: 8000, shadow: "drop-shadow-[0_0_15px_#38bdf8]" },
+      { tipo: "ikl_reliquia", nombre: "Reliquia Ikl", img: "/Objetos/Ikl.png", anim: "orbitaEspirituBosque 9s ease-in-out forwards", duracion: 9000, shadow: "drop-shadow-[0_0_18px_#22d3ee]" }
+    ];
 
-      if (decidirObjeto) {
-        const objEscogido = objetosEsperando[Math.floor(Math.random() * objetosEsperando.length)];
-        
-        // Spawnear objeto
-        setObjetosEstado((cur) => ({ ...cur, [objEscogido]: "visible" }));
-        setObjetosPos((curPos) => {
-          const sector = objEscogido === "harpa" || objEscogido === "mapa" ? "izquierda" :
-                         objEscogido === "ikl" ? "abajo" : "derecha";
-          return {
-            ...curPos,
-            [objEscogido]: {
-              ...obtenerCoordenadaSector(sector),
-              scale: Math.random() * 0.4 + 0.8
-            }
-          };
-        });
-      } else {
-        // Spawnear criatura
-        const tipos = [
-          "hada", "duende", "espiritu", "fantasma",
-          "brote_maldad", "escolta_muerte", "espiritu_bosque", "fauna_herrante", "juglar_olvidado"
-        ];
-        const tipo = tipos[Math.floor(Math.random() * tipos.length)];
-        const id = `creature-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
-        const sector = ["izquierda", "derecha", "arriba", "abajo"][Math.floor(Math.random() * 4)];
-        const coordInicial = obtenerCoordenadaSector(sector);
-        
-        let nuevaCriatura = {
-          id,
-          tipo,
-          sector,
-          left: coordInicial.left,
-          top: coordInicial.top,
-          scale: Math.random() * 0.35 + 0.85,
-          anim: ""
-        };
+    const spawnearElementoUnico = () => {
+      // Escoger un elemento aleatorio de la lista
+      const itemEscogido = todosLosTipos[Math.floor(Math.random() * todosLosTipos.length)];
+      const id = `visual-${Date.now()}`;
+      const esLadoIzquierdo = Math.random() > 0.5;
 
-        let duracionAnim = 8000;
-        const esLadoIzquierdo = Math.random() > 0.5;
+      // Coordenadas extremas de las paredes exteriores (2% o 94%) totalmente alejadas del cuadro central
+      let nuevoElemento = {
+        id,
+        ...itemEscogido,
+        left: esLadoIzquierdo ? 2 : 94,
+        top: Math.random() * 40 + 30,
+        scale: 0.95
+      };
 
-        if (tipo === "duende") {
-          nuevaCriatura.left = esLadoIzquierdo ? Math.random() * 5 + 3 : Math.random() * 5 + 92;
-          nuevaCriatura.top = Math.random() * 15 + 68; 
-          nuevaCriatura.scale = Math.random() * 0.3 + 1.25;
-          nuevaCriatura.anim = `asomarDuende 7s ease-in-out forwards`;
-          duracionAnim = 7000;
-        } else if (tipo === "espiritu") {
-          nuevaCriatura.left = -120;
-          nuevaCriatura.top = Math.random() * 4 + 2;
-          nuevaCriatura.scale = Math.random() * 0.3 + 1.35;
-          nuevaCriatura.anim = `volarEspiritu 9s linear forwards`;
-          duracionAnim = 9000;
-        } else if (tipo === "fantasma") {
-          nuevaCriatura.left = esLadoIzquierdo ? Math.random() * 8 + 3 : Math.random() * 8 + 89;
-          nuevaCriatura.top = Math.random() * 40 + 25;
-          nuevaCriatura.scale = Math.random() * 0.3 + 1.55;
-          nuevaCriatura.anim = `flotarFantasma 10s ease-in-out forwards`;
-          duracionAnim = 10000;
-        } else if (tipo === "hada") {
-          nuevaCriatura.left = esLadoIzquierdo ? Math.random() * 8 + 3 : Math.random() * 8 + 89;
-          nuevaCriatura.top = Math.random() * 40 + 20;
-          nuevaCriatura.scale = Math.random() * 0.3 + 1.25;
-          nuevaCriatura.anim = `flotarHada 8s ease-in-out forwards`;
-          duracionAnim = 8000;
-        } else if (tipo === "brote_maldad") {
-          nuevaCriatura.left = esLadoIzquierdo ? Math.random() * 10 + 5 : Math.random() * 10 + 85;
-          nuevaCriatura.top = Math.random() * 5 + 85;
-          nuevaCriatura.scale = Math.random() * 0.2 + 1.45;
-          nuevaCriatura.anim = `crecerBrote 9s ease-in-out forwards`;
-          duracionAnim = 9000;
-        } else if (tipo === "escolta_muerte") {
-          nuevaCriatura.left = esLadoIzquierdo ? Math.random() * 8 + 3 : Math.random() * 8 + 89;
-          nuevaCriatura.top = Math.random() * 40 + 25;
-          nuevaCriatura.scale = Math.random() * 0.25 + 1.55;
-          nuevaCriatura.anim = `desplazarEscolta 11s ease-in-out forwards`;
-          duracionAnim = 11000;
-        } else if (tipo === "espiritu_bosque") {
-          nuevaCriatura.left = esLadoIzquierdo ? Math.random() * 8 + 3 : Math.random() * 8 + 89;
-          nuevaCriatura.top = Math.random() * 40 + 20;
-          nuevaCriatura.scale = Math.random() * 0.3 + 1.45;
-          nuevaCriatura.anim = `orbitaEspirituBosque 9s ease-in-out forwards`;
-          duracionAnim = 9000;
-        } else if (tipo === "fauna_herrante") {
-          nuevaCriatura.left = -200;
-          nuevaCriatura.top = Math.random() * 4 + 91;
-          nuevaCriatura.scale = Math.random() * 0.2 + 1.45;
-          nuevaCriatura.anim = `galopeFauna 11s linear forwards`;
-          duracionAnim = 11000;
-        } else if (tipo === "juglar_olvidado") {
-          nuevaCriatura.left = esLadoIzquierdo ? Math.random() * 5 + 3 : Math.random() * 5 + 92;
-          nuevaCriatura.top = Math.random() * 20 + 55;
-          nuevaCriatura.scale = Math.random() * 0.2 + 1.45;
-          nuevaCriatura.anim = `tocarJuglar 8s ease-in-out forwards`;
-          duracionAnim = 8000;
-        }
-
-        setCriaturas((cur) => [...cur, nuevaCriatura]);
-        setTimeout(() => {
-          setCriaturas((cur) => cur.filter((c) => c.id !== id));
-        }, duracionAnim);
+      if (itemEscogido.tipo === "pocion_vida") {
+        nuevoElemento.left = esLadoIzquierdo ? 2 : 94;
+        nuevoElemento.top = 75;
+      } else if (itemEscogido.tipo === "fauna_herrante") {
+        nuevoElemento.left = esLadoIzquierdo ? 2 : 94;
+        nuevoElemento.top = 80;
       }
+
+      // ESTABLECER RIGUROSAMENTE 1 SOLO ELEMENTO EN EL ESTADO
+      setCriaturas([nuevoElemento]);
+
+      // Programar remoción y espera de calma antes del siguiente spawn
+      timeoutId = setTimeout(() => {
+        setCriaturas([]);
+        // Pausa de 3.5 segundos de serenidad sin ninguna figura en pantalla
+        timeoutId = setTimeout(spawnearElementoUnico, 3500);
+      }, itemEscogido.duracion);
     };
 
-    // Programar un spawn a los 3.5s
-    const timer = setTimeout(spawnearElemento, 3500);
+    spawnearElementoUnico();
 
     return () => {
-      clearTimeout(timer);
+      if (timeoutId) clearTimeout(timeoutId);
     };
-  }, [accesoConcedido, dungeonPreparado, cerrandoPuerta, criaturas, objetosEstado]);
-
-  // Función matemática para generar coordenadas estrictamente en un sector del contorno (evita cruzar el centro)
-  const obtenerCoordenadaSector = (sector) => {
-    let left = 50;
-    let top = 50;
-    if (sector === "izquierda") {
-      left = Math.random() * 11 + 3; // 3% a 14%
-      top = Math.random() * 88 + 6;  // 6% a 94%
-    } else if (sector === "derecha") {
-      left = Math.random() * 11 + 86; // 86% a 97%
-      top = Math.random() * 88 + 6;
-    } else if (sector === "arriba") {
-      left = Math.random() * 90 + 5;
-      top = Math.random() * 6 + 2.5;   // 2.5% a 8.5% (sobre la ventana)
-    } else if (sector === "abajo") {
-      left = Math.random() * 90 + 5;
-      top = Math.random() * 7 + 88;   // 88% a 95% (bajo la ventana)
-    }
-    return { left, top };
-  };
-
-  // Inicializar posiciones y escalas aleatorias para reliquias cuando se prepara el calabozo
-  useEffect(() => {
-    if (dungeonPreparado) {
-      setObjetosPos({
-        harpa: { ...obtenerCoordenadaSector("izquierda"), scale: Math.random() * 0.45 + 0.8 },
-        pocion: { ...obtenerCoordenadaSector("derecha"), scale: Math.random() * 0.35 + 0.8 },
-        contenedor: { ...obtenerCoordenadaSector("derecha"), scale: Math.random() * 0.4 + 0.8 },
-        mapa: { ...obtenerCoordenadaSector("izquierda"), scale: Math.random() * 0.35 + 0.8 },
-        ikl: { ...obtenerCoordenadaSector("abajo"), scale: Math.random() * 0.3 + 0.8 }
-      });
-    }
-  }, [dungeonPreparado]);
-
-  // Efecto para mover continuamente a las criaturas vivas por su propio sector (evita cruces)
-  useEffect(() => {
-    if (!accesoConcedido || !dungeonPreparado || cerrandoPuerta) return;
-
-    const moverCriaturas = () => {
-      setCriaturas((prev) =>
-        prev.map((c) => {
-          if (c.explotando) return c;
-          const coord = obtenerCoordenadaSector(c.sector || "izquierda");
-          return { ...c, left: coord.left, top: coord.top };
-        })
-      );
-    };
-
-    const moverInterval = setInterval(moverCriaturas, 4000);
-    return () => clearInterval(moverInterval);
   }, [accesoConcedido, dungeonPreparado, cerrandoPuerta]);
-
-  // Efecto para mover continuamente a los objetos/reliquias por su propio sector (evita cruces)
-  useEffect(() => {
-    if (!accesoConcedido || !dungeonPreparado || mostrarMensajeSellar) return;
-
-    const moverObjetos = () => {
-      setObjetosPos((prev) => {
-        const nextPos = {};
-        nextPos.harpa = objetosEstado.harpa === "visible" ? { ...obtenerCoordenadaSector("izquierda"), scale: prev.harpa?.scale || 1 } : prev.harpa;
-        nextPos.pocion = objetosEstado.pocion === "visible" ? { ...obtenerCoordenadaSector("derecha"), scale: prev.pocion?.scale || 1 } : prev.pocion;
-        nextPos.contenedor = objetosEstado.contenedor === "visible" ? { ...obtenerCoordenadaSector("derecha"), scale: prev.contenedor?.scale || 1 } : prev.contenedor;
-        nextPos.mapa = objetosEstado.mapa === "visible" ? { ...obtenerCoordenadaSector("izquierda"), scale: prev.mapa?.scale || 1 } : prev.mapa;
-        nextPos.ikl = objetosEstado.ikl === "visible" ? { ...obtenerCoordenadaSector("abajo"), scale: prev.ikl?.scale || 1 } : prev.ikl;
-        return nextPos;
-      });
-    };
-
-    const moverInterval = setInterval(moverObjetos, 4500);
-    return () => clearInterval(moverInterval);
-  }, [accesoConcedido, dungeonPreparado, mostrarMensajeSellar, objetosEstado]);
 
   // Efecto de rotación del Saludo Misterioso de Cuento de Hadas (cambia posición y mensaje)
   useEffect(() => {
@@ -716,6 +578,30 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
     return () => audio.removeEventListener("timeupdate", actualizarProgreso);
   }, [cancionActivaDungeon]);
 
+  // Sincronización en tiempo real para el buzón del fanático
+  useEffect(() => {
+    const syncRealtimeFan = () => {
+      const savedFans = localStorage.getItem("eiluve_fans_registrados");
+      if (savedFans) {
+        try {
+          const parsed = JSON.parse(savedFans);
+          if (fanActual && fanActual.id !== "master_guest") {
+            const actualizado = parsed.find((f) => f.id === fanActual.id);
+            if (actualizado) {
+              setFanActual(actualizado);
+            }
+          }
+        } catch (e) {}
+      }
+    };
+    window.addEventListener("eiluve_realtime_sync", syncRealtimeFan);
+    window.addEventListener("storage", syncRealtimeFan);
+    return () => {
+      window.removeEventListener("eiluve_realtime_sync", syncRealtimeFan);
+      window.removeEventListener("storage", syncRealtimeFan);
+    };
+  }, [fanActual]);
+
   if (!abierta) return null;
 
   const iniciarSecuenciaAcceso = (fanObj) => {
@@ -977,29 +863,7 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
     iniciarSecuenciaAcceso(nuevoFan);
   };
 
-  // Sincronización en tiempo real para el buzón del fanático
-  useEffect(() => {
-    const syncRealtimeFan = () => {
-      const savedFans = localStorage.getItem("eiluve_fans_registrados");
-      if (savedFans) {
-        try {
-          const parsed = JSON.parse(savedFans);
-          if (fanActual && fanActual.id !== "master_guest") {
-            const actualizado = parsed.find((f) => f.id === fanActual.id);
-            if (actualizado) {
-              setFanActual(actualizado);
-            }
-          }
-        } catch (e) {}
-      }
-    };
-    window.addEventListener("eiluve_realtime_sync", syncRealtimeFan);
-    window.addEventListener("storage", syncRealtimeFan);
-    return () => {
-      window.removeEventListener("eiluve_realtime_sync", syncRealtimeFan);
-      window.removeEventListener("storage", syncRealtimeFan);
-    };
-  }, [fanActual]);
+
 
   const enviarMensajeBuzonFan = (e) => {
     e.preventDefault();
@@ -1530,92 +1394,6 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
         desvanecerCierre ? "opacity-0 pointer-events-none" : "opacity-100"
       }`}
     >
-
-      {/* OBJETOS INTERACTIVOS (RELIQUIAS EN LOS CONTORNOS DE LA PANTALLA) */}
-      {accesoConcedido && dungeonPreparado && !mostrarMensajeSellar && (
-        <>
-          {(objetosEstado.harpa === "visible" || objetosEstado.harpa === "explotando") && (
-            <div className={`fixed w-24 h-40 z-40 pointer-events-auto cursor-pointer opacity-55 hover:opacity-100 hover:scale-110 transition-all duration-300 filter drop-shadow-[0_0_12px_rgba(192,132,252,0.65)] ${
-              objetosEstado.harpa === "explotando" ? "animate-desvanecer-magico" : "animate-harpa"
-            }`}
-                 style={{
-                   left: `${objetosPos.harpa.left}%`,
-                   top: `${objetosPos.harpa.top}%`,
-                   transform: `scale(${objetosPos.harpa.scale || 1}) translate(-50%, -50%)`,
-                   transition: 'left 4.5s ease-in-out, top 4.5s ease-in-out, transform 0.3s'
-                 }}
-                 onClick={() => objetosEstado.harpa === "visible" && interactuarObjeto("harpa")}
-                 title="Arpa de los Malditos">
-              <img src="/Objetos/harpa de los malditos.png" alt="Arpa de los Malditos" className="w-full h-full object-contain" />
-            </div>
-          )}
-
-          {(objetosEstado.pocion === "visible" || objetosEstado.pocion === "explotando") && (
-            <div className={`fixed w-16 h-20 z-40 pointer-events-auto cursor-pointer opacity-55 hover:opacity-100 hover:scale-110 transition-all duration-300 filter drop-shadow-[0_0_10px_rgba(52,211,153,0.65)] ${
-              objetosEstado.pocion === "explotando" ? "animate-desvanecer-magico" : "animate-pocion"
-            }`}
-                 style={{
-                   left: `${objetosPos.pocion.left}%`,
-                   top: `${objetosPos.pocion.top}%`,
-                   transform: `scale(${objetosPos.pocion.scale || 1}) translate(-50%, -50%)`,
-                   transition: 'left 4.5s ease-in-out, top 4.5s ease-in-out, transform 0.3s'
-                 }}
-                 onClick={() => objetosEstado.pocion === "visible" && interactuarObjeto("pocion")}
-                 title="Poción de Vida">
-              <img src="/Objetos/pocion vida.png" alt="Poción de Vida" className="w-full h-full object-contain" />
-            </div>
-          )}
-
-          {(objetosEstado.contenedor === "visible" || objetosEstado.contenedor === "explotando") && (
-            <div className={`fixed w-18 h-22 z-40 pointer-events-auto cursor-pointer opacity-55 hover:opacity-100 hover:scale-110 transition-all duration-300 filter drop-shadow-[0_0_10px_rgba(34,211,238,0.65)] ${
-              objetosEstado.contenedor === "explotando" ? "animate-desvanecer-magico" : "animate-contenedor"
-            }`}
-                 style={{
-                   left: `${objetosPos.contenedor.left}%`,
-                   top: `${objetosPos.contenedor.top}%`,
-                   transform: `scale(${objetosPos.contenedor.scale || 1}) translate(-50%, -50%)`,
-                   transition: 'left 4.5s ease-in-out, top 4.5s ease-in-out, transform 0.3s'
-                 }}
-                 onClick={() => objetosEstado.contenedor === "visible" && interactuarObjeto("contenedor")}
-                 title="Contenedor de Almas">
-              <img src="/Objetos/Contenedor de almas.png" alt="Contenedor de Almas" className="w-full h-full object-contain" />
-            </div>
-          )}
-
-          {(objetosEstado.mapa === "visible" || objetosEstado.mapa === "explotando") && (
-            <div className={`fixed w-20 h-20 z-40 pointer-events-auto cursor-pointer opacity-55 hover:opacity-100 hover:scale-110 transition-all duration-300 filter drop-shadow-[0_0_10px_rgba(251,191,36,0.65)] ${
-              objetosEstado.mapa === "explotando" ? "animate-desvanecer-magico" : "animate-mapa"
-            }`}
-                 style={{
-                   left: `${objetosPos.mapa.left}%`,
-                   top: `${objetosPos.mapa.top}%`,
-                   transform: `scale(${objetosPos.mapa.scale || 1}) translate(-50%, -50%)`,
-                   transition: 'left 4.5s ease-in-out, top 4.5s ease-in-out, transform 0.3s'
-                 }}
-                 onClick={() => objetosEstado.mapa === "visible" && interactuarObjeto("mapa")}
-                 title="Mapa de la Arboleda">
-              <img src="/Objetos/Mapa.png" alt="Mapa de la Arboleda" className="w-full h-full object-contain" />
-            </div>
-          )}
-
-          {(objetosEstado.ikl === "visible" || objetosEstado.ikl === "explotando") && (
-            <div className={`fixed w-14 h-24 z-40 pointer-events-auto cursor-pointer opacity-55 hover:opacity-100 hover:scale-110 transition-all duration-300 filter drop-shadow-[0_0_10px_rgba(255,85,0,0.65)] ${
-              objetosEstado.ikl === "explotando" ? "animate-desvanecer-magico" : "animate-ikl"
-            }`}
-                 style={{
-                   left: `${objetosPos.ikl.left}%`,
-                   top: `${objetosPos.ikl.top}%`,
-                   transform: `scale(${objetosPos.ikl.scale || 1}) translate(-50%, -50%)`,
-                   transition: 'left 4.5s ease-in-out, top 4.5s ease-in-out, transform 0.3s'
-                 }}
-                 onClick={() => objetosEstado.ikl === "visible" && interactuarObjeto("ikl")}
-                 title="Hoja Ancestral Ikl">
-              <img src="/Objetos/Ikl.png" alt="Hoja Ancestral Ikl" className="w-full h-full object-contain" />
-            </div>
-          )}
-        </>
-      )}
-
       
       {/* Imagen de fondo de las Mazmorras (Ramas abrazando la ventana) */}
       {accesoConcedido && (
@@ -2445,7 +2223,7 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
             <div 
               className="absolute top-0 left-0 w-[100vw] h-full pointer-events-none"
               style={{
-                backgroundImage: "url('/Puerta%20de%20las%20mazmorras.png')",
+                backgroundImage: "url('/puerta-de-las-mazmorras.png')",
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat"
@@ -2461,7 +2239,7 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
             <div 
               className="absolute top-0 left-[-50vw] w-[100vw] h-full pointer-events-none"
               style={{
-                backgroundImage: "url('/Puerta%20de%20las%20mazmorras.png')",
+                backgroundImage: "url('/puerta-de-las-mazmorras.png')",
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat"
@@ -2496,7 +2274,7 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
             <div 
               className="absolute top-0 left-0 w-[100vw] h-full pointer-events-none"
               style={{
-                backgroundImage: "url('/Puerta%20de%20las%20mazmorras.png')",
+                backgroundImage: "url('/puerta-de-las-mazmorras.png')",
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat"
@@ -2512,7 +2290,7 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
             <div 
               className="absolute top-0 left-[-50vw] w-[100vw] h-full pointer-events-none"
               style={{
-                backgroundImage: "url('/Puerta%20de%20las%20mazmorras.png')",
+                backgroundImage: "url('/puerta-de-las-mazmorras.png')",
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 backgroundRepeat: "no-repeat"
@@ -2541,61 +2319,88 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
 
       {/* 4. SECCIÓN INTERIOR REALISTA: LA MAZMORRA DE PIEDRA Y BRUMAS */}
       {accesoConcedido && !mostrarMensajeSellar && (
-
-        <div 
-          className={`relative z-10 w-full max-w-[1040px] bg-black/65 backdrop-blur-[4px] border-2 p-6 md:p-8 rounded-md overflow-hidden animate-[scaleUp_0.5s_ease-out_forwards] ${
-            modoEclipse ? "animate-eclipse" : "animate-neon-border"
-          }`}
-
-          style={{
-            borderColor: modoEclipse ? undefined : "var(--laser-color-1)",
-            boxShadow: modoEclipse ? undefined : "0 0 35px -5px var(--laser-color-1), 0 0 80px -15px var(--laser-color-2), 0 0 100px rgba(0,0,0,0.95)",
-            "--laser-color-1": modoMagico === 1 ? "#22d3ee" : modoMagico === 2 ? "#c084fc" : modoMagico === 3 ? "#34d399" : "#fbbf24",
-            "--laser-color-2": modoMagico === 1 ? "#06b6d4" : modoMagico === 2 ? "#a855f7" : modoMagico === 3 ? "#10b981" : "#fb923c"
-          }}
-        >
-          
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,_rgba(40,30,22,0.25)_0%,_rgba(5,4,3,0.88)_100%)] pointer-events-none z-0"></div>
-          <div className="absolute inset-0 opacity-[0.02] bg-[linear-gradient(90deg,#735f3d_1px,transparent_1px),linear-gradient(#735f3d_1px,transparent_1px)] [background-size:60px_35px] pointer-events-none"></div>
-
-
-
-          
-          {/* PORTAL RÚNICO TRASERO GIGANTE */}
-          <div className="absolute -right-32 -top-32 w-[600px] h-[600px] pointer-events-none z-0 select-none flex items-center justify-center">
-            <svg 
-              viewBox="0 0 200 200" 
-              className={`w-full h-full portal-runico-fondo transition-colors duration-1000 ${obtenerColorPortal(modoMagico)}`}
-              fill="none" 
-              stroke="currentColor" 
-              strokeWidth="0.8"
-            >
-              <circle cx="100" cy="100" r="85" strokeDasharray="3 3" />
-              <circle cx="100" cy="100" r="75" />
-              <circle cx="100" cy="100" r="55" />
-              <path d="M100 15 L100 185 M15 100 L185 100 M40 40 L160 160 M40 160 L160 40" strokeWidth="0.4" />
-            </svg>
+        <>
+          {/* CRIATURAS Y OBJETOS MÍSTICOS RENDERIZADOS A NIVEL PANTALLA COMPLETA (EN PAREDES LATERALES EXTERIORES, FUERA DE LA VENTANA DE CONTENIDO) */}
+          <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden select-none">
+            {criaturas.map((c) => (
+              <div
+                key={c.id}
+                className="fixed z-0 pointer-events-none select-none transition-all duration-1000"
+                style={{
+                  left: c.left <= 50 ? `${c.left}vw` : "auto",
+                  right: c.left > 50 ? `${Math.max(100 - c.left, 2)}vw` : "auto",
+                  top: `${c.top}vh`,
+                  transform: `scale(${c.scale || 1})`,
+                  animation: c.anim || "flotarHada 8s ease-in-out forwards"
+                }}
+              >
+                {c.img ? (
+                  <img 
+                    src={c.img} 
+                    alt={c.nombre || c.tipo} 
+                    className={`w-12 h-12 md:w-16 md:h-16 object-contain filter ${c.shadow || "drop-shadow-[0_0_15px_#fbbf24]"}`}
+                  />
+                ) : (
+                  <div className={`text-3xl filter ${c.color || "text-amber-300 drop-shadow-[0_0_10px_#fbbf24]"}`}>
+                    {c.icono || "🔮"}
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
 
-          {/* LUCES AMBIENTALES DINÁMICAS */}
-          <div className={`absolute -left-10 top-1/4 w-32 h-60 blur-[50px] pointer-events-none transition-all duration-1000 z-0 ${obtenerColorGlowFondo(modoMagico, "izq")}`}></div>
-          <div className={`absolute -right-10 top-1/3 w-32 h-60 blur-[50px] pointer-events-none transition-all duration-1000 z-0 ${obtenerColorGlowFondo(modoMagico, "der")}`}></div>
+          <div 
+            className={`relative z-10 w-full max-w-[1040px] bg-black/65 backdrop-blur-[4px] border-2 p-6 md:p-8 rounded-md overflow-hidden animate-[scaleUp_0.5s_ease-out_forwards] ${
+              modoEclipse ? "animate-eclipse" : "animate-neon-border"
+            }`}
 
+            style={{
+              borderColor: modoEclipse ? undefined : "var(--laser-color-1)",
+              boxShadow: modoEclipse ? undefined : "0 0 35px -5px var(--laser-color-1), 0 0 80px -15px var(--laser-color-2), 0 0 100px rgba(0,0,0,0.95)",
+              "--laser-color-1": modoMagico === 1 ? "#22d3ee" : modoMagico === 2 ? "#c084fc" : modoMagico === 3 ? "#34d399" : "#fbbf24",
+              "--laser-color-2": modoMagico === 1 ? "#06b6d4" : modoMagico === 2 ? "#a855f7" : modoMagico === 3 ? "#10b981" : "#fb923c"
+            }}
+          >
+            
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,_rgba(40,30,22,0.25)_0%,_rgba(5,4,3,0.88)_100%)] pointer-events-none z-0"></div>
+            <div className="absolute inset-0 opacity-[0.02] bg-[linear-gradient(90deg,#735f3d_1px,transparent_1px),linear-gradient(#735f3d_1px,transparent_1px)] [background-size:60px_35px] pointer-events-none"></div>
 
-          {/* Orbes Fatuos */}
-          {/* ORBES ESPIRITUALES DE COLOR */}
-          {modoMagico !== 0 && (
-            <div className="absolute inset-0 pointer-events-none z-0 select-none">
-              <div className={`absolute top-[20%] left-[15%] w-48 h-48 blur-[80px] rounded-full orbe-espiritual ${
-                modoMagico === 1 ? "bg-cyan-600/12" : modoMagico === 2 ? "bg-purple-600/12" : "bg-emerald-600/12"
-              }`}></div>
-              <div className={`absolute bottom-[20%] right-[25%] w-60 h-60 blur-[95px] rounded-full orbe-espiritual ${
-                modoMagico === 1 ? "bg-teal-600/10" : modoMagico === 2 ? "bg-fuchsia-600/10" : "bg-green-600/10"
-              }`} style={{ animationDelay: "-4s", animationDuration: "16s" }}></div>
+            
+            {/* PORTAL RÚNICO TRASERO GIGANTE */}
+            <div className="absolute -right-32 -top-32 w-[600px] h-[600px] pointer-events-none z-0 select-none flex items-center justify-center">
+              <svg 
+                viewBox="0 0 200 200" 
+                className={`w-full h-full portal-runico-fondo transition-colors duration-1000 ${obtenerColorPortal(modoMagico)}`}
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="0.8"
+              >
+                <circle cx="100" cy="100" r="85" strokeDasharray="3 3" />
+                <circle cx="100" cy="100" r="75" />
+                <circle cx="100" cy="100" r="55" />
+                <path d="M100 15 L100 185 M15 100 L185 100 M40 40 L160 160 M40 160 L160 40" strokeWidth="0.4" />
+              </svg>
             </div>
-          )}
-          
-          <div className="absolute bottom-0 left-0 right-0 h-40 niebla-mazmorra pointer-events-none opacity-60 z-10"></div>
+
+            {/* LUCES AMBIENTALES DINÁMICAS */}
+            <div className={`absolute -left-10 top-1/4 w-32 h-60 blur-[50px] pointer-events-none transition-all duration-1000 z-0 ${obtenerColorGlowFondo(modoMagico, "izq")}`}></div>
+            <div className={`absolute -right-10 top-1/3 w-32 h-60 blur-[50px] pointer-events-none transition-all duration-1000 z-0 ${obtenerColorGlowFondo(modoMagico, "der")}`}></div>
+
+
+            {/* Orbes Fatuos */}
+            {/* ORBES ESPIRITUALES DE COLOR */}
+            {modoMagico !== 0 && (
+              <div className="absolute inset-0 pointer-events-none z-0 select-none">
+                <div className={`absolute top-[20%] left-[15%] w-48 h-48 blur-[80px] rounded-full orbe-espiritual ${
+                  modoMagico === 1 ? "bg-cyan-600/12" : modoMagico === 2 ? "bg-purple-600/12" : "bg-emerald-600/12"
+                }`}></div>
+                <div className={`absolute bottom-[20%] right-[25%] w-60 h-60 blur-[95px] rounded-full orbe-espiritual ${
+                  modoMagico === 1 ? "bg-teal-600/10" : modoMagico === 2 ? "bg-fuchsia-600/10" : "bg-green-600/10"
+                }`} style={{ animationDelay: "-4s", animationDuration: "16s" }}></div>
+              </div>
+            )}
+            
+            <div className="absolute bottom-0 left-0 right-0 h-40 niebla-mazmorra pointer-events-none opacity-60 z-10"></div>
 
 
 
@@ -2856,103 +2661,10 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
             }
           `}</style>
         </div>
+      </>
       )}
 
-      {/* ELEMENTOS INTERACTIVOS EN LA ILUSTRACIÓN DE FONDO */}
-      {accesoConcedido && !cerrandoPuerta && (
-        <>
-          {/* Columna Rúnica Izquierda */}
-          <div 
-            onClick={() => revelarSusurro("izq")}
-            className="absolute left-[2%] lg:left-[4%] top-[15%] w-[8%] h-[70%] cursor-pointer z-20 group"
-            title="Tocar columna rúnica izquierda (Susurros ancestrales)"
-          >
-            <div className={`absolute inset-0 rounded-full blur-xl opacity-0 group-hover:opacity-20 transition-all duration-300 ${
-              columnaActiva === "izq" ? "opacity-35 scale-110" : ""
-            } ${
-              modoMagico === 1 ? "bg-cyan-500 shadow-[0_0_20px_#22d3ee]" :
-              modoMagico === 2 ? "bg-purple-500 shadow-[0_0_20px_#c084fc]" :
-              modoMagico === 3 ? "bg-emerald-500 shadow-[0_0_20px_#34d399]" :
-              "bg-amber-500 shadow-[0_0_20px_#fbbf24]"
-            }`}></div>
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-mono text-[9px] text-white/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/80 px-2 py-1 rounded border border-white/10 pointer-events-none select-none whitespace-nowrap">
-              ᚱᚢᚾᛖᛊ (Leer Runas)
-            </div>
-          </div>
 
-          {/* Columna Rúnica Derecha */}
-          <div 
-            onClick={() => revelarSusurro("der")}
-            className="absolute right-[2%] lg:right-[4%] top-[15%] w-[8%] h-[70%] cursor-pointer z-20 group"
-            title="Tocar columna rúnica derecha (Susurros ancestrales)"
-          >
-            <div className={`absolute inset-0 rounded-full blur-xl opacity-0 group-hover:opacity-20 transition-all duration-300 ${
-              columnaActiva === "der" ? "opacity-35 scale-110" : ""
-            } ${
-              modoMagico === 1 ? "bg-cyan-500 shadow-[0_0_20px_#22d3ee]" :
-              modoMagico === 2 ? "bg-purple-500 shadow-[0_0_20px_#c084fc]" :
-              modoMagico === 3 ? "bg-emerald-500 shadow-[0_0_20px_#34d399]" :
-              "bg-amber-500 shadow-[0_0_20px_#fbbf24]"
-            }`}></div>
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-mono text-[9px] text-white/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/80 px-2 py-1 rounded border border-white/10 pointer-events-none select-none whitespace-nowrap">
-              ᚱᚢᚾᛖᛊ (Leer Runas)
-            </div>
-          </div>
-
-          {/* Estante de Alquimia (Botellas en la repisa izquierda) */}
-          <div 
-            onClick={() => setModoMagico((prev) => (prev + 1) % 4)}
-            className="absolute left-[13%] lg:left-[15%] top-[25%] w-[12%] h-[32%] cursor-pointer z-20 group"
-            title="Estante de Alquimia (Mezclar pócimas)"
-          >
-            <div className={`absolute inset-0 rounded-sm blur-md opacity-0 group-hover:opacity-10 transition-opacity duration-300 ${
-              modoMagico === 1 ? "bg-cyan-500" :
-              modoMagico === 2 ? "bg-purple-500" :
-              modoMagico === 3 ? "bg-emerald-500" :
-              "bg-amber-500"
-            }`}></div>
-            <div className="absolute top-1/4 left-1/2 -translate-x-1/2 font-mono text-[9px] text-white/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/80 px-2 py-1 rounded border border-white/10 pointer-events-none select-none whitespace-nowrap">
-              🧪 Alquimia (Mezclar)
-            </div>
-          </div>
-
-          {/* Runa del Destino (Tabla de piedra en la parte inferior izquierda) */}
-          <div 
-            onClick={() => revelarSusurro("tabla")}
-            className="absolute left-[2%] lg:left-[4%] bottom-[5%] w-[8%] h-[15%] cursor-pointer z-20 group"
-            title="Tocar Runa del Destino"
-          >
-            <div className={`absolute inset-0 rounded-full blur-md opacity-0 group-hover:opacity-15 transition-opacity duration-300 ${
-              columnaActiva === "tabla" ? "opacity-30 scale-110" : ""
-            } ${
-              modoMagico === 1 ? "bg-cyan-500" :
-              modoMagico === 2 ? "bg-purple-500" :
-              modoMagico === 3 ? "bg-emerald-500" :
-              "bg-amber-500"
-            }`}></div>
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-mono text-[9px] text-white/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/80 px-2 py-1 rounded border border-white/10 pointer-events-none select-none whitespace-nowrap">
-              🔮 Runa Destino (Leer)
-            </div>
-          </div>
-
-          {/* Frasco Místico (Botella luminosa en la parte inferior derecha) */}
-          <div 
-            onClick={liberarEnergiaFrasco}
-            className="absolute right-[2%] lg:right-[4%] bottom-[4%] w-[8%] h-[16%] cursor-pointer z-20 group"
-            title="Tocar Frasco Místico (Liberar chispas)"
-          >
-            <div className={`absolute inset-0 rounded-full blur-md opacity-0 group-hover:opacity-15 transition-opacity duration-300 ${
-              modoMagico === 1 ? "bg-cyan-500 shadow-[0_0_15px_#22d3ee]" :
-              modoMagico === 2 ? "bg-purple-500 shadow-[0_0_15px_#c084fc]" :
-              modoMagico === 3 ? "bg-emerald-500 shadow-[0_0_15px_#34d399]" :
-              "bg-amber-500 shadow-[0_0_15px_#fbbf24]"
-            }`}></div>
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-mono text-[9px] text-white/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/80 px-2 py-1 rounded border border-white/10 pointer-events-none select-none whitespace-nowrap">
-              ✨ Frasco Místico (Liberar)
-            </div>
-          </div>
-        </>
-      )}
 
 
 

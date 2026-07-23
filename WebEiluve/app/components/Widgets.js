@@ -81,54 +81,53 @@ export default function Widgets({
   };
 
   return (
-    <div className="w-full relative z-20 px-4 md:px-8 pb-14 mt-12 hidden md:block">
-      {/* Rejilla de tarjetas con más aire y separación (gap-8) */}
-      <div className="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+    <div className="w-full relative z-20 px-4 md:px-8 pb-6 mt-3 hidden md:block">
+      {/* Rejilla de tarjetas con más aire y separación (gap-6) */}
+      <div className="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         
         {/* Widget 1: Álbum (Diseñado como Reliquia del Bosque) */}
         <a
           href={albumLink}
           target={albumLink !== "#" && albumLink !== "" ? "_blank" : undefined}
           rel={albumLink !== "#" && albumLink !== "" ? "noopener noreferrer" : undefined}
-          className="panel-reliquia p-5 flex flex-col justify-between group cursor-pointer min-h-[220px]"
+          className="panel-reliquia p-4 flex flex-col justify-between group cursor-pointer h-full"
         >
-          <div className="flex gap-4 mb-3">
+          <div className="flex gap-3 mb-2">
             {/* Imagen de portada con zoom sutil */}
-            <div className="w-20 h-20 bg-black/50 border border-[#735f3d]/40 overflow-hidden relative rounded-lg flex-shrink-0 shadow-inner">
+            <div className="w-16 h-16 bg-black/50 border border-[#735f3d]/40 overflow-hidden relative rounded-lg flex-shrink-0 shadow-inner">
               <Image
                 src={cancionActual.portada || "/Somos todos.jpg"}
                 alt="Portada La Taberna y el Bosque"
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-700"
                 unoptimized
-                sizes="80px"
+                sizes="64px"
               />
             </div>
             <div className="flex-1 flex flex-col justify-between">
               <div>
-                <span className="text-[9px] text-[#735f3d] font-serif tracking-[0.25em] uppercase block mb-1">
+                <span className="text-[9px] text-[#735f3d] font-serif tracking-[0.25em] uppercase block mb-0.5">
                   NUEVO ÁLBUM
                 </span>
-                <h3 className="font-serif text-[#d1b880] text-lg lg:text-xl font-bold leading-tight tracking-wide mb-1 transition-colors group-hover:text-white">
-                  LA TABERNA
-                  <br />Y EL BOSQUE
+                <h3 className="font-serif text-[#d1b880] text-base font-bold leading-tight tracking-wide mb-0.5 transition-colors group-hover:text-white">
+                  LA TABERNA Y EL BOSQUE
                 </h3>
               </div>
-              <span className="text-[9px] text-[#8da382] font-bold tracking-[0.15em] uppercase">
+              <span className="text-[8.5px] text-[#8da382] font-bold tracking-[0.15em] uppercase">
                 YA DISPONIBLE
               </span>
             </div>
           </div>
 
           {/* Iconos de plataformas y botón de acción forjado */}
-          <div className="space-y-3 pt-3 border-t border-[#735f3d]/20">
+          <div className="space-y-2 pt-2 border-t border-[#735f3d]/20">
             <div className="flex space-x-4 text-[#735f3d]/80 justify-start px-1 text-xs">
               <span className="hover:text-[#d1b880] transition-colors"><i className="fab fa-spotify"></i></span>
               <span className="hover:text-[#d1b880] transition-colors"><i className="fab fa-youtube"></i></span>
               <span className="hover:text-[#d1b880] transition-colors"><i className="fab fa-apple"></i></span>
               <span className="hover:text-[#d1b880] transition-colors"><i className="fab fa-amazon"></i></span>
             </div>
-            <span className="boton-forjado-premium text-[9px] tracking-[0.22em] font-serif font-bold py-2 rounded-lg w-full text-center block uppercase">
+            <span className="boton-forjado-premium text-[9px] tracking-[0.22em] font-serif font-bold py-1.5 rounded-lg w-full text-center block uppercase">
               ESCUCHAR ÁLBUM
             </span>
           </div>
@@ -137,49 +136,64 @@ export default function Widgets({
         {/* Widget 2: Conciertos (Piedra Tallada / Reliquia) */}
         <a
           href="#tour"
-          className="panel-reliquia p-5 flex flex-col justify-between cursor-pointer group min-h-[220px]"
+          className="panel-reliquia p-4 flex flex-col justify-between cursor-pointer group h-full"
         >
-          <h3 className="font-serif text-[#d1b880] text-xs lg:text-sm font-bold tracking-[0.2em] text-center uppercase border-b border-[#735f3d]/30 pb-2.5 mb-3">
-            PRÓXIMOS CONCIERTOS
-          </h3>
-          <ul className="flex-1 space-y-2.5 font-sans text-[11px] text-gray-400 px-1">
-            {ordenarConciertos(conciertos).slice(0, 4).map((concierto) => {
+          <div className="flex justify-between items-center border-b border-[#735f3d]/30 pb-2 mb-2">
+            <h3 className="font-serif text-[#d1b880] text-xs font-bold tracking-[0.2em] uppercase">
+              CONCIERTOS Y GIRA
+            </h3>
+            <span className="text-[8.5px] font-mono text-[#8da382] bg-[#8da382]/10 border border-[#8da382]/30 px-1.5 py-0.5 rounded">
+              {conciertos.length} FECHAS
+            </span>
+          </div>
+          <ul className="flex-1 space-y-1.5 font-sans text-[10.5px] px-0.5">
+            {ordenarConciertos(conciertos).slice(0, 3).map((concierto) => {
               const esPasado = esFechaPasada(concierto);
               return (
                 <li 
                   key={concierto.id} 
-                  className={`flex justify-between items-center hover:text-[#d1b880] transition-colors ${
-                    esPasado ? "line-through decoration-red-600/70 text-red-500/50" : ""
+                  className={`flex justify-between items-center p-1 rounded transition-all duration-300 ${
+                    esPasado 
+                      ? "bg-[#181410]/80 border border-[#735f3d]/30 hover:border-[#d1b880]/60 text-amber-200/90" 
+                      : "bg-[#735f3d]/20 border border-[#fbbf24]/40 hover:bg-[#735f3d]/35 text-white shadow-[0_0_10px_rgba(251,191,36,0.12)]"
                   }`}
                 >
-                  <span className={`w-12 font-bold font-serif text-[10px] ${esPasado ? "text-red-500/60" : "text-[#d1b880]/80"}`}>
+                  <span className={`w-13 font-bold font-serif text-[9px] px-1 py-0.5 rounded text-center flex-shrink-0 ${
+                    esPasado ? "bg-amber-950/60 text-amber-300 border border-amber-800/40" : "bg-amber-500/25 text-[#fbbf24] border border-amber-500/50"
+                  }`}>
                     {concierto.fecha}
                   </span>
-                  <span className={`flex-1 truncate mx-2 font-serif ${esPasado ? "text-red-500/50" : "text-gray-300"}`}>
+                  <span className="flex-1 truncate mx-1.5 font-serif text-[11px] font-semibold text-gray-100">
                     {concierto.nombre}
                   </span>
-                  <span className={`text-[10px] ${esPasado ? "text-red-500/40" : "text-gray-600"}`}>
-                    {concierto.etiqueta || concierto.lugar.split(",")[0]}
-                  </span>
+                  {esPasado ? (
+                    <span className="text-[7.5px] font-mono bg-rose-950/80 text-rose-300 border border-rose-800/60 px-1 py-0.5 rounded flex-shrink-0">
+                      FINALIZADO
+                    </span>
+                  ) : (
+                    <span className="text-[7.5px] font-mono bg-emerald-950/80 text-emerald-300 border border-emerald-800/60 px-1 py-0.5 rounded flex-shrink-0 animate-pulse">
+                      PRÓXIMO
+                    </span>
+                  )}
                 </li>
               );
             })}
           </ul>
-          <div className="pt-3 mt-2 border-t border-[#735f3d]/20">
-            <span className="boton-forjado-premium text-[9px] tracking-[0.22em] font-serif font-bold py-2 rounded-lg w-full text-center block uppercase">
+          <div className="pt-2 mt-1 border-t border-[#735f3d]/20">
+            <span className="boton-forjado-premium text-[9px] tracking-[0.22em] font-serif font-bold py-1.5 rounded-lg w-full text-center block uppercase">
               VER TODOS LOS CONCIERTOS
             </span>
           </div>
         </a>
 
         {/* Widget 3: Reproductor (Reliquia de Audio) */}
-        <div className="panel-reliquia p-5 flex flex-col justify-between min-h-[220px]">
-          <h3 className="font-serif text-[#d1b880] text-xs lg:text-sm font-bold tracking-[0.2em] text-center uppercase border-b border-[#735f3d]/30 pb-2.5 mb-3">
+        <div className="panel-reliquia p-4 flex flex-col justify-between h-full">
+          <h3 className="font-serif text-[#d1b880] text-xs font-bold tracking-[0.2em] text-center uppercase border-b border-[#735f3d]/30 pb-2 mb-2">
             ESCUCHA
           </h3>
-          <div className="flex items-center gap-4 mb-3">
+          <div className="flex items-center gap-3 mb-2">
             {/* Portada pequeña del player con latido de luz */}
-            <div className="w-10 h-10 bg-black border border-[#735f3d]/30 flex items-center justify-center rounded-lg relative overflow-hidden flex-shrink-0">
+            <div className="w-9 h-9 bg-black border border-[#735f3d]/30 flex items-center justify-center rounded-lg relative overflow-hidden flex-shrink-0">
               <Image
                 src={cancionActual.portada || "/Somos todos.jpg"}
                 alt="Carátula"
@@ -187,22 +201,22 @@ export default function Widgets({
                 className="object-cover animate-pulse"
                 style={{ animationDuration: "6s" }}
                 unoptimized
-                sizes="40px"
+                sizes="36px"
               />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-xs font-bold text-gray-200 truncate tracking-wide">
                 {cancionActual.titulo}
               </p>
-              <p className="text-[10px] text-[#735f3d] font-serif truncate uppercase tracking-wider">
+              <p className="text-[9.5px] text-[#735f3d] font-serif truncate uppercase tracking-wider">
                 {cancionActual.artista}
               </p>
             </div>
           </div>
 
           {/* Barra de progreso con resplandor dorado */}
-          <div className="flex items-center text-[9px] text-gray-500 gap-2 mb-3">
-            <span className="w-8 text-right font-mono">{tiempoActual}</span>
+          <div className="flex items-center text-[9px] text-gray-500 gap-2 mb-2">
+            <span className="w-7 text-right font-mono">{tiempoActual}</span>
             <div
               className="flex-1 h-1 bg-gray-900 rounded-full cursor-pointer relative overflow-hidden shadow-inner border border-[#735f3d]/10"
               onClick={manejarClickProgreso}
@@ -212,39 +226,39 @@ export default function Widgets({
                 style={{ width: `${progreso}%` }}
               ></div>
             </div>
-            <span className="w-8 font-mono">{tiempoTotal}</span>
+            <span className="w-7 font-mono">{tiempoTotal}</span>
           </div>
 
           {/* Controles de reproducción metálicos */}
-          <div className="flex justify-between items-center text-[#d1b880]/80 px-2 pt-1">
+          <div className="flex justify-between items-center text-[#d1b880]/80 px-1 pt-1 border-t border-[#735f3d]/20">
             <button
               onClick={retroceder}
               className="hover:text-white transition-colors"
               aria-label="Retroceder 10 segundos"
               title="Retroceder 10s"
             >
-              <i className="fas fa-undo-alt text-xs"></i>
+              <i className="fas fa-undo-alt text-[10px]"></i>
             </button>
             <button
               onClick={anteriorCancion}
               className="hover:text-white transition-colors"
               aria-label="Canción Anterior"
             >
-              <i className="fas fa-step-backward text-xs"></i>
+              <i className="fas fa-step-backward text-[10px]"></i>
             </button>
             <button
               onClick={alternarReproduccion}
-              className="w-9 h-9 rounded-full bg-[#735f3d]/25 border border-[#d1b880]/35 flex items-center justify-center text-[#d1b880] hover:bg-[#d1b880] hover:text-[#060a13] hover:border-[#d1b880] transition-all duration-300 hover:shadow-[0_0_12px_rgba(209,184,128,0.5)] hover:scale-105"
+              className="w-8 h-8 rounded-full bg-[#735f3d]/25 border border-[#d1b880]/35 flex items-center justify-center text-[#d1b880] hover:bg-[#d1b880] hover:text-[#060a13] hover:border-[#d1b880] transition-all duration-300 hover:shadow-[0_0_12px_rgba(209,184,128,0.5)] hover:scale-105"
               aria-label={reproduciendo ? "Pausa" : "Reproducir"}
             >
-              <i className={`fas ${reproduciendo ? "fa-pause text-[10px]" : "fa-play text-[10px] ml-0.5"}`}></i>
+              <i className={`fas ${reproduciendo ? "fa-pause text-[9px]" : "fa-play text-[9px] ml-0.5"}`}></i>
             </button>
             <button
               onClick={siguienteCancion}
               className="hover:text-white transition-colors"
               aria-label="Siguiente Canción"
             >
-              <i className="fas fa-step-forward text-xs"></i>
+              <i className="fas fa-step-forward text-[10px]"></i>
             </button>
             <button
               onClick={adelantar}
@@ -252,7 +266,7 @@ export default function Widgets({
               aria-label="Adelantar 10 segundos"
               title="Adelantar 10s"
             >
-              <i className="fas fa-redo-alt text-xs"></i>
+              <i className="fas fa-redo-alt text-[10px]"></i>
             </button>
           </div>
         </div>
@@ -267,12 +281,12 @@ export default function Widgets({
               alHacerClickMerch();
             }
           }}
-          className="panel-reliquia p-5 flex flex-col justify-between group cursor-pointer min-h-[220px]"
+          className="panel-reliquia p-4 flex flex-col justify-between group cursor-pointer h-full"
         >
-          <h3 className="font-serif text-[#d1b880] text-xs lg:text-sm font-bold tracking-[0.2em] text-center uppercase border-b border-[#735f3d]/30 pb-2.5 mb-2 w-full">
+          <h3 className="font-serif text-[#d1b880] text-xs font-bold tracking-[0.2em] text-center uppercase border-b border-[#735f3d]/30 pb-2 mb-2 w-full">
             MERCH OFICIAL
           </h3>
-          <div className="flex-1 flex items-center justify-center relative w-full h-20 mb-3">
+          <div className="flex-1 flex items-center justify-center relative w-full h-16 mb-2">
             <div className="relative w-full h-full group-hover:scale-105 transition-transform duration-500">
               <Image
                 src={merchImg}
@@ -280,12 +294,12 @@ export default function Widgets({
                 fill
                 className="object-contain filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.8)]"
                 unoptimized
-                sizes="150px"
+                sizes="120px"
               />
             </div>
           </div>
-          <div className="pt-3 border-t border-[#735f3d]/20">
-            <span className="boton-forjado-premium text-[9px] tracking-[0.22em] font-serif font-bold py-2 rounded-lg w-full text-center block uppercase">
+          <div className="pt-2 border-t border-[#735f3d]/20">
+            <span className="boton-forjado-premium text-[9px] tracking-[0.22em] font-serif font-bold py-1.5 rounded-lg w-full text-center block uppercase">
               IR A LA TIENDA
             </span>
           </div>
@@ -302,7 +316,7 @@ export default function Widgets({
         >
           <div className="relative w-full h-full group-hover:rotate-45 transition-transform duration-500">
             <Image
-              src="/pantalla de carga/Llave de las mazmorras.png"
+              src="/pantalla-de-carga/llave-de-las-mazmorras.png"
               alt="Llave de las Mazmorras"
               fill
               unoptimized

@@ -493,22 +493,100 @@ export default function Dashboard({
     window.dispatchEvent(new Event("eiluve_realtime_sync"));
   };
 
+  // 💾 EXPORTAR / IMPORTAR REGISTRO LOCAL COMPLETO (LOCALSTORAGE)
+  const exportarRegistroLocal = () => {
+    const backupData = {
+      version: "2.0",
+      fechaExportacion: new Date().toISOString(),
+      conciertos: conciertos,
+      noticias: noticias,
+      bio: bio,
+      presentacion: presentacion,
+      merch: merch,
+      mazmorrasData: mazmorrasData,
+      galeria: galeria,
+      nfcCodes: nfcCodes,
+      fansRegistrados: fansRegistrados,
+      mensajesContacto: mensajesContacto,
+      logsAuditoria: logsAuditoria
+    };
+
+    const jsonStr = JSON.stringify(backupData, null, 2);
+    const blob = new Blob([jsonStr], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `eiluve_registro_local_${new Date().toISOString().split("T")[0]}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    registrarLogAuditoria("Exportó copia de seguridad del Registro Local a JSON", "Sistema");
+  };
+
+  const importarRegistroLocal = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const data = JSON.parse(event.target.result);
+        if (data.conciertos) {
+          setConciertos(data.conciertos);
+          localStorage.setItem("eiluve_conciertos", JSON.stringify(data.conciertos));
+        }
+        if (data.noticias) {
+          setNoticias(data.noticias);
+          localStorage.setItem("eiluve_noticias", JSON.stringify(data.noticias));
+        }
+        if (data.bio) {
+          setBio(data.bio);
+          localStorage.setItem("eiluve_bio", JSON.stringify(data.bio));
+        }
+        if (data.presentacion) {
+          setPresentacion(data.presentacion);
+          localStorage.setItem("eiluve_presentacion", JSON.stringify(data.presentacion));
+        }
+        if (data.merch) {
+          setMerch(data.merch);
+          localStorage.setItem("eiluve_merch", JSON.stringify(data.merch));
+        }
+        if (data.mazmorrasData) {
+          setMazmorrasData(data.mazmorrasData);
+          localStorage.setItem("eiluve_mazmorras_data", JSON.stringify(data.mazmorrasData));
+        }
+        if (data.nfcCodes) {
+          setNfcCodes(data.nfcCodes);
+          localStorage.setItem("eiluve_nfc_codes", JSON.stringify(data.nfcCodes));
+        }
+        window.dispatchEvent(new Event("eiluve_realtime_sync"));
+        registrarLogAuditoria("Importó copia de seguridad del Registro Local desde archivo JSON", "Sistema");
+        alert("¡Registro Local restaurado e importado con éxito!");
+      } catch (err) {
+        alert("Error al leer el archivo de copia de seguridad. Verifica que sea un JSON válido.");
+      }
+    };
+    reader.readAsText(file);
+  };
+
   // Event listener para actualización en tiempo real de mensajes y auditoría
   useEffect(() => {
     const syncRealtimeDashboard = () => {
+      const savedConciertos = localStorage.getItem("eiluve_conciertos");
+      if (savedConciertos) {
+        try { setConciertos(JSON.parse(savedConciertos)); } catch (e) {}
+      }
+      const savedNoticias = localStorage.getItem("eiluve_noticias");
+      if (savedNoticias) {
+        try { setNoticias(JSON.parse(savedNoticias)); } catch (e) {}
+      }
       const savedFans = localStorage.getItem("eiluve_fans_registrados");
       if (savedFans) {
-        try {
-          const parsed = JSON.parse(savedFans);
-          setFansRegistrados(parsed);
-        } catch (e) {}
+        try { setFansRegistrados(JSON.parse(savedFans)); } catch (e) {}
       }
       const savedLogs = localStorage.getItem("eiluve_audit_log");
       if (savedLogs) {
-        try {
-          const parsed = JSON.parse(savedLogs);
-          setLogsAuditoria(parsed);
-        } catch (e) {}
+        try { setLogsAuditoria(JSON.parse(savedLogs)); } catch (e) {}
       }
     };
     window.addEventListener("eiluve_realtime_sync", syncRealtimeDashboard);
@@ -517,7 +595,7 @@ export default function Dashboard({
       window.removeEventListener("eiluve_realtime_sync", syncRealtimeDashboard);
       window.removeEventListener("storage", syncRealtimeDashboard);
     };
-  }, [setFansRegistrados, setLogsAuditoria]);
+  }, [setFansRegistrados, setLogsAuditoria, setConciertos, setNoticias]);
 
   // Manejar Login de la Banda (Acepta usuario maestro bsarmientom1993 / jareck93 y cualquier usuario creado por el maestro)
   const manejarLogin = (e) => {
@@ -4074,6 +4152,40 @@ export default function Dashboard({
             {/* TAB 9: LOG DE AUDITORÍA Y HISTORIAL DE CAMBIOS DEL CLAN */}
             {activeTab === "bitacora" && (
               <div className="space-y-6 animate-[fadeIn_0.3s_ease-out]">
+                
+                {/* 💾 PANEL DE GESTIÓN DEL REGISTRO LOCAL */}
+                <div className="bg-black/40 p-4 border border-[#735f3d]/25 rounded space-y-3">
+                  <div className="flex flex-wrap justify-between items-center border-b border-[#735f3d]/15 pb-2.5 gap-2">
+                    <div>
+                      <h4 className="text-[#fbbf24] text-xs font-mono uppercase tracking-wider flex items-center gap-2">
+                        <span>💾 Registro Local del Clan (Fechas, Crónicas y Contenidos)</span>
+                      </h4>
+                      <p className="text-[10px] text-gray-400 font-mono mt-0.5">
+                        Guarda, exporta e importa copias de seguridad de todas las fechas de gira, crónicas y datos almacenados en localStorage.
+                      </p>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-2">
+                      <button
+                        onClick={exportarRegistroLocal}
+                        className="py-1.5 px-3 bg-[#735f3d]/40 hover:bg-[#735f3d] border border-[#d1b880]/50 text-[#d1b880] hover:text-white text-[10px] font-mono rounded transition-colors uppercase flex items-center gap-1.5 cursor-pointer"
+                        title="Descargar copia de seguridad en JSON"
+                      >
+                        📥 Exportar Registro (JSON)
+                      </button>
+                      <label className="py-1.5 px-3 bg-[#8da382]/20 hover:bg-[#8da382] border border-[#8da382]/40 text-[#8da382] hover:text-black text-[10px] font-mono rounded transition-colors uppercase flex items-center gap-1.5 cursor-pointer">
+                        📤 Importar Backup (JSON)
+                        <input
+                          type="file"
+                          accept=".json"
+                          onChange={importarRegistroLocal}
+                          className="hidden"
+                        />
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
                 <div className="bg-black/40 p-4 border border-[#735f3d]/25 rounded space-y-4">
                   <div className="flex flex-wrap justify-between items-center border-b border-[#735f3d]/10 pb-3 gap-2">
                     <div>
@@ -4245,14 +4357,33 @@ export default function Dashboard({
               </div>
 
               <div>
-                <label className="text-[9px] text-[#fbbf24] font-mono block">Contraseña de Acceso</label>
+                <label className="text-[9px] text-[#fbbf24] font-mono block flex justify-between items-center">
+                  <span>Contraseña de Acceso</span>
+                  {!usuarioActual?.isMaster && usuarioActual?.usernameModificado && (
+                    <span className="text-[8.5px] text-amber-400 font-mono italic">
+                      🔒 Modificado previamente
+                    </span>
+                  )}
+                </label>
                 <input
                   type="password"
                   value={perfilPassword}
                   onChange={(e) => setPerfilPassword(e.target.value)}
-                  className="w-full bg-black/70 border border-[#735f3d]/30 text-xs text-white p-2.5 rounded focus:outline-none focus:border-[#fbbf24]"
+                  disabled={!usuarioActual?.isMaster && usuarioActual?.usernameModificado}
+                  className={`w-full bg-black/70 border text-xs text-white p-2.5 rounded focus:outline-none transition-colors ${
+                    !usuarioActual?.isMaster && usuarioActual?.usernameModificado
+                      ? "border-gray-800 text-gray-500 cursor-not-allowed bg-black/40"
+                      : "border-[#735f3d]/30 focus:border-[#fbbf24]"
+                  }`}
                   required
                 />
+                {!usuarioActual?.isMaster && (
+                  <p className="text-[8.5px] text-gray-400 font-mono mt-1 leading-tight">
+                    {usuarioActual?.usernameModificado
+                      ? "🔒 Tu contraseña ya fue editada por única vez. Si la olvidas, únicamente el Usuario Maestro (bsarmientom1993) puede restablecerla o desbloquear tu acceso."
+                      : "⚡ Tienes 1 única oportunidad para personalizar tu contraseña. Guarda tu nueva contraseña en un lugar seguro."}
+                  </p>
+                )}
               </div>
 
               <div className="pt-2 flex gap-2">

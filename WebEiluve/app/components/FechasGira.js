@@ -345,24 +345,29 @@ export default function FechasGira({ conciertos = [] }) {
                   key={concierto.id}
                   onMouseEnter={() => !esPasado && setConciertoActivoMapa(concierto)}
                   onMouseLeave={() => !esPasado && setConciertoActivoMapa(null)}
-                  className={`bg-[#0c1322]/85 backdrop-blur-[10px] border p-5 px-6 flex flex-col sm:flex-row justify-between items-center transition-all duration-300 rounded-sm cursor-pointer ${
+                  className={`border p-5 px-6 flex flex-col sm:flex-row justify-between items-center transition-all duration-300 rounded-sm cursor-pointer ${
                     esPasado
-                      ? "border-red-950/20 bg-red-950/5 opacity-65 pointer-events-auto"
+                      ? "bg-[#181410]/80 border-[#735f3d]/40 hover:border-[#d1b880]"
                       : estaEnFoco 
-                        ? "border-[#fbbf24] shadow-[0_0_15px_rgba(251,191,36,0.15)] bg-[#735f3d]/10 hover:bg-[#735f3d]/15" 
-                        : "border-[#d1b880]/30 hover:bg-[#735f3d]/15"
+                        ? "border-[#fbbf24] shadow-[0_0_15px_rgba(251,191,36,0.2)] bg-[#735f3d]/20 hover:bg-[#735f3d]/25" 
+                        : "bg-[#0c1322]/85 border-[#d1b880]/30 hover:bg-[#735f3d]/15"
                   }`}
                   onClick={() => abrirModalEntradas(concierto)}
                 >
-                  <div className={`text-center sm:text-left mb-2 sm:mb-0 ${esPasado ? "line-through decoration-red-600/70 text-red-500/70" : ""}`}>
-                    <span className={`text-[10px] font-bold tracking-widest block uppercase mb-0.5 ${esPasado ? "text-red-500" : "text-[#8da382]"}`}>
-                      {concierto.fecha} {concierto.hora ? ` - ${concierto.hora}` : ""} {esPasado ? "• CULMINADO" : ""}
+                  <div className="text-center sm:text-left mb-2 sm:mb-0">
+                    <span className={`text-[10px] font-bold tracking-widest block uppercase mb-0.5 ${esPasado ? "text-amber-400" : "text-[#8da382]"}`}>
+                      {concierto.fecha} {concierto.hora ? ` - ${concierto.hora}` : ""} {esPasado ? " • FINALIZADO" : ""}
                     </span>
-                    <h4 className="text-lg font-serif font-bold text-white" style={{ fontFamily: "'Cinzel', serif" }}>
-                      {concierto.nombre}
+                    <h4 className="text-lg font-serif font-bold text-white flex items-center gap-2" style={{ fontFamily: "'Cinzel', serif" }}>
+                      <span>{concierto.nombre}</span>
+                      {esPasado && (
+                        <span className="text-[9px] bg-rose-950/80 text-rose-300 border border-rose-800/60 px-2 py-0.5 rounded font-mono font-normal">
+                          ✓ REALIZADO
+                        </span>
+                      )}
                     </h4>
-                    <p className="text-xs text-gray-400 mt-0.5 flex items-center justify-center sm:justify-start">
-                      <i className="fas fa-map-marker-alt text-[#735f3d] mr-1.5 text-[10px]"></i>
+                    <p className="text-xs text-gray-300 mt-0.5 flex items-center justify-center sm:justify-start">
+                      <i className="fas fa-map-marker-alt text-[#d1b880] mr-1.5 text-[10px]"></i>
                       {concierto.lugar}
                     </p>
                   </div>
@@ -373,11 +378,11 @@ export default function FechasGira({ conciertos = [] }) {
                     }}
                     className={`mt-3 sm:mt-0 px-5 py-2.5 text-[10px] tracking-widest font-bold font-sans uppercase border transition-all duration-300 rounded-sm ${
                       esPasado
-                        ? "border-red-950/40 text-red-500/60 bg-red-950/10 cursor-pointer hover:bg-red-950/20"
+                        ? "border-amber-700/50 text-amber-300 bg-amber-950/40 hover:bg-amber-900/60 cursor-pointer"
                         : "border-[#d1b880] text-[#d1b880] hover:bg-[#d1b880] hover:text-[#060a13]"
                     }`}
                   >
-                    {esPasado ? "Ficha" : "Ver Información"}
+                    {esPasado ? "Ficha del Ritual" : "Ver Información"}
                   </button>
                 </div>
               );
@@ -395,33 +400,34 @@ export default function FechasGira({ conciertos = [] }) {
                 onClick={() => abrirModalEntradas(concierto)}
                 className={`flex items-center justify-between border p-4 rounded-xl cursor-pointer hover:shadow-lg transition-all ${
                   esPasado 
-                    ? "bg-red-950/5 border-red-950/20 hover:border-red-900/30" 
+                    ? "bg-[#181410]/90 border-[#735f3d]/40" 
                     : "bg-[#0c1322]/70 backdrop-blur-md border-[#d1b880]/20 hover:border-[#fbbf24]"
                 }`}
               >
                 {/* Badge de fecha místico */}
                 <div className={`flex flex-col items-center justify-center border rounded-lg w-14 h-14 flex-shrink-0 text-center ${
                   esPasado 
-                    ? "bg-red-950/10 border-red-900/20 opacity-60" 
+                    ? "bg-amber-950/50 border-amber-800/40" 
                     : "bg-[#735f3d]/15 border-[#735f3d]/30"
                 }`}>
-                  <span className={`text-xs font-bold font-mono uppercase ${esPasado ? "text-red-500/80" : "text-[#fbbf24]"}`}>
+                  <span className={`text-xs font-bold font-mono uppercase ${esPasado ? "text-amber-300" : "text-[#fbbf24]"}`}>
                     {concierto.fecha.split(" ")[0]}
                   </span>
-                  <span className={`text-[9px] font-mono uppercase -mt-0.5 ${esPasado ? "text-red-500/60" : "text-gray-300"}`}>
+                  <span className={`text-[9px] font-mono uppercase -mt-0.5 ${esPasado ? "text-amber-400/80" : "text-gray-300"}`}>
                     {concierto.fecha.split(" ")[1]}
                   </span>
                 </div>
 
                 {/* Título y Lugar */}
-                <div className={`flex-grow min-w-0 px-4 text-left ${esPasado ? "line-through decoration-red-600/70 text-red-500/70" : ""}`}>
-                  <h4 className="font-serif text-[#d1b880] text-sm font-bold leading-tight truncate uppercase" style={{ fontFamily: "'Cinzel', serif" }}>
-                    {concierto.nombre} {esPasado ? <span className="text-[9px] text-red-500/70 font-sans normal-case ml-1.5">(Culminado)</span> : ""}
+                <div className="flex-grow min-w-0 px-4 text-left">
+                  <h4 className="font-serif text-white text-sm font-bold leading-tight truncate uppercase flex items-center gap-1.5" style={{ fontFamily: "'Cinzel', serif" }}>
+                    <span>{concierto.nombre}</span>
+                    {esPasado && <span className="text-[8px] bg-rose-950/80 text-rose-300 border border-rose-800/60 px-1 py-0.2 rounded font-mono font-normal flex-shrink-0">FINALIZADO</span>}
                   </h4>
-                  <p className="text-[11px] text-gray-400 truncate mt-1">
-                    <i className="fas fa-clock text-[#735f3d] mr-1 text-[9px]"></i>
+                  <p className="text-[11px] text-gray-300 truncate mt-1">
+                    <i className="fas fa-clock text-[#d1b880] mr-1 text-[9px]"></i>
                     <span className="mr-2">{concierto.hora || "20:00"}</span>
-                    <i className="fas fa-map-marker-alt text-[#735f3d] mr-1 text-[9px]"></i>
+                    <i className="fas fa-map-marker-alt text-[#d1b880] mr-1 text-[9px]"></i>
                     {concierto.lugar}
                   </p>
                 </div>
@@ -429,10 +435,10 @@ export default function FechasGira({ conciertos = [] }) {
                 {/* Botón o Icono de información */}
                 <div className={`text-[10px] font-mono uppercase tracking-wider flex items-center gap-1.5 flex-shrink-0 px-3 py-1.5 rounded-lg border transition-all ${
                   esPasado 
-                    ? "text-red-400 bg-red-950/5 border-red-950/20" 
+                    ? "text-amber-300 bg-amber-950/40 border-amber-800/40" 
                     : "text-[#fbbf24] bg-[#fbbf24]/5 border-[#fbbf24]/20 hover:bg-[#fbbf24]/20"
                 }`}>
-                  {esPasado ? "INFO ✓" : "INFO"} <i className="fas fa-chevron-right text-[8px] opacity-80"></i>
+                  {esPasado ? "FICHA ✓" : "INFO"} <i className="fas fa-chevron-right text-[8px] opacity-80"></i>
                 </div>
               </div>
             );

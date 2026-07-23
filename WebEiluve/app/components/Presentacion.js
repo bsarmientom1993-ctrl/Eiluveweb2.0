@@ -9,12 +9,12 @@ import Image from "next/image";
 // Edita estos valores para ajustar con precisión la columna de textos del Hero.
 const CONFIG_TEXTO = {
   alineacionHorizontal: "left",    // Alineación: 'left' (izquierda), 'center' (centro), 'right' (derecha)
-  desplazamientoTop: "80px",       // Ajuste vertical del bloque
-  desplazamientoLeft: "40px",      // Ajuste horizontal del bloque
-  anchoMaximo: "480px",            // Bloque más estrecho y elegante para mejor lectura
+  desplazamientoTop: "0px",        // Ajuste vertical del bloque
+  desplazamientoLeft: "10px",      // Ajuste horizontal del bloque
+  anchoMaximo: "440px",            // Bloque más estrecho y elegante para mejor lectura
   sombraTexto: "0 4px 12px rgba(0,0,0,0.9)", // Sombra para legibilidad cinematográfica
-  espaciadoLetras: "0.22em",       // Espaciado celta amplio (tracking)
-  interlineado: "1.3"              // Line-height
+  espaciadoLetras: "0.2em",        // Espaciado celta amplio (tracking)
+  interlineado: "1.2"              // Line-height
 };
 
 export default function Presentacion({ presentacion, heroBg, activeCover, socialLinks = {} }) {
@@ -49,7 +49,7 @@ export default function Presentacion({ presentacion, heroBg, activeCover, social
     <>
       {/* VISTA ESCRITORIO (md y superior) - SIN CAMBIOS */}
       <div
-        className="hidden md:flex flex-col space-y-6"
+        className="hidden md:flex flex-col space-y-4"
         style={{
           textAlign: CONFIG_TEXTO.alineacionHorizontal,
           marginTop: CONFIG_TEXTO.desplazamientoTop,
@@ -69,7 +69,7 @@ export default function Presentacion({ presentacion, heroBg, activeCover, social
             activo ? "opacity-100 scale-100 blur-0" : "opacity-0 scale-95 blur-md"
           }`}
         >
-          <div className="relative w-[280px] h-[120px] mb-2">
+          <div className="relative w-[240px] h-[95px] mb-1">
             <Image
               src="/logo_eiluve.png"
               alt="Eiluvë Logo"
@@ -88,7 +88,7 @@ export default function Presentacion({ presentacion, heroBg, activeCover, social
           }`}
         >
           <h1
-            className="font-serif text-4xl md:text-5xl lg:text-[54px] font-bold text-[#d1b880] leading-none uppercase"
+            className="font-serif text-3xl md:text-4xl lg:text-[44px] font-bold text-[#d1b880] leading-none uppercase"
             style={{
               textShadow: CONFIG_TEXTO.sombraTexto,
               fontFamily: "'Cinzel', serif",

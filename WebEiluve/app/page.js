@@ -23,14 +23,14 @@ import Dashboard from "./components/Dashboard";
 // Edita estos valores para cambiar con precisión de píxel o porcentaje el fondo.
 const CONFIG_FONDO = {
   imagenRuta: "/hero_background.jpg", // Ruta de la ilustración limpia
-  posicionX: "70%",                   // Posición horizontal precisa (ej: 'center', '65%', 'right', '100px')
-  posicionY: "88%",                // Posición vertical precisa (ej: 'center', 'top', '30%')
-  escala: "120%",                    // Escala ('cover', 'contain', '100% auto', '120% 120%')
-  repetir: "no-repeat",               // Evitar repetición ('no-repeat', 'repeat', 'repeat-x')
-  // Luces y sombras de contraste del lado izquierdo (opacidades y coberturas)
-  degradado: "linear-gradient(to right, rgba(0, 0, 0, 1.0) 5%, rgba(0, 0, 0, 0) 70%, rgba(0, 0, 0, 0) 70%, rgba(0, 0, 0, 1.0) 100%)",
-  // Degradado vertical de abajo hacia arriba para transición fluida con las siguientes secciones
-  degradadoVertical: "linear-gradient(to top, rgba(0, 0, 0, 1.0) 10%, rgba(0, 0, 0, 0) 40%, rgba(6, 10, 19, 0) 100%)"
+  posicionX: "center",                 // Posición centrada armónica
+  posicionY: "center",                 // Posición vertical centrada
+  escala: "cover",                     // Escala ajustada para ver toda la portada
+  repetir: "no-repeat",               // Evitar repetición
+  // Degradado veteado y lateral que oscurece contornos y resalta el árbol central
+  degradado: "radial-gradient(ellipse at 55% 45%, rgba(6, 10, 19, 0) 20%, rgba(6, 10, 19, 0.45) 60%, rgba(6, 10, 19, 0.92) 100%), linear-gradient(to right, rgba(6, 10, 19, 0.92) 0%, rgba(6, 10, 19, 0.35) 18%, rgba(6, 10, 19, 0) 45%, rgba(6, 10, 19, 0) 65%, rgba(6, 10, 19, 0.35) 82%, rgba(6, 10, 19, 0.92) 100%)",
+  // Transición sutil vertical para fundir con cabecera y sección inferior
+  degradadoVertical: "linear-gradient(to top, rgba(6, 10, 19, 0.95) 0%, rgba(6, 10, 19, 0.1) 35%, rgba(6, 10, 19, 0.2) 100%)"
 };
 
 // OPCIÓN GLOBAL PARA ACTIVAR/DESACTIVAR EL EFECTO PARALLAX CON EL CURSOR
@@ -47,29 +47,29 @@ const CANCIONES = [
   {
     titulo: "Somos Todos",
     artista: "Eiluvë",
-    enlace: "/Somos todos.mp3", // Cambiar por "/somos_todos.mp3" para usar tu archivo local
-    portada: "/Somos todos.jpg", // Ruta de la portada individual para esta canción
+    enlace: "/somos-todos.mp3",
+    portada: "/somos-todos.jpg",
     duracion: "6:12",
   },
   {
     titulo: "Tú Voz",
     artista: "Eiluvë",
-    enlace: "/Tu voz.mp3", // Cambiar por tu archivo local
-    portada: "/Tu voz.jpg", // Ruta de la portada individual
+    enlace: "/tu-voz.mp3",
+    portada: "/Portada.jpg",
     duracion: "7:05",
   },
   {
     titulo: "Quizás manaña",
     artista: "Eiluvë",
-    enlace: "/Quizas mañana.mp3", // Cambiar por tu archivo local
-    portada: "/Quizas mañana.jpg", // Ruta de la portada individual
+    enlace: "/quizas-manana.mp3",
+    portada: "/Portada.jpg",
     duracion: "5:44",
   },
   {
     titulo: "El matriqui del diablo",
     artista: "Eiluvë",
-    enlace: "/El matriqui del diablo.mp3",
-    portada: "/El matriqui del diablo.jpg", // Ruta de la portada individual
+    enlace: "/el-matriqui-del-diablo.mp3",
+    portada: "/el-matriqui-del-diablo.jpg",
     duracion: "5:44",
   }
 ];
@@ -110,6 +110,8 @@ export default function Home() {
     ]
   });
   const [conciertos, setConciertos] = useState([
+    { id: 6, fecha: "15 OCT", fechaCompleta: "2026-10-15", hora: "21:30", nombre: "Noche Solsticio de Otoño", lugar: "Santiago, Chile", precioGeneral: 30, precioVip: 70, x: 220, y: 380, etiqueta: "Santiago" },
+    { id: 5, fecha: "01 AGO", fechaCompleta: "2026-08-01", hora: "20:00", nombre: "Presentación del Disco", lugar: "Irún, España", precioGeneral: 25, precioVip: 60, x: 380, y: 220, etiqueta: "Irún" },
     { id: 4, fecha: "19 JUL", fechaCompleta: "2026-07-19", hora: "21:00", nombre: "Celtica Rock", lugar: "Vigo, España", precioGeneral: 20, precioVip: 50, x: 180, y: 360, etiqueta: "Vigo" },
     { id: 3, fecha: "05 JUL", fechaCompleta: "2026-07-05", hora: "20:30", nombre: "Leyendas del Norte", lugar: "Bilbao, España", precioGeneral: 40, precioVip: 90, x: 480, y: 160, etiqueta: "Bilbao" },
     { id: 2, fecha: "22 JUN", fechaCompleta: "2026-06-22", hora: "20:00", nombre: "Metal Folk Night", lugar: "Barcelona, España", precioGeneral: 25, precioVip: 60, x: 820, y: 220, etiqueta: "Barcelona" },
@@ -144,27 +146,27 @@ export default function Home() {
       { id: 5, nombre: "Drakon", rol: "El Guardián (Batería y Percusión)", desc: "Marca el latido del bosque con el doble pedal y los tambores de guerra. Sus golpes despiertan a los gigantes de la roca.", mensajero: "Gran Búho Real" }
     ],
     canciones: [
-      { id: 1, titulo: "El Principio", tipo: "Álbum Oficial", enlace: "/album/01 - EL PRINCIPIO - EILÚVE.mp3", duracion: "1:15" },
-      { id: 2, titulo: "Eilúve", tipo: "Álbum Oficial", enlace: "/album/02 - EILÚVE - EILÚVE.mp3", duracion: "5:08" },
-      { id: 3, titulo: "Océanos de Paz", tipo: "Álbum Oficial", enlace: "/album/03 - OCEANOS DE PAZ.mp3", duracion: "4:36" },
-      { id: 4, titulo: "Somos Todos", tipo: "Álbum Oficial", enlace: "/album/04 - SOMOS TODOS - EILUVE.mp3", duracion: "6:47" },
-      { id: 5, titulo: "Path to the Ruins", tipo: "Álbum Oficial", enlace: "/album/05 - PATH TO THE RUINS (FROM UNDERTALE SOUNDTRACK).mp3", duracion: "4:57" },
-      { id: 6, titulo: "Cuando te Vi", tipo: "Álbum Oficial", enlace: "/album/06 - CUANDO TE VI - EILUVE.mp3", duracion: "6:23" },
-      { id: 7, titulo: "Quizás Mañana", tipo: "Álbum Oficial", enlace: "/album/07 - QUIZAS MAÑANA - EILÚVE.mp3", duracion: "4:07" },
-      { id: 8, titulo: "Paiza", tipo: "Álbum Oficial", enlace: "/album/08 - PAIZA - EILÚVE.mp3", duracion: "6:29" },
-      { id: 9, titulo: "Viviré (Diafanitat Veritatis)", tipo: "Álbum Oficial", enlace: "/album/09 - VIVIRÉ (DIAFANITAT VERITATIS).mp3", duracion: "5:03" },
-      { id: 10, titulo: "Tu Voz", tipo: "Álbum Oficial", enlace: "/album/10 - TU VOZ - EILUVE.mp3", duracion: "4:20" },
-      { id: 11, titulo: "Andrómeda", tipo: "Álbum Oficial", enlace: "/album/11 - ANDROMEDA - EILÚVE.mp3", duracion: "8:39" }
+      { id: 1, titulo: "El Principio", tipo: "Álbum Oficial", enlace: "/album/01-el-principio.mp3", duracion: "1:15" },
+      { id: 2, titulo: "Eilúve", tipo: "Álbum Oficial", enlace: "/album/02-eiluve.mp3", duracion: "5:08" },
+      { id: 3, titulo: "Océanos de Paz", tipo: "Álbum Oficial", enlace: "/album/03-oceanos-de-paz.mp3", duracion: "4:36" },
+      { id: 4, titulo: "Somos Todos", tipo: "Álbum Oficial", enlace: "/album/04-somos-todos.mp3", duracion: "6:47" },
+      { id: 5, titulo: "Path to the Ruins", tipo: "Álbum Oficial", enlace: "/album/05-path-to-the-ruins.mp3", duracion: "4:57" },
+      { id: 6, titulo: "Cuando te Vi", tipo: "Álbum Oficial", enlace: "/album/06-cuando-te-vi.mp3", duracion: "6:23" },
+      { id: 7, titulo: "Quizás Mañana", tipo: "Álbum Oficial", enlace: "/album/07-quizas-manana.mp3", duracion: "4:07" },
+      { id: 8, titulo: "Paiza", tipo: "Álbum Oficial", enlace: "/album/08-paiza.mp3", duracion: "6:29" },
+      { id: 9, titulo: "Viviré (Diafanitat Veritatis)", tipo: "Álbum Oficial", enlace: "/album/09-vivire.mp3", duracion: "5:03" },
+      { id: 10, titulo: "Tu Voz", tipo: "Álbum Oficial", enlace: "/album/10-tu-voz.mp3", duracion: "4:20" },
+      { id: 11, titulo: "Andrómeda", tipo: "Álbum Oficial", enlace: "/album/11-andromeda.mp3", duracion: "8:39" }
     ],
     fotos: [
-      { id: 1, titulo: "Retrato del Bardo", descripcion: "Sesión conceptual con zanfoña en el robledal sagrado.", src: "/Somos todos.jpg" },
-      { id: 2, titulo: "El Cónclave Secreto", descripcion: "Ensayo nocturno a la luz de las antorchas.", src: "/Tu voz.jpg" },
-      { id: 3, titulo: "La Ofrenda al Bosque", descripcion: "Detalle del altar rúnico tallado para la portada.", src: "/Quizas mañana.jpg" },
-      { id: 4, titulo: "La Senda del Fuego", descripcion: "Boceto cromático descartado para el Ritual.", src: "/El matriqui del diablo.jpg" }
+      { id: 1, titulo: "Retrato del Bardo", descripcion: "Sesión conceptual con zanfoña en el robledal sagrado.", src: "/somos-todos.jpg" },
+      { id: 2, titulo: "El Cónclave Secreto", descripcion: "Ensayo nocturno a la luz de las antorchas.", src: "/band_members.jpg" },
+      { id: 3, titulo: "La Ofrenda al Bosque", descripcion: "Detalle del altar rúnico tallado para la portada.", src: "/ritual_concert.jpg" },
+      { id: 4, titulo: "La Senda del Fuego", descripcion: "Boceto cromático descartado para el Ritual.", src: "/el-matriqui-del-diablo.jpg" }
     ],
     videos: [
-      { id: 1, titulo: "Ensayos bajo la Bruma", descripcion: "Metraje en crudo de los primeros ensayos de flauta y violín.", videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ", imagen: "/Somos todos.jpg" },
-      { id: 2, titulo: "Grabando Voces", descripcion: "Tomas descartadas en el estudio rústico de grabación.", videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ", imagen: "/Tu voz.jpg" }
+      { id: 1, titulo: "Ensayos bajo la Bruma", descripcion: "Metraje en crudo de los primeros ensayos de flauta y violín.", videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ", imagen: "/somos-todos.jpg" },
+      { id: 2, titulo: "Grabando Voces", descripcion: "Tomas descartadas en el estudio rústico de grabación.", videoUrl: "https://www.youtube.com/embed/dQw4w9WgXcQ", imagen: "/ritual_concert.jpg" }
     ]
   });
 
@@ -268,19 +270,19 @@ export default function Home() {
       const savedMazmorrasData = localStorage.getItem("eiluve_mazmorras_data");
       if (savedMazmorrasData) {
         const parsed = JSON.parse(savedMazmorrasData);
-        if (!parsed.canciones || parsed.canciones.length === 4 || parsed.canciones[0]?.enlace === "/Somos todos.mp3") {
+        if (!parsed.canciones || parsed.canciones.some(c => c.enlace && c.enlace.includes(" "))) {
           parsed.canciones = [
-            { id: 1, titulo: "El Principio", tipo: "Álbum Oficial", enlace: "/album/01 - EL PRINCIPIO - EILÚVE.mp3", duracion: "1:15" },
-            { id: 2, titulo: "Eilúve", tipo: "Álbum Oficial", enlace: "/album/02 - EILÚVE - EILÚVE.mp3", duracion: "5:08" },
-            { id: 3, titulo: "Océanos de Paz", tipo: "Álbum Oficial", enlace: "/album/03 - OCEANOS DE PAZ.mp3", duracion: "4:36" },
-            { id: 4, titulo: "Somos Todos", tipo: "Álbum Oficial", enlace: "/album/04 - SOMOS TODOS - EILUVE.mp3", duracion: "6:47" },
-            { id: 5, titulo: "Path to the Ruins", tipo: "Álbum Oficial", enlace: "/album/05 - PATH TO THE RUINS (FROM UNDERTALE SOUNDTRACK).mp3", duracion: "4:57" },
-            { id: 6, titulo: "Cuando te Vi", tipo: "Álbum Oficial", enlace: "/album/06 - CUANDO TE VI - EILUVE.mp3", duracion: "6:23" },
-            { id: 7, titulo: "Quizás Mañana", tipo: "Álbum Oficial", enlace: "/album/07 - QUIZAS MAÑANA - EILÚVE.mp3", duracion: "4:07" },
-            { id: 8, titulo: "Paiza", tipo: "Álbum Oficial", enlace: "/album/08 - PAIZA - EILÚVE.mp3", duracion: "6:29" },
-            { id: 9, titulo: "Viviré (Diafanitat Veritatis)", tipo: "Álbum Oficial", enlace: "/album/09 - VIVIRÉ (DIAFANITAT VERITATIS).mp3", duracion: "5:03" },
-            { id: 10, titulo: "Tu Voz", tipo: "Álbum Oficial", enlace: "/album/10 - TU VOZ - EILUVE.mp3", duracion: "4:20" },
-            { id: 11, titulo: "Andrómeda", tipo: "Álbum Oficial", enlace: "/album/11 - ANDROMEDA - EILÚVE.mp3", duracion: "8:39" }
+            { id: 1, titulo: "El Principio", tipo: "Álbum Oficial", enlace: "/album/01-el-principio.mp3", duracion: "1:15" },
+            { id: 2, titulo: "Eilúve", tipo: "Álbum Oficial", enlace: "/album/02-eiluve.mp3", duracion: "5:08" },
+            { id: 3, titulo: "Océanos de Paz", tipo: "Álbum Oficial", enlace: "/album/03-oceanos-de-paz.mp3", duracion: "4:36" },
+            { id: 4, titulo: "Somos Todos", tipo: "Álbum Oficial", enlace: "/album/04-somos-todos.mp3", duracion: "6:47" },
+            { id: 5, titulo: "Path to the Ruins", tipo: "Álbum Oficial", enlace: "/album/05-path-to-the-ruins.mp3", duracion: "4:57" },
+            { id: 6, titulo: "Cuando te Vi", tipo: "Álbum Oficial", enlace: "/album/06-cuando-te-vi.mp3", duracion: "6:23" },
+            { id: 7, titulo: "Quizás Mañana", tipo: "Álbum Oficial", enlace: "/album/07-quizas-manana.mp3", duracion: "4:07" },
+            { id: 8, titulo: "Paiza", tipo: "Álbum Oficial", enlace: "/album/08-paiza.mp3", duracion: "6:29" },
+            { id: 9, titulo: "Viviré (Diafanitat Veritatis)", tipo: "Álbum Oficial", enlace: "/album/09-vivire.mp3", duracion: "5:03" },
+            { id: 10, titulo: "Tu Voz", tipo: "Álbum Oficial", enlace: "/album/10-tu-voz.mp3", duracion: "4:20" },
+            { id: 11, titulo: "Andrómeda", tipo: "Álbum Oficial", enlace: "/album/11-andromeda.mp3", duracion: "8:39" }
           ];
           localStorage.setItem("eiluve_mazmorras_data", JSON.stringify(parsed));
         }
@@ -307,9 +309,29 @@ export default function Home() {
     }
   }, []);
 
-  // Escuchar sincronizaciones de mensajería en tiempo real
+  // Escuchar sincronizaciones de mensajería, conciertos y crónicas en tiempo real
   useEffect(() => {
     const syncRealtimePage = () => {
+      const savedConciertos = localStorage.getItem("eiluve_conciertos");
+      if (savedConciertos) {
+        try { setConciertos(JSON.parse(savedConciertos)); } catch (e) {}
+      }
+      const savedNoticias = localStorage.getItem("eiluve_noticias");
+      if (savedNoticias) {
+        try { setNoticias(JSON.parse(savedNoticias)); } catch (e) {}
+      }
+      const savedBio = localStorage.getItem("eiluve_bio");
+      if (savedBio) {
+        try { setBio(JSON.parse(savedBio)); } catch (e) {}
+      }
+      const savedPresentacion = localStorage.getItem("eiluve_presentacion");
+      if (savedPresentacion) {
+        try { setPresentacion(JSON.parse(savedPresentacion)); } catch (e) {}
+      }
+      const savedMerch = localStorage.getItem("eiluve_merch");
+      if (savedMerch) {
+        try { setMerch(JSON.parse(savedMerch)); } catch (e) {}
+      }
       const savedFans = localStorage.getItem("eiluve_fans_registrados");
       if (savedFans) {
         try { setFansRegistrados(JSON.parse(savedFans)); } catch (e) {}
@@ -767,7 +789,7 @@ export default function Home() {
           >
             <div className="relative w-full h-full animate-pulse">
               <Image
-                src="/pantalla de carga/Llave de las mazmorras.png"
+                src="/pantalla-de-carga/llave-de-las-mazmorras.png"
                 alt="Llave"
                 fill
                 unoptimized
