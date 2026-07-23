@@ -785,6 +785,37 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
     setSaludoVisible(true);
   };
 
+  const interactuarConElemento = (item) => {
+    let mensaje = `« ¡Has tocado el espíritu de ${item.nombre || "la bruma"}! Su magia ancestral susurra en la penumbra... »`;
+    if (item.tipo === "brote_maldad") {
+      mensaje = "« El Brote de Maldad susurra antiguas profecías de la arboleda sagrada... »";
+    } else if (item.tipo === "escolta_muerte") {
+      mensaje = "« La Escolta de la Muerte se desvanece dejando un halo de fuego de dragón... »";
+    } else if (item.tipo === "espiritu_bosque") {
+      mensaje = "« El Espíritu del Bosque derrama polvo de estrellas sobre vuestro camino... »";
+    } else if (item.tipo === "fauna_herrante") {
+      mensaje = "« La Fauna Herrante galopa hacia las profundidades del santuario celta... »";
+    } else if (item.tipo === "juglar_olvidado") {
+      mensaje = "« El Juglar Olvidado tañe su laúd rúnico en eco infinito... »";
+    } else if (item.tipo === "harpa_malditos") {
+      mensaje = "« El Arpa de los Malditos vibra sola. Su lamento resuena en la piedra... »";
+    } else if (item.tipo === "pocion_vida") {
+      mensaje = "« Bebes de la Pócima de Vida. Una calidez revitalizante recorre tus venas. »";
+    } else if (item.tipo === "contenedor_almas") {
+      mensaje = "« El Contenedor de Almas gime. Atisbas fragmentos de melodías ancestrales... »";
+    } else if (item.tipo === "mapa_runico") {
+      mensaje = "« El mapa detalla senderos olvidados hacia la arboleda secreta de Eiluvë. »";
+    } else if (item.tipo === "ikl_reliquia") {
+      mensaje = "« La legendaria hoja Ikl brilla con un filo rúnico gótico de distorsión. »";
+    }
+
+    setSaludoMisterioso(mensaje);
+    setSaludoVisible(true);
+
+    // Desvanecer la figura interactuada inmediatamente
+    setCriaturas((prev) => prev.filter((c) => c.id !== item.id));
+  };
+
   const interactuarObjeto = (nombre) => {
     // 1. Iniciar animación de desvanecimiento mágico
     setObjetosEstado((prev) => ({ ...prev, [nombre]: "explotando" }));
@@ -2320,12 +2351,14 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
       {/* 4. SECCIÓN INTERIOR REALISTA: LA MAZMORRA DE PIEDRA Y BRUMAS */}
       {accesoConcedido && !mostrarMensajeSellar && (
         <>
-          {/* CRIATURAS Y OBJETOS MÍSTICOS RENDERIZADOS A NIVEL PANTALLA COMPLETA (EN PAREDES LATERALES EXTERIORES, FUERA DE LA VENTANA DE CONTENIDO) */}
-          <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden select-none">
+          {/* CRIATURAS Y OBJETOS MÍSTICOS INTERACTIVOS (EN PAREDES LATERALES EXTERIORES, FUERA DE LA VENTANA DE CONTENIDO) */}
+          <div className="fixed inset-0 pointer-events-none z-30 overflow-hidden select-none">
             {criaturas.map((c) => (
               <div
                 key={c.id}
-                className="fixed z-0 pointer-events-none select-none transition-all duration-1000"
+                onClick={() => interactuarConElemento(c)}
+                className="fixed z-30 pointer-events-auto cursor-pointer select-none transition-all duration-300 hover:scale-125"
+                title={`Tocar ${c.nombre || c.tipo}`}
                 style={{
                   left: c.left <= 50 ? `${c.left}vw` : "auto",
                   right: c.left > 50 ? `${Math.max(100 - c.left, 2)}vw` : "auto",
@@ -2338,13 +2371,21 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
                   <img 
                     src={c.img} 
                     alt={c.nombre || c.tipo} 
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      if (e.currentTarget.nextSibling) {
+                        e.currentTarget.nextSibling.style.display = "block";
+                      }
+                    }}
                     className={`w-12 h-12 md:w-16 md:h-16 object-contain filter ${c.shadow || "drop-shadow-[0_0_15px_#fbbf24]"}`}
                   />
-                ) : (
-                  <div className={`text-3xl filter ${c.color || "text-amber-300 drop-shadow-[0_0_10px_#fbbf24]"}`}>
-                    {c.icono || "🔮"}
-                  </div>
-                )}
+                ) : null}
+                <div 
+                  className={`text-3xl filter ${c.color || "text-amber-300 drop-shadow-[0_0_10px_#fbbf24]"}`}
+                  style={{ display: c.img ? "none" : "block" }}
+                >
+                  {c.icono || "🔮"}
+                </div>
               </div>
             ))}
           </div>
