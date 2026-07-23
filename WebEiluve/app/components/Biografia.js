@@ -124,11 +124,11 @@ export default function Biografia({ bio, galeria = [], destacados = [] }) {
             <div className="absolute inset-0 bg-[#8da382]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-xl"></div>
             <div className="relative aspect-[16/10] md:max-h-[300px] w-full overflow-hidden mx-auto">
               <Image
-                src={data.imagenRuta || "/biografia/Bio1.jpg"}
+                src={data.imagenRuta || "/biografia/bio1.jpg"}
                 alt={data.imagenAlt}
                 fill
                 unoptimized
-                className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                className="object-cover transition-all duration-700"
                 sizes="(max-width: 768px) 100vw, 50vw"
               />
             </div>
@@ -230,7 +230,7 @@ export default function Biografia({ bio, galeria = [], destacados = [] }) {
                       alt={`Galería ${idx + 1}`}
                       fill
                       unoptimized
-                      className="object-cover filter contrast-125 hover:brightness-110"
+                      className="object-cover transition-all duration-300"
                       sizes="100px"
                     />
                   </button>
