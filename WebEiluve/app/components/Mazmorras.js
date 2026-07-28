@@ -1600,10 +1600,10 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
         </div>
       )}
 
-      {/* SALUDO MISTERIOSO DE CUENTO DE HADAS (FUERA DE LA VENTANA) */}
+      {/* SALUDO MISTERIOSO DE CUENTO DE HADAS (DESKTOP SOLO) */}
       {accesoConcedido && saludoMisterioso && (
         <div
-          className="fixed pointer-events-none z-40 select-none text-center transition-opacity duration-1000"
+          className="fixed pointer-events-none z-40 select-none text-center transition-opacity duration-1000 hidden md:block"
           style={{
             top: saludoPos.top,
             left: saludoPos.left,
@@ -2460,19 +2460,19 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
           </svg>
 
           {/* Cabecera Épica de la Mazmorra (Estilo Cónclave Celta Rúnico Proporcionado) */}
-          <div className="relative z-10 border-b-2 border-[#523d26]/50 pb-4 mb-6 bg-gradient-to-r from-[#0d0905]/85 via-[#160f09]/95 to-[#0d0905]/85 p-4 rounded-lg border border-[#735f3d]/40 shadow-[inset_0_0_30px_rgba(0,0,0,0.9),0_10px_25px_rgba(0,0,0,0.8)] backdrop-blur-md">
+          <div className="relative z-10 border-b-2 border-[#523d26]/50 pb-3 md:pb-4 mb-4 md:mb-6 bg-gradient-to-r from-[#0d0905]/85 via-[#160f09]/95 to-[#0d0905]/85 p-3 md:p-4 rounded-lg border border-[#735f3d]/40 shadow-[inset_0_0_30px_rgba(0,0,0,0.9),0_10px_25px_rgba(0,0,0,0.8)] backdrop-blur-md">
             
             {/* Fila 1: Título & Antorcha a la izquierda | Botón Sellar a la derecha */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-3.5">
-              <div className="flex items-center space-x-3.5">
+            <div className="flex justify-between items-center gap-2 mb-3">
+              <div className="flex items-center space-x-2.5">
                 <button
                   onClick={() => setModoMagico((prev) => (prev === 0 ? 1 : 0))}
-                  className={`w-11 h-11 rounded border-2 flex items-center justify-center relative shadow-[inset_0_0_10px_rgba(0,0,0,0.9)] hover:scale-105 transition-all duration-300 group z-20 ${
+                  className={`w-9 h-9 md:w-11 md:h-11 rounded border-2 flex items-center justify-center relative shadow-[inset_0_0_10px_rgba(0,0,0,0.9)] hover:scale-105 transition-all duration-300 group z-20 ${
                     modoMagico === 1 ? "bg-[#091b24] border-cyan-500/80 text-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.5)]" : "bg-[#221710] border-[#d1b880]/70 text-amber-400 shadow-[0_0_15px_rgba(251,191,36,0.4)]"
                   }`}
                   title="Tocar antorcha mística (Cambiar de fuego dorado a fuego fatuo cian)"
                 >
-                  <i className={`fas fa-fire text-xl z-10 transition-transform duration-300 group-hover:scale-125 ${
+                  <i className={`fas fa-fire text-base md:text-xl z-10 transition-transform duration-300 group-hover:scale-125 ${
                     modoMagico === 1 ? "antorcha-fatuo-fire text-cyan-400" : "antorcha-fuego text-amber-400"
                   }`}></i>
                   <span className={`absolute inset-0 rounded blur-md opacity-40 scale-110 transition-all duration-700 ${
@@ -2481,35 +2481,126 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
                 </button>
 
                 <div>
-                  <span className="text-[10px] text-[#a6926d] font-serif tracking-[0.3em] block uppercase font-bold" style={{ fontFamily: "'Cinzel', serif" }}>
-                    ✦ CÁMARA OCULTA & ARCHIVOS INÉDITOS ✦
+                  <span className="text-[8px] md:text-[10px] text-[#a6926d] font-serif tracking-[0.2em] md:tracking-[0.3em] block uppercase font-bold" style={{ fontFamily: "'Cinzel', serif" }}>
+                    ✦ CÁMARA OCULTA ARCHIVOS ✦
                   </span>
                   <h3 
                     onClick={activarEasterEggEclipse}
-                    className="font-serif text-2xl md:text-3xl text-[#f3e3bc] tracking-wider uppercase cursor-pointer select-none hover:text-[#fbbf24] transition-colors drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] font-bold flex items-center gap-2" 
+                    className="font-serif text-lg md:text-3xl text-[#f3e3bc] tracking-wider uppercase cursor-pointer select-none hover:text-[#fbbf24] transition-colors drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] font-bold flex items-center gap-1.5" 
                     style={{ fontFamily: "'Cinzel', serif" }}
                     title="¿Desbloquear el secreto del eclipse?"
                   >
                     Las Mazmorras
-                    <span className="text-xs text-[#735f3d] font-mono font-normal">〔ᛖᛁᛚᚢᚠᛖ〕</span>
                   </h3>
                 </div>
               </div>
 
-              {/* Botón Sellar Mazmorras (Estilo Cerrojo de Hierro Medieval) */}
+              {/* Botón Sellar Mazmorras */}
               <button
                 onClick={iniciarCierreEpico}
-                className="w-full sm:w-auto px-5 py-2 border-2 border-[#735f3d] bg-gradient-to-b from-[#261b11] to-[#0a0704] text-[#d1b880] hover:text-white hover:border-[#fbbf24] hover:shadow-[0_0_20px_rgba(251,191,36,0.5)] font-serif tracking-widest text-xs uppercase rounded transition-all duration-300 flex items-center justify-center gap-2 select-none"
+                className="px-3 md:px-5 py-1.5 md:py-2 border-2 border-[#735f3d] bg-gradient-to-b from-[#261b11] to-[#0a0704] text-[#d1b880] hover:text-white hover:border-[#fbbf24] hover:shadow-[0_0_20px_rgba(251,191,36,0.5)] font-serif tracking-widest text-[10px] md:text-xs uppercase rounded transition-all duration-300 flex items-center justify-center gap-1.5 select-none shrink-0"
                 style={{ fontFamily: "'Cinzel', serif" }}
               >
-                <i className="fas fa-lock text-amber-500 text-xs"></i>
-                <span>Sellar Mazmorras</span>
+                <i className="fas fa-lock text-amber-500 text-[10px] md:text-xs"></i>
+                <span>Sellar</span>
               </button>
             </div>
 
-            {/* Fila 2: Placa Horizontal Completa de Pestañas Rúnicas (Sin Solapamiento, 100% Proporcionada) */}
-            <div className="w-full p-2 bg-[#080604] border-2 border-[#523d26]/80 rounded-md shadow-[inset_0_0_20px_rgba(0,0,0,0.95)] z-30">
-              <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 w-full">
+            {/* Fila 2 (MÓVIL): Barra Deslizante Horizontal de Pestañas (Sin colisiones, 100% Proporcionada) */}
+            <div className="block md:hidden w-full p-1.5 bg-[#080604] border-2 border-[#523d26]/80 rounded-md shadow-[inset_0_0_20px_rgba(0,0,0,0.95)] z-30">
+              <div className="flex items-center gap-2 overflow-x-auto pb-1 pt-0.5 px-0.5 scrollbar-none w-full">
+                
+                {/* Tab 1: Grimorio */}
+                <button
+                  onClick={() => cambiarPestanaConLibro("audios")}
+                  className={`shrink-0 px-3 py-2 text-xs tracking-wider font-bold uppercase transition-all duration-300 font-serif rounded flex items-center gap-1.5 border whitespace-nowrap ${
+                    pestanaActiva === "audios"
+                      ? "bg-gradient-to-b from-[#4d3a1f] via-[#2c2010] to-[#120c06] text-[#fef08a] border-[#fbbf24] shadow-[0_0_12px_rgba(251,191,36,0.5)]"
+                      : "bg-[#0f0c08] text-[#a89575]/80 border-[#3b2b1a]/60 hover:text-[#fef08a]"
+                  }`}
+                  style={{ fontFamily: "'Cinzel', serif" }}
+                >
+                  <span className="text-amber-400 text-xs">
+                    <i className="fas fa-book-skull"></i>
+                  </span>
+                  <span className="text-xs text-amber-500/90 font-serif select-none font-bold">ᚠ</span>
+                  <span>Grimorio</span>
+                </button>
+
+                {/* Tab 2: Visiones */}
+                <button
+                  onClick={() => cambiarPestanaConLibro("fotos")}
+                  className={`shrink-0 px-3 py-2 text-xs tracking-wider font-bold uppercase transition-all duration-300 font-serif rounded flex items-center gap-1.5 border whitespace-nowrap ${
+                    pestanaActiva === "fotos"
+                      ? "bg-gradient-to-b from-[#0e3b4a] via-[#07212b] to-[#040e13] text-[#7dd3fc] border-cyan-400 shadow-[0_0_12px_rgba(56,189,248,0.5)]"
+                      : "bg-[#0f0c08] text-[#a89575]/80 border-[#3b2b1a]/60 hover:text-[#7dd3fc]"
+                  }`}
+                  style={{ fontFamily: "'Cinzel', serif" }}
+                >
+                  <span className="text-cyan-400 text-xs">
+                    <i className="fas fa-eye"></i>
+                  </span>
+                  <span className="text-xs text-cyan-400/90 font-serif select-none font-bold">ᚦ</span>
+                  <span>Visiones</span>
+                </button>
+
+                {/* Tab 3: Rituales */}
+                <button
+                  onClick={() => cambiarPestanaConLibro("clips")}
+                  className={`shrink-0 px-3 py-2 text-xs tracking-wider font-bold uppercase transition-all duration-300 font-serif rounded flex items-center gap-1.5 border whitespace-nowrap ${
+                    pestanaActiva === "clips"
+                      ? "bg-gradient-to-b from-[#4a240c] via-[#281205] to-[#120701] text-[#fed7aa] border-orange-400 shadow-[0_0_12px_rgba(249,115,22,0.5)]"
+                      : "bg-[#0f0c08] text-[#a89575]/80 border-[#3b2b1a]/60 hover:text-[#fed7aa]"
+                  }`}
+                  style={{ fontFamily: "'Cinzel', serif" }}
+                >
+                  <span className="text-orange-500 text-xs">
+                    <i className="fas fa-fire-alt"></i>
+                  </span>
+                  <span className="text-xs text-orange-400/90 font-serif select-none font-bold">ᛉ</span>
+                  <span>Rituales</span>
+                </button>
+
+                {/* Tab 4: Alianza */}
+                <button
+                  onClick={() => cambiarPestanaConLibro("contacto")}
+                  className={`shrink-0 px-3 py-2 text-xs tracking-wider font-bold uppercase transition-all duration-300 font-serif rounded flex items-center gap-1.5 border whitespace-nowrap ${
+                    pestanaActiva === "contacto"
+                      ? "bg-gradient-to-b from-[#0c3b28] via-[#052115] to-[#020e08] text-[#a7f3d0] border-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.5)]"
+                      : "bg-[#0f0c08] text-[#a89575]/80 border-[#3b2b1a]/60 hover:text-[#a7f3d0]"
+                  }`}
+                  style={{ fontFamily: "'Cinzel', serif" }}
+                >
+                  <span className="text-emerald-400 text-xs">
+                    <i className="fas fa-shield-halved"></i>
+                  </span>
+                  <span className="text-xs text-emerald-400/90 font-serif select-none font-bold">ᛗ</span>
+                  <span>Alianza</span>
+                </button>
+
+                {/* Tab 5: Buzón */}
+                <button
+                  onClick={() => cambiarPestanaConLibro("buzon")}
+                  className={`shrink-0 px-3 py-2 text-xs tracking-wider font-bold uppercase transition-all duration-300 font-serif rounded flex items-center gap-1.5 border whitespace-nowrap ${
+                    pestanaActiva === "buzon"
+                      ? "bg-gradient-to-b from-[#3b124a] via-[#1f0929] to-[#0c0312] text-[#f5d0fe] border-purple-400 shadow-[0_0_12px_rgba(192,132,252,0.5)]"
+                      : "bg-[#0f0c08] text-[#a89575]/80 border-[#3b2b1a]/60 hover:text-[#f5d0fe]"
+                  }`}
+                  style={{ fontFamily: "'Cinzel', serif" }}
+                >
+                  <span className="text-purple-400 text-xs">
+                    <i className="fas fa-feather-pointed"></i>
+                  </span>
+                  <span className="text-xs text-purple-400/90 font-serif select-none font-bold">ᚺ</span>
+                  <span>Buzón</span>
+                </button>
+
+              </div>
+            </div>
+
+            {/* Fila 2 (DESKTOP): Grid Proporcionada de 5 Pestañas Rúnicas */}
+            <div className="hidden md:block w-full p-2 bg-[#080604] border-2 border-[#523d26]/80 rounded-md shadow-[inset_0_0_20px_rgba(0,0,0,0.95)] z-30">
+              <div className="grid grid-cols-5 gap-2.5 w-full">
                 
                 {/* Tab 1: Grimorio */}
                 <button
@@ -2582,7 +2673,7 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
                 {/* Tab 5: Buzón */}
                 <button
                   onClick={() => cambiarPestanaConLibro("buzon")}
-                  className={`group w-full min-w-0 col-span-2 sm:col-span-1 px-2 py-2.5 text-xs md:text-sm tracking-wider font-bold uppercase transition-all duration-300 font-serif rounded flex items-center justify-center gap-2 border ${
+                  className={`group w-full min-w-0 px-2 py-2.5 text-xs md:text-sm tracking-wider font-bold uppercase transition-all duration-300 font-serif rounded flex items-center justify-center gap-2 border ${
                     pestanaActiva === "buzon"
                       ? "bg-gradient-to-b from-[#3b124a] via-[#1f0929] to-[#0c0312] text-[#f5d0fe] border-purple-400 shadow-[0_0_15px_rgba(192,132,252,0.5),inset_0_0_8px_rgba(192,132,252,0.3)] scale-[1.02]"
                       : "bg-[#0f0c08] text-[#a89575]/80 border-[#3b2b1a]/60 hover:text-[#f5d0fe] hover:border-purple-700 hover:bg-[#15071c]"
@@ -2598,6 +2689,13 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
 
               </div>
             </div>
+
+            {/* Banner Místico de Mensaje de Hadas (MÓVIL SOLO) */}
+            {saludoMisterioso && (
+              <div className="block md:hidden mt-2.5 p-2 bg-[#140e08]/95 border border-[#fbbf24]/40 rounded text-center text-xs text-[#fbbf24] font-serif italic shadow-[0_0_10px_rgba(251,191,36,0.2)]">
+                {saludoMisterioso}
+              </div>
+            )}
           </div>
 
           {/* =========================================================================
