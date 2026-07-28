@@ -1580,19 +1580,19 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
                   </svg>
                 )}
                 {c.tipo === "brote_maldad" && (
-                  <img src="/Criaturas/brote de maldad.png" alt="Brote de Maldad" className="w-28 h-28 object-contain opacity-85" />
+                  <img src="/criaturas/brote-de-maldad.png" alt="Brote de Maldad" className="w-28 h-28 object-contain opacity-85" />
                 )}
                 {c.tipo === "escolta_muerte" && (
-                  <img src="/Criaturas/escolta de la muerte.png" alt="Escolta de la Muerte" className="w-32 h-32 object-contain opacity-80" />
+                  <img src="/criaturas/escolta-de-la-muerte.png" alt="Escolta de la Muerte" className="w-32 h-32 object-contain opacity-80" />
                 )}
                 {c.tipo === "espiritu_bosque" && (
-                  <img src="/Criaturas/espiritu del bosque.png" alt="Espíritu del Bosque" className="w-28 h-28 object-contain opacity-85" />
+                  <img src="/criaturas/espiritu-del-bosque.png" alt="Espíritu del Bosque" className="w-28 h-28 object-contain opacity-85" />
                 )}
                 {c.tipo === "fauna_herrante" && (
-                  <img src="/Criaturas/fauna herrante.png" alt="Fauna Herrante" className="w-30 h-30 object-contain opacity-85" />
+                  <img src="/criaturas/fauna-herrante.png" alt="Fauna Herrante" className="w-30 h-30 object-contain opacity-85" />
                 )}
                 {c.tipo === "juglar_olvidado" && (
-                  <img src="/Criaturas/juglar olvidado.png" alt="Juglar Olvidado" className="w-28 h-28 object-contain opacity-85" />
+                  <img src="/criaturas/juglar-olvidado.png" alt="Juglar Olvidado" className="w-28 h-28 object-contain opacity-85" />
                 )}
               </div>
             );
