@@ -99,10 +99,28 @@ export default function Home() {
     video: "https://www.youtube.com/watch?v=iijKLHCQw5g"
   });
   const [bio, setBio] = useState({
-    titulo: "La Leyenda",
-    cita: `"Cuentos de esqueletos, tabernas escondidas y magos del bosque."`,
-    historia: `Invocamos la furia del metal pesado y la entrelazamos con la magia de la zanfoña, el misticismo del violín y el eco ancestral de las gaitas. Nuestro sonido es un ritual que abre portales a mundos olvidados, donde los lobos aúllan junto a tambores bestiales.`,
-    imagenRuta: "/biografia/bio1.jpg",
+    titulo: "El Comienzo",
+    cita: "“De los cimientos del vacío y el silencio inicuo estaba el principio preso de su vástago sueño. De esa oscuridad grisácea la ilusión perenne permite la luzy la armonía que abraza la música de Eilúve … ” Ger Nava",
+    historia: `Eilúve es una banda boliviana de metal que abraza los gustos e influencias folk, celtas y rock. Lo que acompaña a su música son letras que provienen desde las vivencias personales, la búsqueda de mensajes de lucha, perseverancia bajo críticas sociales y culturales, hasta poemas y romances con tintes juglares.
+
+Eilúve nace el 3 de Julio del año 2023 en La Paz, Bolivia. Sus fundadores son Gerson Nava y Sergio Laure quienes en anteriores proyectos compartieron experiencias musicales y escenarios con diferentes artistas tanto nacionales como internacionales. Con esta familiaridad musical decidieron dar rienda suelta y crearon Eilúve.
+
+Para ello contaron con José María Alvarez (Dino) en la batería, a Blas Sarmiento en la 2da Guitarra, Patricia Paredes al violín, Mario Paz en la guitarra líder, a Jhon Mamani con el bajo, Silvia Baltazar y Maria Belén Quisbert como voces de acompañamiento. Esta primera formación fue más un sondeo de lo que más adelante sería el camino de Eilúve.
+
+Una vez que los cimientos y principios de trabajo fueron establecidos, algunos apoyos iniciales tomaron otro rumbo pero que siempre estarán en la memoria de Eilúve. Como no faltaban amistades, llegaron Armin Jhamil Mostajo para ocupar el bajo, Milán Espinoza a la voz y Steven Guachalla como guitarra líder.
+
+El agradecimiento siempre será reconocido a Jhon, Silvia, Mario, Belén y a Rodrigo Caballero, quien apoyó con su voz en las primeras maquetas.
+
+En julio del 2025 Eilúve, lanzó su primer Single llamado Tu Voz. Una canción con mucha presencia de guitarras, teclados y poderosos arreglos de bajo que danzan con la batería. Con tintes folk y barroco por parte de los violines y flautas. Sin olvidar la estruendosa y melodiosa voz que da vida al tema. En septiembre del año 2025 Eilúve lanza su segundo sencillo oficial denominado Somos Todos, canción que lleva uno de los lemas más emblemáticos de la banda y que acompaña un mensaje musical profundo que habla de los sueños y lo importante que es creer en ellos. Ya en noviembre de ese mismo año sale a la luz su último sencillo oficial denominado Quizás Mañana, una canción que muestra una estructura diferente a lo ya escuchado. Este sería el cierre simbólico al mensaje profundo que los juglares desean transmitir mediante sus melodías y vivencias. Dando lugar a una variación musical en cada sencillo, siendo ésta experimentación un mundo abarcado de ideas, sueños y luchas internas para salir adelante.
+
+Antes del esperado lanzamiento del primer álbum de la banda, Eilúve es contactado por el productor en jefe del estudio Sonic Boom Studios, para la realización de un trabajo independiente pero que conllevaría a ser un reto en el inicio de este camino musical. Para ello, fueron contratados para poder realizar un homenaje al folclor boliviano y hacer una versión de la ya tan famosa canción El Matriqui del Diablo de la agrupación Huayna Wila. En febrero del 2026, Eilúve lanza su versión de la canción, además lograron lanzar dicha versión acompañados por el gran Álvaro Velasco, co-fundador de la agrupación boliviana Huayna Wila y quien gustosamente aceptó trabajar en esta canción, aportando esa fuerza folclórica a los tintes juglares. 
+
+El 17 de julio del año 2026, Eilúve después de mucho esfuerzo, trabajo, convicción y sueños lanza su primer álbum homónimo oficialmente. El camino de los juglares empieza y continua su camino junto a todas aquellas personas que se unen en su viaje por las tierras de Nirthiel, donde el principio comienza en los pasos límpidos de sus sueños y éstos, los llevarán hasta llegar a las tierras divinas de Zaluster más allá de lo que se pueden imaginar...   
+
+Enciende la hoguera para seguir contando historias de trovadores y relatos de juglares. 
+
+Somos Todos, Somos Eilúve.`,
+    imagenRuta: "/band_members.jpg",
     imagenAlt: "Banda Eiluvë en el bosque",
     destacados: [
       { titulo: "Esqueletos Reales", subtitulo: "Cuerdas y Hechizos", colorBorde: "#735f3d" },
@@ -110,18 +128,17 @@ export default function Home() {
     ]
   });
   const [conciertos, setConciertos] = useState([
-    { id: 6, fecha: "15 OCT", fechaCompleta: "2026-10-15", hora: "21:30", nombre: "Noche Solsticio de Otoño", lugar: "Santiago, Chile", precioGeneral: 30, precioVip: 70, x: 220, y: 380, etiqueta: "Santiago" },
-    { id: 5, fecha: "01 AGO", fechaCompleta: "2026-08-01", hora: "20:00", nombre: "Presentación del Disco", lugar: "Irún, España", precioGeneral: 25, precioVip: 60, x: 380, y: 220, etiqueta: "Irún" },
-    { id: 4, fecha: "19 JUL", fechaCompleta: "2026-07-19", hora: "21:00", nombre: "Celtica Rock", lugar: "Vigo, España", precioGeneral: 20, precioVip: 50, x: 180, y: 360, etiqueta: "Vigo" },
-    { id: 3, fecha: "05 JUL", fechaCompleta: "2026-07-05", hora: "20:30", nombre: "Leyendas del Norte", lugar: "Bilbao, España", precioGeneral: 40, precioVip: 90, x: 480, y: 160, etiqueta: "Bilbao" },
-    { id: 2, fecha: "22 JUN", fechaCompleta: "2026-06-22", hora: "20:00", nombre: "Metal Folk Night", lugar: "Barcelona, España", precioGeneral: 25, precioVip: 60, x: 820, y: 220, etiqueta: "Barcelona" },
-    { id: 1, fecha: "15 JUN", fechaCompleta: "2026-06-15", hora: "19:30", nombre: "Festival Bosque Encantado", lugar: "Madrid, España", precioGeneral: 35, precioVip: 75, x: 520, y: 440, etiqueta: "Madrid" }
+    { id: 5, fecha: "01 AGO", fechaCompleta: "2026-08-01", hora: "20:00", nombre: "Presentación del Disco ", lugar: "Teatro Inni, La Paz", precioGeneral: 25, precioVip: 60, x: 500, y: 300, etiqueta: "Inni" },
+    { id: 4, fecha: "11 JUL", fechaCompleta: "2026-07-11", hora: "21:00", nombre: "Sonic Boom Fest Vol.6", lugar: "La Paz", precioGeneral: 0, precioVip: 0, x: 180, y: 360, etiqueta: "Inni" },
+    { id: 3, fecha: "11 JUL", fechaCompleta: "2026-07-11", hora: "20:30", nombre: "Bolivia compone ", lugar: "La Paz, Bolivia", precioGeneral: 0, precioVip: 0, x: 480, y: 160, etiqueta: "La Paz" },
+    { id: 2, fecha: "15 JUN", fechaCompleta: "2026-06-15", hora: "20:00", nombre: "Verbena de Unitel", lugar: "La Paz, Bolivia", precioGeneral: 25, precioVip: 60, x: 820, y: 220, etiqueta: "Plaza Abaroa" },
+    { id: 1, fecha: "15 JUN", fechaCompleta: "2026-06-15", hora: "19:30", nombre: "Verbena Rock", lugar: "La Paz, Bolivia", precioGeneral: 35, precioVip: 75, x: 520, y: 440, etiqueta: "Manzana 2" }
   ]);
 
   const [presentacion, setPresentacion] = useState({
-    titulo: "BIENVENIDOS SEAN AL INICIO DEL CAMINO....",
-    subtitulo1: "BUENA COMPAÑÍA, ARTE",
-    subtitulo2: "SUEÑOS Y MELODÍAS",
+    titulo: "Bienvenidos sean al inicio del camino....",
+    subtitulo1: "buena compañía, arte ",
+    subtitulo2: "sueños y melodías ",
     descripcion: "Eiluvë es folk metal, es cuento y es tormenta. Melodías ancestrales, instrumentos de leyenda y la fuerza del metal se unen en cada historia."
   });
 
@@ -131,18 +148,16 @@ export default function Home() {
   });
 
   const [noticias, setNoticias] = useState([
+    { id: 6, fecha: "05 MAY 2026", categoria: "CONCIERTO", titulo: "prrubea", imagen: "peuba 32", resumen: "prueba ", contenido: "prueba 3", autor: "123 (@123)" },
+    { id: 5, fecha: "19 AGO 2026", categoria: "LANZAMIENTO", titulo: "prueba", imagen: "/Somos todos.jpg", resumen: "prueba 1", contenido: "prueba2", autor: "B. Sarmiento (@bsarmientom1993)" },
+    { id: 4, fecha: "18 JUL 2026", categoria: "CONCIERTO", titulo: "Eilúve en vivo", imagen: "/ARTE EILUVE INNI .png", resumen: "Presentación del album", contenido: "Toda leyenda tiene un comienzo. El 1 de agosto daremos el primer paso de este viaje, donde el folk metal, el violín y las melodías ancestrales darán vida a nuevas historias. Para compartir este momento tan especial, nos acompañará la banda invitada Templario, con quien celebraremos una noche de música y energía. Este será el comienzo de Eilúve." },
     { id: 1, fecha: "08 JUL 2026", categoria: "LANZAMIENTO", titulo: "Detalles exclusivos del nuevo álbum 'La Taberna y el Bosque'", imagen: "/Somos todos.jpg", resumen: "Nos adentramos en el proceso de composición y grabación de nuestro primer larga duración. Instrumentos medievales, gaitas gallegas y el rugido de la tormenta metalera.", contenido: "El clan de Eiluvë se enorgullece de presentar los detalles de 'La Taberna y el Bosque'. Este álbum ha sido forjado durante los últimos dos años en las profundidades de los bosques gallegos. Hemos colaborado con luthiers tradicionales para incorporar zanfoñas y gaitas de época, entrelazando las melodías celtas con potentes riffs de guitarras y una batería demoledora. Las canciones narran historias de antiguos clanes, rituales paganos y noches de taberna alrededor de una fogata sagrada." },
-    { id: 2, fecha: "25 JUN 2026", categoria: "RODAJE", titulo: "Grabación del videoclip 'Somos Todos' en las ruinas celtas", imagen: "/ritual_concert.jpg", resumen: "Crónica de tres días intensos de rodaje rodeados de hogueras y antiguos espíritus. ¡El videoclip oficial estará disponible muy pronto!", contenido: "Para plasmar la magia rústica y pagana de 'Somos Todos', trasladamos a todo el equipo de producción a un antiguo asentamiento celta durante el solsticio de verano. Con más de una docena de hogueras encendidas bajo las estrellas, logramos capturar la esencia de un ritual pagano. Queremos agradecer a los clanes locales que asistieron vestidos con pieles y capas tradicionales para formar parte de la cacería nocturna del videoclip." },
-    { id: 3, fecha: "10 JUN 2026", categoria: "ENTREVISTA", titulo: "Los miembros del clan comparten sus susurros e inspiraciones", imagen: "/band_members.jpg", resumen: "Hablamos con nuestros músicos sobre cómo la naturaleza brumosa y las antiguas leyendas del folklore influyen directamente en la composición de cada melodía.", contenido: "En esta íntima conversación, los miembros de Eiluvë revelan los secretos detrás del sonido de la banda. Desde la caminata solitaria de nuestro bardo por bosques nublados hasta la lectura de crónicas medievales olvidadas por el tiempo. La banda explica cómo cada instrumento tradicional tiene una voz propia: la gaita evoca el viento de la montaña, el violín representa los susurros de los espíritus de la niebla y la distorsión del metal encarna la tormenta de los dioses." }
+    { id: 2, fecha: "25 JUN 2026", categoria: "RODAJE", titulo: "Grabación del videoclip 'Somos Todos' en las ruinas celtas", imagen: "/ritual_concert.jpg", resumen: "Crónica de tres días intensos de rodaje rodeados de hogueras y antiguos espíritus. ¡El videoclip oficial estará disponible muy pronto!", contenido: "Para plasmar la magia rústica y pagana de 'Somos Todos', trasladamos a todo el equipo de producción a un antiguo asentamiento celta durante el solsticio de verano. Con más de una docena de hogueras encendidas bajo las estrellas, logramos capturar la esencia de un ritual pagano. Queremos agradecer a los clanes locales que asistieron vestidos con pieles y capas tradicionales para formar parte de la cacería nocturna del videoclip." }
   ]);
 
   const [mazmorrasData, setMazmorrasData] = useState({
     passcode: "bsm669",
     miembros: [
-      { id: 1, nombre: "Valerius", rol: "El Bardo (Voz y Zanfoña)", desc: "El guardián de los manuscritos y la voz del roble. Susurra melodías a través de la manivela de la zanfoña celta.", mensajero: "Cuervo Rúnico" },
-      { id: 2, nombre: "Kaelen", rol: "El Gaitero (Gaita y Silbatos)", desc: "Canaliza el viento de las cumbres a través del fuelle y la madera. Sus notas atraen a los espíritus de la niebla.", mensajero: "Halcón Peregrino" },
-      { id: 3, nombre: "Eowyn", rol: "La Tejedora (Violín y Arpa)", desc: "Teje la melancolía del bosque gallego en las cuerdas de su violín, creando puentes entre la niebla y la realidad.", mensajero: "Lechuza de Nieve" },
-      { id: 4, nombre: "Bran", rol: "El Herrero (Guitarra y Distorsión)", desc: "El alquimista que transmuta el metal y la roca en riffs demoledores. Forja las tormentas en sus acordes.", mensajero: "Águila Dorada" },
       { id: 5, nombre: "Drakon", rol: "El Guardián (Batería y Percusión)", desc: "Marca el latido del bosque con el doble pedal y los tambores de guerra. Sus golpes despiertan a los gigantes de la roca.", mensajero: "Gran Búho Real" }
     ],
     canciones: [
