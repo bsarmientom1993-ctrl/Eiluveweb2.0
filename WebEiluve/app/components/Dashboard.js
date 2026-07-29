@@ -1907,6 +1907,35 @@ export default function Dashboard({
             </div>
             <div className="flex items-center gap-2">
               <button
+                onClick={() => {
+                  const dataCompleta = {
+                    bio: bio,
+                    conciertos: conciertos,
+                    noticias: noticias,
+                    presentacion: presentacion,
+                    merch: merch,
+                    mazmorrasData: mazmorrasData,
+                    galeria: galeria,
+                    links: links,
+                    heroBg: heroBg
+                  };
+                  const jsonText = JSON.stringify(dataCompleta, null, 2);
+                  if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(jsonText).then(() => {
+                      alert("¡Tus datos locales de la banda (Biografía, Fotos, Conciertos, Noticias, Mazmorras) fueron COPIADOS al portapapeles!\n\nSimplemente pégalos (Ctrl+V) en nuestro chat para grabarlos permanentemente en Vercel.");
+                    }).catch(() => {
+                      prompt("Copia todo el texto del recuadro (Ctrl+A, Ctrl+C) y pégalo en el chat:", jsonText);
+                    });
+                  } else {
+                    prompt("Copia todo el texto del recuadro (Ctrl+A, Ctrl+C) y pégalo en el chat:", jsonText);
+                  }
+                }}
+                className="py-1.5 px-3 border border-amber-500/60 bg-amber-950/40 hover:bg-amber-500 text-amber-300 hover:text-black text-xs font-mono rounded transition-all flex items-center gap-1.5 cursor-pointer font-bold shadow-[0_0_10px_rgba(245,158,11,0.2)]"
+                title="Copiar toda la información actual de tu banda para enviármela y guardarla en Vercel"
+              >
+                📋 Copiar Datos para Vercel
+              </button>
+              <button
                 onClick={abrirModalPerfil}
                 className="py-1.5 px-3 border border-[#8da382]/40 bg-[#8da382]/10 hover:bg-[#8da382] text-[#8da382] hover:text-black text-xs font-mono rounded transition-all flex items-center gap-1.5 cursor-pointer"
                 title="Editar mis datos personales (Nombre, Correo, Teléfono, Contraseña)"
