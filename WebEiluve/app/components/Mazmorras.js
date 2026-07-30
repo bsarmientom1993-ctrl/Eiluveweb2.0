@@ -2683,8 +2683,8 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
                 )}
               </div>
 
-              {/* Diario pergamino 3D */}
-              <div className="bg-[#0b0806] border border-[#735f3d]/20 p-4 rounded-sm efecto-pergamino relative">
+              {/* Diario pergamino 3D (DESKTOP SOLO) */}
+              <div className="hidden sm:block bg-[#0b0806] border border-[#735f3d]/20 p-4 rounded-sm efecto-pergamino relative">
                 <span className="text-[8px] text-[#d1b880]/70 font-mono tracking-widest uppercase block mb-1">MANUSCRITO COMPOSITIVO</span>
                 <div className="text-[10px] text-gray-300 font-serif leading-relaxed italic space-y-1.5 border-l border-[#735f3d]/50 pl-2">
                   <p>&ldquo;Las hojas caen sobre las cuerdas... la zanfoña silba hoy una tormenta que habla de los caídos. Si grabamos a la luz del fuego fatuo sonarán eternas.&rdquo;</p>
