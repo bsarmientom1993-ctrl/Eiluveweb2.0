@@ -2394,7 +2394,7 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
           </div>
 
           <div 
-            className={`relative z-10 w-full max-w-[1040px] bg-black/65 backdrop-blur-[4px] border-2 p-6 md:p-8 rounded-md overflow-hidden animate-[scaleUp_0.5s_ease-out_forwards] ${
+            className={`relative z-10 w-full max-w-[1240px] bg-black/65 backdrop-blur-[4px] border-2 p-4 sm:p-6 md:p-8 rounded-md overflow-hidden animate-[scaleUp_0.5s_ease-out_forwards] ${
               modoEclipse ? "animate-eclipse" : "animate-neon-border"
             }`}
 
@@ -2507,8 +2507,8 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
               </button>
             </div>
 
-            {/* Fila 2 (MÓVIL): Barra Deslizante Horizontal de Pestañas (Sin colisiones, 100% Proporcionada) */}
-            <div className="block md:hidden w-full p-1.5 bg-[#080604] border-2 border-[#523d26]/80 rounded-md shadow-[inset_0_0_20px_rgba(0,0,0,0.95)] z-30">
+            {/* Fila 2 (MÓVIL <640px): Barra Deslizante Horizontal de Pestañas (Sin colisiones, 100% Proporcionada) */}
+            <div className="block sm:hidden w-full p-1.5 bg-[#080604] border-2 border-[#523d26]/80 rounded-md shadow-[inset_0_0_20px_rgba(0,0,0,0.95)] z-30">
               <div className="flex items-center gap-2 overflow-x-auto pb-1 pt-0.5 px-0.5 scrollbar-none w-full">
                 
                 {/* Tab 1: Grimorio */}
@@ -2599,9 +2599,9 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
               </div>
             </div>
 
-            {/* Fila 2 (DESKTOP): Grid Proporcionada de 5 Pestañas Rúnicas */}
-            <div className="hidden md:block w-full p-2 bg-[#080604] border-2 border-[#523d26]/80 rounded-md shadow-[inset_0_0_20px_rgba(0,0,0,0.95)] z-30">
-              <div className="grid grid-cols-5 gap-2.5 w-full">
+            {/* Fila 2 (WEB Y TABLETS >=640px): Grid Proporcionada de 5 Pestañas Rúnicas Completa */}
+            <div className="hidden sm:block w-full p-2 bg-[#080604] border-2 border-[#523d26]/80 rounded-md shadow-[inset_0_0_20px_rgba(0,0,0,0.95)] z-30">
+              <div className="grid grid-cols-5 gap-2 md:gap-3 w-full">
                 
                 {/* Tab 1: Grimorio */}
                 <button
@@ -2691,9 +2691,9 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
               </div>
             </div>
 
-            {/* Banner Místico de Mensaje de Hadas (MÓVIL SOLO) */}
+            {/* Banner Místico de Mensaje de Hadas (MÓVIL SOLO <640px) */}
             {saludoMisterioso && (
-              <div className="block md:hidden mt-2.5 p-2 bg-[#140e08]/95 border border-[#fbbf24]/40 rounded text-center text-xs text-[#fbbf24] font-serif italic shadow-[0_0_10px_rgba(251,191,36,0.2)]">
+              <div className="block sm:hidden mt-2.5 p-2 bg-[#140e08]/95 border border-[#fbbf24]/40 rounded text-center text-xs text-[#fbbf24] font-serif italic shadow-[0_0_10px_rgba(251,191,36,0.2)]">
                 {saludoMisterioso}
               </div>
             )}
