@@ -1246,6 +1246,20 @@ export default function Dashboard({
     setVImagen(v.imagen || "");
   };
 
+  // Helper para leer archivos de imagen locales desde el navegador
+  const manejarSubidaArchivoImagen = (e, callbackSetter) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (reader.result) {
+          callbackSetter(reader.result);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   // Agregar o Editar Código NFC
   const guardarNfcCode = (e) => {
     e.preventDefault();
@@ -2607,22 +2621,46 @@ export default function Dashboard({
                   <h4 className="text-[#fbbf24] text-[10px] font-mono uppercase tracking-wider border-b border-[#735f3d]/10 pb-1 mb-2">🖼️ Fotos del Portal</h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="text-[9px] text-gray-400 font-mono block">Ruta de Foto de la Banda (Biografía)</label>
-                      <input
-                        type="text"
-                        value={bioImg}
-                        onChange={(e) => setBioImg(e.target.value)}
-                        className="w-full bg-black/60 border border-[#735f3d]/20 text-xs text-white p-2 rounded"
-                      />
+                      <label className="text-[9px] text-gray-400 font-mono block">Ruta o Imagen de la Banda (Biografía)</label>
+                      <div className="flex gap-2 items-center">
+                        <input
+                          type="text"
+                          value={bioImg}
+                          onChange={(e) => setBioImg(e.target.value)}
+                          className="flex-grow bg-black/60 border border-[#735f3d]/20 text-xs text-white p-2 rounded"
+                          placeholder="/band_members.jpg o URL"
+                        />
+                        <label className="py-1.5 px-3 bg-[#735f3d] text-white hover:bg-[#fbbf24] hover:text-black font-bold font-mono text-[10px] uppercase rounded cursor-pointer transition-all shrink-0 flex items-center gap-1">
+                          <span>📁 Subir</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) => manejarSubidaArchivoImagen(e, setBioImg)}
+                          />
+                        </label>
+                      </div>
                     </div>
                     <div>
-                      <label className="text-[9px] text-gray-400 font-mono block">Ruta de Ilustración Héroe (Fondo Principal)</label>
-                      <input
-                        type="text"
-                        value={heroBgPath}
-                        onChange={(e) => setHeroBgPath(e.target.value)}
-                        className="w-full bg-black/60 border border-[#735f3d]/20 text-xs text-white p-2 rounded"
-                      />
+                      <label className="text-[9px] text-gray-400 font-mono block">Ruta o Ilustración Héroe (Fondo Principal)</label>
+                      <div className="flex gap-2 items-center">
+                        <input
+                          type="text"
+                          value={heroBgPath}
+                          onChange={(e) => setHeroBgPath(e.target.value)}
+                          className="flex-grow bg-black/60 border border-[#735f3d]/20 text-xs text-white p-2 rounded"
+                          placeholder="/hero_background.jpg o URL"
+                        />
+                        <label className="py-1.5 px-3 bg-[#735f3d] text-white hover:bg-[#fbbf24] hover:text-black font-bold font-mono text-[10px] uppercase rounded cursor-pointer transition-all shrink-0 flex items-center gap-1">
+                          <span>📁 Subir</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) => manejarSubidaArchivoImagen(e, setHeroBgPath)}
+                          />
+                        </label>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -2632,14 +2670,25 @@ export default function Dashboard({
                   <h4 className="text-[#8da382] text-[10px] font-mono uppercase tracking-wider border-b border-[#735f3d]/10 pb-1 mb-2">👕 Merchandising Oficial (Widget 4)</h4>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="text-[9px] text-gray-400 font-mono block">Ruta de Imagen de Merch (ej: /merch_preview.png)</label>
-                      <input
-                        type="text"
-                        value={merchImgPath}
-                        onChange={(e) => setMerchImgPath(e.target.value)}
-                        placeholder="/merch_preview.png"
-                        className="w-full bg-black/60 border border-[#735f3d]/20 text-xs text-white p-2 rounded focus:outline-none"
-                      />
+                      <label className="text-[9px] text-gray-400 font-mono block">Ruta o Imagen de Merch (ej: /merch_preview.png)</label>
+                      <div className="flex gap-2 items-center">
+                        <input
+                          type="text"
+                          value={merchImgPath}
+                          onChange={(e) => setMerchImgPath(e.target.value)}
+                          placeholder="/merch_preview.png"
+                          className="flex-grow bg-black/60 border border-[#735f3d]/20 text-xs text-white p-2 rounded focus:outline-none"
+                        />
+                        <label className="py-1.5 px-3 bg-[#735f3d] text-white hover:bg-[#fbbf24] hover:text-black font-bold font-mono text-[10px] uppercase rounded cursor-pointer transition-all shrink-0 flex items-center gap-1">
+                          <span>📁 Subir</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) => manejarSubidaArchivoImagen(e, setMerchImgPath)}
+                          />
+                        </label>
+                      </div>
                     </div>
                     <div>
                       <label className="text-[9px] text-gray-400 font-mono block">Enlace de Destino (ej: #contacto o URL externa)</label>
@@ -2779,14 +2828,25 @@ export default function Dashboard({
                   </div>
 
                   <div>
-                    <label className="text-[9px] text-gray-400 font-mono block">Ruta de Imagen (ej: /album_cover2.jpg)</label>
-                    <input
-                      type="text"
-                      value={noticiaImg}
-                      onChange={(e) => setNoticiaImg(e.target.value)}
-                      placeholder="/album_cover2.jpg"
-                      className="w-full bg-black/60 border border-[#735f3d]/20 text-xs text-white p-2 rounded focus:outline-none"
-                    />
+                    <label className="text-[9px] text-gray-400 font-mono block">Ruta o Imagen de la Crónica (ej: /somos-todos.jpg o subir)</label>
+                    <div className="flex gap-2 items-center">
+                      <input
+                        type="text"
+                        value={noticiaImg}
+                        onChange={(e) => setNoticiaImg(e.target.value)}
+                        placeholder="/somos-todos.jpg o URL"
+                        className="flex-grow bg-black/60 border border-[#735f3d]/20 text-xs text-white p-2 rounded focus:outline-none"
+                      />
+                      <label className="py-1.5 px-3 bg-[#735f3d] text-white hover:bg-[#fbbf24] hover:text-black font-bold font-mono text-[10px] uppercase rounded cursor-pointer transition-all shrink-0 flex items-center gap-1">
+                        <span>📁 Subir</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={(e) => manejarSubidaArchivoImagen(e, setNoticiaImg)}
+                        />
+                      </label>
+                    </div>
                   </div>
 
                   <div>
@@ -3235,15 +3295,26 @@ export default function Dashboard({
                         />
                       </div>
                       <div>
-                        <label className="text-[9px] text-gray-400 font-mono block">Ruta de la Imagen (JPG/PNG)</label>
-                        <input
-                          type="text"
-                          value={fSrc}
-                          onChange={(e) => setFSrc(e.target.value)}
-                          className="w-full bg-black/60 border border-[#735f3d]/20 text-xs text-white p-2 rounded focus:outline-none focus:border-[#fbbf24]"
-                          placeholder="Ej: /Somos todos.jpg o URL"
-                          required
-                        />
+                        <label className="text-[9px] text-gray-400 font-mono block">Ruta o Imagen (JPG/PNG)</label>
+                        <div className="flex gap-2 items-center">
+                          <input
+                            type="text"
+                            value={fSrc}
+                            onChange={(e) => setFSrc(e.target.value)}
+                            className="flex-grow bg-black/60 border border-[#735f3d]/20 text-xs text-white p-2 rounded focus:outline-none focus:border-[#fbbf24]"
+                            placeholder="Ej: /somos-todos.jpg o URL"
+                            required
+                          />
+                          <label className="py-1.5 px-3 bg-[#735f3d] text-white hover:bg-[#fbbf24] hover:text-black font-bold font-mono text-[10px] uppercase rounded cursor-pointer transition-all shrink-0 flex items-center gap-1">
+                            <span>📁 Subir</span>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={(e) => manejarSubidaArchivoImagen(e, setFSrc)}
+                            />
+                          </label>
+                        </div>
                       </div>
                       <div className="flex gap-2 pt-2">
                         <button
@@ -3369,14 +3440,25 @@ export default function Dashboard({
                         />
                       </div>
                       <div>
-                        <label className="text-[9px] text-gray-400 font-mono block">Ruta de Portada (Imagen)</label>
-                        <input
-                          type="text"
-                          value={vImagen}
-                          onChange={(e) => setVImagen(e.target.value)}
-                          className="w-full bg-black/60 border border-[#735f3d]/20 text-xs text-white p-2 rounded focus:outline-none focus:border-[#fbbf24]"
-                          placeholder="Ej: /Somos todos.jpg o URL"
-                        />
+                        <label className="text-[9px] text-gray-400 font-mono block">Ruta o Imagen de Portada (ej: /somos-todos.jpg o subir)</label>
+                        <div className="flex gap-2 items-center">
+                          <input
+                            type="text"
+                            value={vImagen}
+                            onChange={(e) => setVImagen(e.target.value)}
+                            className="flex-grow bg-black/60 border border-[#735f3d]/20 text-xs text-white p-2 rounded focus:outline-none focus:border-[#fbbf24]"
+                            placeholder="Ej: /somos-todos.jpg o URL"
+                          />
+                          <label className="py-1.5 px-3 bg-[#735f3d] text-white hover:bg-[#fbbf24] hover:text-black font-bold font-mono text-[10px] uppercase rounded cursor-pointer transition-all shrink-0 flex items-center gap-1">
+                            <span>📁 Subir</span>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={(e) => manejarSubidaArchivoImagen(e, setVImagen)}
+                            />
+                          </label>
+                        </div>
                       </div>
                       <div className="flex gap-2 pt-2">
                         <button
