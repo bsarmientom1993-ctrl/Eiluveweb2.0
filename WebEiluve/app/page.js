@@ -322,6 +322,38 @@ Somos Todos, Somos Eilúve.`,
     }
   }, []);
 
+  // Sincronización automática de audio, sencillos y datos desde la base de datos Supabase
+  useEffect(() => {
+    const sincronizarSupabase = async () => {
+      const mapeoClaves = [
+        { key: "eiluve_mazmorras_data", setter: setMazmorrasData },
+        { key: "eiluve_conciertos", setter: setConciertos },
+        { key: "eiluve_bio", setter: setBio },
+        { key: "eiluve_noticias", setter: setNoticias },
+        { key: "eiluve_presentacion", setter: setPresentacion },
+        { key: "eiluve_merch", setter: setMerch },
+        { key: "eiluve_links", setter: setLinks },
+        { key: "eiluve_hero_bg", setter: setHeroBg },
+        { key: "eiluve_destacados", setter: setDestacados },
+        { key: "eiluve_frases_carga", setter: setFrasesCarga }
+      ];
+
+      for (const item of mapeoClaves) {
+        try {
+          const res = await fetch(`/api/store?key=${item.key}`);
+          const resJson = await res.json();
+          if (resJson && resJson.configured && resJson.data) {
+            item.setter(resJson.data);
+            localStorage.setItem(item.key, typeof resJson.data === "string" ? resJson.data : JSON.stringify(resJson.data));
+          }
+        } catch (e) {
+          // Si no hay conexión o falla la API, mantiene la hidratación local
+        }
+      }
+    };
+    sincronizarSupabase();
+  }, []);
+
   // Escuchar sincronizaciones de mensajería, conciertos y crónicas en tiempo real
   useEffect(() => {
     const syncRealtimePage = () => {

@@ -197,6 +197,7 @@ export default function Dashboard({
   const [cTipo, setCTipo] = useState("Álbum Oficial");
   const [cEnlace, setCEnlace] = useState("");
   const [cDuracion, setCDuracion] = useState("");
+  const [cPortada, setCPortada] = useState("");
 
   // Fotos de Mazmorras
   const [editFotoId, setEditFotoId] = useState(null);
@@ -1082,16 +1083,16 @@ export default function Dashboard({
       return;
     }
     const cancionesActuales = mazmorrasData?.canciones || [
-      { id: 1, titulo: "Somos todos", tipo: "Álbum Oficial", enlace: "/Somos todos.mp3", duracion: "6:12" },
-      { id: 2, titulo: "Tú Voz (Demo Acústica)", tipo: "Maqueta Inédita", enlace: "/Tu voz.mp3", duracion: "7:05" },
-      { id: 3, titulo: "Quizás mañana", tipo: "Álbum Oficial", enlace: "/Quizas mañana.mp3", duracion: "5:44" },
-      { id: 4, titulo: "El matriqui del diablo", tipo: "Álbum Oficial", enlace: "/El matriqui del diablo.mp3", duracion: "5:44" }
+      { id: 1, titulo: "Somos todos", tipo: "Álbum Oficial", enlace: "/Somos todos.mp3", duracion: "6:12", portada: "/Somos todos.jpg" },
+      { id: 2, titulo: "Tú Voz (Demo Acústica)", tipo: "Maqueta Inédita", enlace: "/Tu voz.mp3", duracion: "7:05", portada: "/Tu voz.jpg" },
+      { id: 3, titulo: "Quizás mañana", tipo: "Álbum Oficial", enlace: "/Quizas mañana.mp3", duracion: "5:44", portada: "/Quizas mañana.jpg" },
+      { id: 4, titulo: "El matriqui del diablo", tipo: "Álbum Oficial", enlace: "/El matriqui del diablo.mp3", duracion: "5:44", portada: "/El matriqui del diablo.jpg" }
     ];
     let nuevasCanciones;
     if (editCancionId) {
       nuevasCanciones = cancionesActuales.map((c) =>
         c.id === editCancionId
-          ? { ...c, titulo: cTitulo, tipo: cTipo, enlace: cEnlace, duracion: cDuracion || "3:00" }
+          ? { ...c, titulo: cTitulo, tipo: cTipo, enlace: cEnlace, duracion: cDuracion || "3:00", portada: cPortada || c.portada || "/Somos todos.jpg" }
           : c
       );
       setEditCancionId(null);
@@ -1102,17 +1103,20 @@ export default function Dashboard({
         titulo: cTitulo,
         tipo: cTipo,
         enlace: cEnlace,
-        duracion: cDuracion || "3:00"
+        duracion: cDuracion || "3:00",
+        portada: cPortada || "/Somos todos.jpg"
       };
       nuevasCanciones = [...cancionesActuales, nuevaCancion];
     }
     const nuevosDatos = { ...mazmorrasData, canciones: nuevasCanciones };
     setMazmorrasData(nuevosDatos);
     localStorage.setItem("eiluve_mazmorras_data", JSON.stringify(nuevosDatos));
+    guardarEnSupabase("eiluve_mazmorras_data", nuevosDatos);
     setCTitulo("");
     setCTipo("Álbum Oficial");
     setCEnlace("");
     setCDuracion("");
+    setCPortada("");
   };
 
   const eliminarCancionDungeon = (id) => {
@@ -1122,6 +1126,7 @@ export default function Dashboard({
       const nuevosDatos = { ...mazmorrasData, canciones: nuevasCanciones };
       setMazmorrasData(nuevosDatos);
       localStorage.setItem("eiluve_mazmorras_data", JSON.stringify(nuevosDatos));
+      guardarEnSupabase("eiluve_mazmorras_data", nuevosDatos);
     }
   };
 
@@ -1131,6 +1136,7 @@ export default function Dashboard({
     setCTipo(c.tipo || "Álbum Oficial");
     setCEnlace(c.enlace || "");
     setCDuracion(c.duracion || "");
+    setCPortada(c.portada || "");
   };
 
   // Gestión de Fotos en Mazmorras
@@ -1257,6 +1263,33 @@ export default function Dashboard({
         }
       };
       reader.readAsDataURL(file);
+    }
+  };
+
+  // Helper para leer archivos de audio locales (.mp3, .wav)
+  const manejarSubidaArchivoAudio = (e, callbackSetter) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        if (reader.result) {
+          callbackSetter(reader.result);
+        }
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  // Helper para guardar en Supabase Database automáticamente
+  const guardarEnSupabase = async (key, value) => {
+    try {
+      await fetch("/api/store", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ key, data: value })
+      });
+    } catch (err) {
+      console.error(`Error guardando en Supabase (${key}):`, err);
     }
   };
 
@@ -3175,15 +3208,47 @@ export default function Dashboard({
                         </div>
                       </div>
                       <div>
-                        <label className="text-[9px] text-gray-400 font-mono block">Ruta del Archivo de Audio (MP3)</label>
-                        <input
-                          type="text"
-                          value={cEnlace}
-                          onChange={(e) => setCEnlace(e.target.value)}
-                          className="w-full bg-black/60 border border-[#735f3d]/20 text-xs text-white p-2 rounded focus:outline-none focus:border-[#fbbf24]"
-                          placeholder="Ej: /Somos todos.mp3 o URL"
-                          required
-                        />
+                        <label className="text-[9px] text-gray-400 font-mono block">Ruta o Archivo de Audio (.MP3 / .WAV)</label>
+                        <div className="flex gap-2 items-center">
+                          <input
+                            type="text"
+                            value={cEnlace}
+                            onChange={(e) => setCEnlace(e.target.value)}
+                            className="flex-grow bg-black/60 border border-[#735f3d]/20 text-xs text-white p-2 rounded focus:outline-none focus:border-[#fbbf24]"
+                            placeholder="Ej: /album/04-somos-todos.mp3 o URL"
+                            required
+                          />
+                          <label className="py-1.5 px-2.5 bg-[#735f3d] text-white hover:bg-[#fbbf24] hover:text-black font-bold font-mono text-[10px] uppercase rounded cursor-pointer transition-all shrink-0 flex items-center gap-1">
+                            <span>🎵 Subir Audio</span>
+                            <input
+                              type="file"
+                              accept="audio/*"
+                              className="hidden"
+                              onChange={(e) => manejarSubidaArchivoAudio(e, setCEnlace)}
+                            />
+                          </label>
+                        </div>
+                      </div>
+                      <div>
+                        <label className="text-[9px] text-gray-400 font-mono block">Portada del Disco / Sencillo (Single Cover)</label>
+                        <div className="flex gap-2 items-center">
+                          <input
+                            type="text"
+                            value={cPortada}
+                            onChange={(e) => setCPortada(e.target.value)}
+                            className="flex-grow bg-black/60 border border-[#735f3d]/20 text-xs text-white p-2 rounded focus:outline-none focus:border-[#fbbf24]"
+                            placeholder="Ej: /Somos todos.jpg o URL"
+                          />
+                          <label className="py-1.5 px-2.5 bg-[#735f3d] text-white hover:bg-[#fbbf24] hover:text-black font-bold font-mono text-[10px] uppercase rounded cursor-pointer transition-all shrink-0 flex items-center gap-1">
+                            <span>🖼️ Portada</span>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={(e) => manejarSubidaArchivoImagen(e, setCPortada)}
+                            />
+                          </label>
+                        </div>
                       </div>
                       <div className="flex gap-2 pt-2">
                         <button
@@ -3201,6 +3266,7 @@ export default function Dashboard({
                               setCTipo("Álbum Oficial");
                               setCEnlace("");
                               setCDuracion("");
+                              setCPortada("");
                             }}
                             className="py-2 px-3 bg-red-950/40 hover:bg-red-950 border border-red-500/30 text-red-300 font-mono text-[10px] uppercase rounded transition-colors"
                           >
@@ -3217,22 +3283,29 @@ export default function Dashboard({
                           <table className="w-full text-left border-collapse text-xs">
                             <thead>
                               <tr className="bg-black/50 text-[#735f3d] font-mono border-b border-[#735f3d]/20">
-                                <th className="p-3 uppercase">Pista</th>
+                                <th className="p-3 uppercase">Pista & Disco</th>
                                 <th className="p-3 uppercase">Ruta / Duración</th>
                                 <th className="p-3 text-right uppercase">Acciones</th>
                               </tr>
                             </thead>
                             <tbody>
                               {(mazmorrasData?.canciones || [
-                                { id: 1, titulo: "Somos todos", tipo: "Álbum Oficial", enlace: "/Somos todos.mp3", duracion: "6:12" },
-                                { id: 2, titulo: "Tú Voz (Demo Acústica)", tipo: "Maqueta Inédita", enlace: "/Tu voz.mp3", duracion: "7:05" },
-                                { id: 3, titulo: "Quizás mañana", tipo: "Álbum Oficial", enlace: "/Quizas mañana.mp3", duracion: "5:44" },
-                                { id: 4, titulo: "El matriqui del diablo", tipo: "Álbum Oficial", enlace: "/El matriqui del diablo.mp3", duracion: "5:44" }
+                                { id: 1, titulo: "Somos todos", tipo: "Álbum Oficial", enlace: "/Somos todos.mp3", duracion: "6:12", portada: "/Somos todos.jpg" },
+                                { id: 2, titulo: "Tú Voz (Demo Acústica)", tipo: "Maqueta Inédita", enlace: "/Tu voz.mp3", duracion: "7:05", portada: "/Tu voz.jpg" },
+                                { id: 3, titulo: "Quizás mañana", tipo: "Álbum Oficial", enlace: "/Quizas mañana.mp3", duracion: "5:44", portada: "/Quizas mañana.jpg" },
+                                { id: 4, titulo: "El matriqui del diablo", tipo: "Álbum Oficial", enlace: "/El matriqui del diablo.mp3", duracion: "5:44", portada: "/El matriqui del diablo.jpg" }
                               ]).map((c) => (
                                 <tr key={c.id} className="border-b border-[#735f3d]/10 hover:bg-black/40 text-gray-300">
                                   <td className="p-3">
-                                    <div className="font-bold text-white">{c.titulo}</div>
-                                    <div className="text-[10px] text-amber-500/85 font-mono">{c.tipo}</div>
+                                    <div className="flex items-center gap-2">
+                                      {c.portada && (
+                                        <img src={c.portada} alt={c.titulo} className="w-8 h-8 rounded border border-[#735f3d]/40 object-cover shrink-0" />
+                                      )}
+                                      <div>
+                                        <div className="font-bold text-white">{c.titulo}</div>
+                                        <div className="text-[10px] text-amber-500/85 font-mono">{c.tipo}</div>
+                                      </div>
+                                    </div>
                                   </td>
                                   <td className="p-3">
                                     <div className="text-gray-500 font-mono truncate max-w-[180px]" title={c.enlace}>{c.enlace}</div>
