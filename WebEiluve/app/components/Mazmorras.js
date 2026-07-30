@@ -168,9 +168,11 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
     }
   ];
 
-  // Efecto para generar 30 partículas aleatorias al cargar el componente
+  // Efecto para generar partículas aleatorias al cargar el componente (Optimizado para móviles)
   useEffect(() => {
-    const nuevasParticulas = Array.from({ length: 30 }).map((_, i) => ({
+    const esMovil = typeof window !== "undefined" && window.innerWidth < 768;
+    const numParticulas = esMovil ? 4 : 25;
+    const nuevasParticulas = Array.from({ length: numParticulas }).map((_, i) => ({
       id: i,
       left: Math.random() * 100,
       bottom: Math.random() * 35,
@@ -182,9 +184,10 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
     setParticulas(nuevasParticulas);
   }, []);
 
-  // 🧚 Y 🧪 SISTEMA EXCLUSIVO: EXACTAMENTE 1 SOLO ELEMENTO ÚNICO EN PANTALLA EN TODO MOMENTO (EN MARGENES EXTREMOS)
+  // 🧚 Y 🧪 SISTEMA EXCLUSIVO: SPAWNEO DE CRIATURAS (DESKTOP SOLO PARA MÁXIMA FLUIDEZ EN MÓVIL)
   useEffect(() => {
-    if (!accesoConcedido || !dungeonPreparado || cerrandoPuerta) return;
+    const esMovil = typeof window !== "undefined" && window.innerWidth < 768;
+    if (!accesoConcedido || !dungeonPreparado || cerrandoPuerta || esMovil) return;
 
     let timeoutId = null;
 
@@ -2423,15 +2426,13 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
               </svg>
             </div>
 
-            {/* LUCES AMBIENTALES DINÁMICAS */}
-            <div className={`absolute -left-10 top-1/4 w-32 h-60 blur-[50px] pointer-events-none transition-all duration-1000 z-0 ${obtenerColorGlowFondo(modoMagico, "izq")}`}></div>
-            <div className={`absolute -right-10 top-1/3 w-32 h-60 blur-[50px] pointer-events-none transition-all duration-1000 z-0 ${obtenerColorGlowFondo(modoMagico, "der")}`}></div>
+            {/* LUCES AMBIENTALES DINÁMICAS (OPTIMIZADO DESKTOP SOLO) */}
+            <div className={`hidden md:block absolute -left-10 top-1/4 w-32 h-60 blur-[50px] pointer-events-none transition-all duration-1000 z-0 ${obtenerColorGlowFondo(modoMagico, "izq")}`}></div>
+            <div className={`hidden md:block absolute -right-10 top-1/3 w-32 h-60 blur-[50px] pointer-events-none transition-all duration-1000 z-0 ${obtenerColorGlowFondo(modoMagico, "der")}`}></div>
 
-
-            {/* Orbes Fatuos */}
-            {/* ORBES ESPIRITUALES DE COLOR */}
+            {/* ORBES ESPIRITUALES DE COLOR (OPTIMIZADO DESKTOP SOLO) */}
             {modoMagico !== 0 && (
-              <div className="absolute inset-0 pointer-events-none z-0 select-none">
+              <div className="hidden md:block absolute inset-0 pointer-events-none z-0 select-none">
                 <div className={`absolute top-[20%] left-[15%] w-48 h-48 blur-[80px] rounded-full orbe-espiritual ${
                   modoMagico === 1 ? "bg-cyan-600/12" : modoMagico === 2 ? "bg-purple-600/12" : "bg-emerald-600/12"
                 }`}></div>
@@ -2441,7 +2442,7 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
               </div>
             )}
             
-            <div className="absolute bottom-0 left-0 right-0 h-40 niebla-mazmorra pointer-events-none opacity-60 z-10"></div>
+            <div className="hidden md:block absolute bottom-0 left-0 right-0 h-40 niebla-mazmorra pointer-events-none opacity-60 z-10"></div>
 
 
 
