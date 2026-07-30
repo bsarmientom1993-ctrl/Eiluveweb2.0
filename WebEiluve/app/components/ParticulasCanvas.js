@@ -76,7 +76,7 @@ export default function ParticulasCanvas() {
       }
     };
 
-    window.addEventListener("resize", redimensionarCanvas);
+    window.addEventListener("resize", redimensionarCanvas, { passive: true });
 
     const manejarMovimientoRaton = (e) => {
       raton.x = e.clientX;
@@ -88,8 +88,8 @@ export default function ParticulasCanvas() {
       raton.y = null;
     };
 
-    window.addEventListener("mousemove", manejarMovimientoRaton);
-    window.addEventListener("mouseleave", manejarSalidaRaton);
+    window.addEventListener("mousemove", manejarMovimientoRaton, { passive: true });
+    window.addEventListener("mouseleave", manejarSalidaRaton, { passive: true });
 
     // Clase de partículas
     class Particula {
@@ -269,7 +269,9 @@ export default function ParticulasCanvas() {
 
     redimensionarCanvas();
 
-    const cantidadParticulas = Math.min(85, Math.floor(canvas.width / 15));
+    const esMovilCanvas = typeof window !== "undefined" && window.innerWidth < 768;
+    const maxParticulas = esMovilCanvas ? 28 : 70;
+    const cantidadParticulas = Math.min(maxParticulas, Math.floor(canvas.width / (esMovilCanvas ? 20 : 16)));
     for (let i = 0; i < cantidadParticulas; i++) {
       particulas.push(new Particula());
     }

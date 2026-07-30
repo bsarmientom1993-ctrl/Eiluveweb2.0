@@ -394,13 +394,14 @@ Somos Todos, Somos Eilúve.`,
     if (!ACTIVAR_PARALLAX) return;
 
     const manejarMouseParallax = (e) => {
+      if (window.innerWidth < 768) return;
       // Movimientos de rango seguro para el parallax (-0.5 a 0.5)
       const normX = (e.clientX / window.innerWidth) - 0.5;
       const normY = (e.clientY / window.innerHeight) - 0.5;
       setDesplazamientoRaton({ x: normX, y: normY });
     };
 
-    window.addEventListener("mousemove", manejarMouseParallax);
+    window.addEventListener("mousemove", manejarMouseParallax, { passive: true });
     return () => window.removeEventListener("mousemove", manejarMouseParallax);
   }, []);
 
