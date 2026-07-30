@@ -168,10 +168,10 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
     }
   ];
 
-  // Efecto para generar partículas aleatorias al cargar el componente (Optimizado para móviles)
+  // Efecto para generar partículas aleatorias al cargar el componente (Optimizado para el fondo en móviles)
   useEffect(() => {
     const esMovil = typeof window !== "undefined" && window.innerWidth < 768;
-    const numParticulas = esMovil ? 4 : 25;
+    const numParticulas = esMovil ? 15 : 30;
     const nuevasParticulas = Array.from({ length: numParticulas }).map((_, i) => ({
       id: i,
       left: Math.random() * 100,
@@ -1480,9 +1480,9 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
         ></div>
       ))}
 
-      {/* Torbellino de polvo mágico neón a nivel de pantalla completa */}
+      {/* Torbellino de polvo mágico neón a nivel de pantalla completa (Al fondo z-0) */}
       {accesoConcedido && (
-        <div className="absolute inset-0 pointer-events-none z-30 overflow-hidden">
+        <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
           {particulas.map((p) => (
             <div
               key={p.id}
