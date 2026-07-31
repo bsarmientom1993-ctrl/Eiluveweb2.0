@@ -423,15 +423,49 @@ Somos Todos, Somos Eilúve.`,
   }, []);
 
 
-  // Callback estable para prevenir bucles de actualización infinita
+  const reproductorRef = useRef(null);
+
+  // Callback estable para prevenir bucles de actualización infinita y activar autoplay al terminar de cargar
   const terminarCargaCallback = useCallback(() => {
     setCargando(false);
+    setReproduciendo(true);
+    setTimeout(() => {
+      if (reproductorRef.current) {
+        reproductorRef.current.play().then(() => {
+          setReproduciendo(true);
+        }).catch((err) => {
+          console.log("Autoplay con sonido diferido por políticas del navegador:", err);
+        });
+      }
+    }, 150);
+  }, []);
+
+  // Activar reproducción de audio en el primer clic o interacción del usuario si el navegador bloqueó el autoplay
+  useEffect(() => {
+    const intentarAutoplayGlobal = () => {
+      if (reproductorRef.current && reproductorRef.current.paused) {
+        reproductorRef.current.play().then(() => {
+          setReproduciendo(true);
+        }).catch(() => {});
+      }
+      window.removeEventListener("click", intentarAutoplayGlobal);
+      window.removeEventListener("touchstart", intentarAutoplayGlobal);
+      window.removeEventListener("keydown", intentarAutoplayGlobal);
+    };
+
+    window.addEventListener("click", intentarAutoplayGlobal, { passive: true });
+    window.addEventListener("touchstart", intentarAutoplayGlobal, { passive: true });
+    window.addEventListener("keydown", intentarAutoplayGlobal, { passive: true });
+
+    return () => {
+      window.removeEventListener("click", intentarAutoplayGlobal);
+      window.removeEventListener("touchstart", intentarAutoplayGlobal);
+      window.removeEventListener("keydown", intentarAutoplayGlobal);
+    };
   }, []);
 
   // Parallax para Dirección de Arte Premium
   const [desplazamientoRaton, setDesplazamientoRaton] = useState({ x: 0, y: 0 });
-
-  const reproductorRef = useRef(null);
 
   // Escuchar parallax reactivo al cursor (Solo si está activo)
   useEffect(() => {
