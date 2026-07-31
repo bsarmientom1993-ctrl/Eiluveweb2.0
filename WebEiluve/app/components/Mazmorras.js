@@ -87,16 +87,20 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
   const [progresoAudio, setProgresoAudio] = useState(0);
   const audioRefDungeon = useRef(null);
 
-  // Detener audio de las Mazmorras si la página principal empieza a reproducir
+  // Detener audio de las Mazmorras si cualquier otro reproductor (ej: página principal) empieza a sonar
   useEffect(() => {
-    const detenerDungeon = () => {
-      setReproduciendoDungeon(false);
-      if (audioRefDungeon.current) {
+    const detenerDungeon = (e) => {
+      if (audioRefDungeon.current && e.target !== audioRefDungeon.current) {
+        setReproduciendoDungeon(false);
         audioRefDungeon.current.pause();
       }
     };
     window.addEventListener("eiluve_detener_dungeon_audio", detenerDungeon);
-    return () => window.removeEventListener("eiluve_detener_dungeon_audio", detenerDungeon);
+    window.addEventListener("play", detenerDungeon, true);
+    return () => {
+      window.removeEventListener("eiluve_detener_dungeon_audio", detenerDungeon);
+      window.removeEventListener("play", detenerDungeon, true);
+    };
   }, []);
 
   // Lista de canciones para reproducir el disco completo + Demos

@@ -466,6 +466,19 @@ Somos Todos, Somos Eilúve.`,
     };
   }, []);
 
+  // Detener el reproductor principal si CUALQUIER otro reproductor de audio (ej: Las Mazmorras) empieza a sonar
+  useEffect(() => {
+    const manejarAudioPlayGlobal = (e) => {
+      if (reproductorRef.current && e.target !== reproductorRef.current) {
+        reproductorRef.current.pause();
+        setReproduciendo(false);
+      }
+    };
+
+    window.addEventListener("play", manejarAudioPlayGlobal, true);
+    return () => window.removeEventListener("play", manejarAudioPlayGlobal, true);
+  }, []);
+
   // Parallax para Dirección de Arte Premium
   const [desplazamientoRaton, setDesplazamientoRaton] = useState({ x: 0, y: 0 });
 
