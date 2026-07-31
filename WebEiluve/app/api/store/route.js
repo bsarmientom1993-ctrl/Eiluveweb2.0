@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { supabase, supabaseConfigured } from "@/app/lib/supabase";
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 // GET /api/store?key=conciertos
 export async function GET(request) {
   const { searchParams } = new URL(request.url);

@@ -333,7 +333,7 @@ Somos Todos, Somos Eilúve.`,
     }
   }, []);
 
-  // Sincronización automática de audio, sencillos y datos desde la base de datos Supabase
+  // Sincronización automática de audio, sencillos y datos desde la base de datos Supabase (Polled cada 15s)
   useEffect(() => {
     const sincronizarSupabase = async () => {
       const mapeoClaves = [
@@ -364,6 +364,8 @@ Somos Todos, Somos Eilúve.`,
       }
     };
     sincronizarSupabase();
+    const interval = setInterval(sincronizarSupabase, 15000);
+    return () => clearInterval(interval);
   }, []);
 
   // Escuchar sincronizaciones de mensajería, conciertos y crónicas en tiempo real
