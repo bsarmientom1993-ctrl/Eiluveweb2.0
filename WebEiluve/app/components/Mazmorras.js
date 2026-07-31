@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 
-export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miembros = [], canciones = [], fotos = [], videos = [], nfcCodes = [], fansRegistrados = [], setFansRegistrados }) {
+export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miembros = [], canciones = [], fotos = [], videos = [], nfcCodes = [], fansRegistrados = [], setFansRegistrados, alIniciarReproduccion }) {
   const [codigo, setCodigo] = useState("");
   const [accesoConcedido, setAccesoConcedido] = useState(false);
   const [abriendoPuerta, setAbriendoPuerta] = useState(false);
@@ -86,6 +86,18 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
   const [reproduciendoDungeon, setReproduciendoDungeon] = useState(false);
   const [progresoAudio, setProgresoAudio] = useState(0);
   const audioRefDungeon = useRef(null);
+
+  // Detener audio de las Mazmorras si la página principal empieza a reproducir
+  useEffect(() => {
+    const detenerDungeon = () => {
+      setReproduciendoDungeon(false);
+      if (audioRefDungeon.current) {
+        audioRefDungeon.current.pause();
+      }
+    };
+    window.addEventListener("eiluve_detener_dungeon_audio", detenerDungeon);
+    return () => window.removeEventListener("eiluve_detener_dungeon_audio", detenerDungeon);
+  }, []);
 
   // Lista de canciones para reproducir el disco completo + Demos
   const albumCompleto = canciones && canciones.length > 0 ? canciones : [
@@ -1056,6 +1068,7 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
       audioRefDungeon.current.pause();
       setReproduciendoDungeon(false);
     } else {
+      if (alIniciarReproduccion) alIniciarReproduccion();
       audioRefDungeon.current.play().catch(() => {});
       setReproduciendoDungeon(true);
     }
@@ -1082,6 +1095,7 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
   };
 
   const seleccionarYReproducir = (cancion) => {
+    if (alIniciarReproduccion) alIniciarReproduccion();
     setCancionActivaDungeon(cancion);
     setReproduciendoDungeon(true);
     

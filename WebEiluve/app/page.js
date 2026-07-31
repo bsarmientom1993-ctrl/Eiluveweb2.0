@@ -491,6 +491,14 @@ Somos Todos, Somos Eilúve.`,
     return `${minutos}:${segsRestantes < 10 ? "0" : ""}${segsRestantes}`;
   };
 
+  // Función para pausar el reproductor principal si empieza el audio de Las Mazmorras
+  const detenerAudioPrincipal = () => {
+    if (reproductorRef.current) {
+      reproductorRef.current.pause();
+    }
+    setReproduciendo(false);
+  };
+
   // Controles de Play y Pause
   const alternarReproduccion = () => {
     if (!reproductorRef.current) return;
@@ -498,6 +506,7 @@ Somos Todos, Somos Eilúve.`,
       reproductorRef.current.pause();
       setReproduciendo(false);
     } else {
+      window.dispatchEvent(new Event("eiluve_detener_dungeon_audio"));
       reproductorRef.current.play().catch((error) => {
         console.log("Reproducción de audio bloqueada o con error:", error);
       });
@@ -507,6 +516,7 @@ Somos Todos, Somos Eilúve.`,
 
   // Reproducir una canción específica por su índice
   const reproducirCancion = (indice) => {
+    window.dispatchEvent(new Event("eiluve_detener_dungeon_audio"));
     setIndiceCancion(indice);
     setReproduciendo(true);
 
@@ -949,6 +959,7 @@ Somos Todos, Somos Eilúve.`,
         nfcCodes={nfcCodes}
         fansRegistrados={fansRegistrados}
         setFansRegistrados={setFansRegistrados}
+        alIniciarReproduccion={detenerAudioPrincipal}
       />
 
       {/* Dashboard para Miembros de la Banda */}
