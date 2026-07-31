@@ -191,6 +191,27 @@ export default function Dashboard({
   const [mDesc, setMDesc] = useState("");
   const [mMensajero, setMMensajero] = useState("Cuervo Rúnico");
 
+  // Canciones Muestra de la Página Principal (30s)
+  const [cancionesHero, setCancionesHero] = useState(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("eiluve_canciones_hero");
+      if (saved) {
+        try { return JSON.parse(saved); } catch (e) {}
+      }
+    }
+    return [
+      { id: 1, titulo: "Somos Todos (Muestra 30s)", artista: "Eiluvë", enlace: "/album/04-somos-todos.mp3", portada: "/Somos todos.jpg", duracion: "0:30" },
+      { id: 2, titulo: "Tu Voz (Adelanto Místico 30s)", artista: "Eiluvë", enlace: "/album/10-tu-voz.mp3", portada: "/Tu voz.jpg", duracion: "0:30" },
+      { id: 3, titulo: "Quizás Mañana (Preview Folk 30s)", artista: "Eiluvë", enlace: "/album/07-quizas-manana.mp3", portada: "/Quizas mañana.jpg", duracion: "0:30" },
+      { id: 4, titulo: "El Matriqui del Diablo (Snippet 30s)", artista: "Eiluvë", enlace: "/album/08-paiza.mp3", portada: "/El matriqui del diablo.jpg", duracion: "0:30" }
+    ];
+  });
+  const [editHeroSongId, setEditHeroSongId] = useState(null);
+  const [hTitulo, setHTitulo] = useState("");
+  const [hArtista, setHArtista] = useState("Eiluvë");
+  const [hEnlace, setHEnlace] = useState("");
+  const [hPortada, setHPortada] = useState("");
+
   // Canciones de Mazmorras
   const [editCancionId, setEditCancionId] = useState(null);
   const [cTitulo, setCTitulo] = useState("");
@@ -1073,6 +1094,54 @@ export default function Dashboard({
       setMazmorrasData(nuevosDatos);
       localStorage.setItem("eiluve_mazmorras_data", JSON.stringify(nuevosDatos));
     }
+  };
+
+  // Gestión de Canciones Muestra de la Página Principal (30s)
+  const guardarCancionHero = (e) => {
+    e.preventDefault();
+    if (!hTitulo || !hEnlace) {
+      alert("Por favor rellena al menos el título y el archivo de audio .mp3.");
+      return;
+    }
+    let nuevasHero;
+    if (editHeroSongId) {
+      nuevasHero = cancionesHero.map((s) =>
+        s.id === editHeroSongId
+          ? { ...s, titulo: hTitulo, artista: hArtista || "Eiluvë", enlace: hEnlace, portada: hPortada || "/Somos todos.jpg", duracion: "0:30" }
+          : s
+      );
+      setEditHeroSongId(null);
+    } else {
+      const nuevoId = cancionesHero.length > 0 ? Math.max(...cancionesHero.map((s) => s.id)) + 1 : 1;
+      nuevasHero = [
+        ...cancionesHero,
+        { id: nuevoId, titulo: hTitulo, artista: hArtista || "Eiluvë", enlace: hEnlace, portada: hPortada || "/Somos todos.jpg", duracion: "0:30" }
+      ];
+    }
+    setCancionesHero(nuevasHero);
+    localStorage.setItem("eiluve_canciones_hero", JSON.stringify(nuevasHero));
+    guardarEnSupabase("eiluve_canciones_hero", nuevasHero);
+    setHTitulo("");
+    setHArtista("Eiluvë");
+    setHEnlace("");
+    setHPortada("");
+  };
+
+  const eliminarCancionHero = (id) => {
+    if (confirm("¿Deseas eliminar esta canción de la página principal?")) {
+      const nuevasHero = cancionesHero.filter((s) => s.id !== id);
+      setCancionesHero(nuevasHero);
+      localStorage.setItem("eiluve_canciones_hero", JSON.stringify(nuevasHero));
+      guardarEnSupabase("eiluve_canciones_hero", nuevasHero);
+    }
+  };
+
+  const seleccionarEditarCancionHero = (s) => {
+    setEditHeroSongId(s.id);
+    setHTitulo(s.titulo || "");
+    setHArtista(s.artista || "Eiluvë");
+    setHEnlace(s.enlace || "");
+    setHPortada(s.portada || "");
   };
 
   // Gestión de Canciones en Mazmorras
@@ -3165,14 +3234,180 @@ export default function Dashboard({
                   </div>
                 </div>
 
-                {/* 🎶 Directorio de Canciones de las Mazmorras */}
-                <div className="border-t border-[#735f3d]/20 pt-6">
-                  <h4 className="text-[#fbbf24] text-xs font-mono uppercase tracking-wider mb-4">🎶 Directorio de Canciones de las Mazmorras</h4>
+                {/* 🌟 1. CANCIONES MUESTRA DE LA PÁGINA PRINCIPAL (PREVIEWS DE 30s) */}
+                <div className="border-t-2 border-[#fbbf24]/40 pt-6 mt-6 bg-amber-950/10 p-4 rounded-lg border border-[#fbbf24]/20">
+                  <div className="flex justify-between items-center mb-3 border-b border-[#fbbf24]/20 pb-2">
+                    <h4 className="text-[#fbbf24] text-xs font-mono uppercase tracking-wider font-bold flex items-center gap-2">
+                      <span>🌟 CANCIONES DE LA PÁGINA PRINCIPAL (Muestras de 30 Segundos)</span>
+                    </h4>
+                    <span className="text-[9px] bg-[#fbbf24]/20 text-[#fbbf24] px-2 py-0.5 rounded font-mono uppercase border border-[#fbbf24]/30">
+                      30 Segundos Max
+                    </span>
+                  </div>
+                  
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                    {/* Formulario Canción */}
+                    {/* Formulario Muestras Hero */}
+                    <form onSubmit={guardarCancionHero} className="lg:col-span-5 bg-black/60 p-4 border border-[#fbbf24]/30 rounded space-y-3 shadow-lg">
+                      <h5 className="text-[#fbbf24] text-[11px] font-mono uppercase tracking-wider border-b border-[#fbbf24]/20 pb-1 mb-2">
+                        {editHeroSongId ? "🖋️ Editar Muestra Principal" : "➕ Añadir Muestra de 30s"}
+                      </h5>
+                      <div>
+                        <label className="text-[9px] text-gray-400 font-mono block">Título de la Muestra</label>
+                        <input
+                          type="text"
+                          value={hTitulo}
+                          onChange={(e) => setHTitulo(e.target.value)}
+                          className="w-full bg-black/80 border border-[#fbbf24]/30 text-xs text-white p-2 rounded focus:outline-none focus:border-[#fbbf24]"
+                          placeholder="Ej: Somos Todos (Muestra 30s)"
+                          required
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[9px] text-gray-400 font-mono block">Artista / Proyecto</label>
+                        <input
+                          type="text"
+                          value={hArtista}
+                          onChange={(e) => setHArtista(e.target.value)}
+                          className="w-full bg-black/80 border border-[#fbbf24]/30 text-xs text-white p-2 rounded focus:outline-none focus:border-[#fbbf24]"
+                          placeholder="Eiluvë"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[9px] text-gray-400 font-mono block">Ruta / Archivo de Audio (.MP3)</label>
+                        <div className="flex gap-2 items-center">
+                          <input
+                            type="text"
+                            value={hEnlace}
+                            onChange={(e) => setHEnlace(e.target.value)}
+                            className="flex-grow bg-black/80 border border-[#fbbf24]/30 text-xs text-white p-2 rounded focus:outline-none focus:border-[#fbbf24]"
+                            placeholder="/album/04-somos-todos.mp3"
+                            required
+                          />
+                          <label className="py-1.5 px-2 bg-[#fbbf24] text-black hover:bg-white font-bold font-mono text-[9px] uppercase rounded cursor-pointer transition-all shrink-0 flex items-center gap-1">
+                            <span>🎵 Subir</span>
+                            <input
+                              type="file"
+                              accept="audio/*"
+                              className="hidden"
+                              onChange={(e) => manejarSubidaArchivoAudio(e, setHEnlace)}
+                            />
+                          </label>
+                        </div>
+                      </div>
+                      <div>
+                        <label className="text-[9px] text-gray-400 font-mono block">Portada de la Muestra (Carátula Individual)</label>
+                        <div className="flex gap-2 items-center">
+                          <input
+                            type="text"
+                            value={hPortada}
+                            onChange={(e) => setHPortada(e.target.value)}
+                            className="flex-grow bg-black/80 border border-[#fbbf24]/30 text-xs text-white p-2 rounded focus:outline-none focus:border-[#fbbf24]"
+                            placeholder="/Somos todos.jpg"
+                          />
+                          <label className="py-1.5 px-2 bg-[#fbbf24] text-black hover:bg-white font-bold font-mono text-[9px] uppercase rounded cursor-pointer transition-all shrink-0 flex items-center gap-1">
+                            <span>🖼️ Portada</span>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={(e) => manejarSubidaArchivoImagen(e, setHPortada)}
+                            />
+                          </label>
+                        </div>
+                      </div>
+                      <div className="flex gap-2 pt-2">
+                        <button
+                          type="submit"
+                          className="flex-grow py-2 bg-[#fbbf24] text-black hover:bg-white font-bold font-mono text-[10px] uppercase rounded transition-colors"
+                        >
+                          {editHeroSongId ? "Guardar Muestra" : "Añadir a Página Principal"}
+                        </button>
+                        {editHeroSongId && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEditHeroSongId(null);
+                              setHTitulo("");
+                              setHArtista("Eiluvë");
+                              setHEnlace("");
+                              setHPortada("");
+                            }}
+                            className="py-2 px-3 bg-red-950/40 hover:bg-red-950 border border-red-500/30 text-red-300 font-mono text-[10px] uppercase rounded transition-colors"
+                          >
+                            Cancelar
+                          </button>
+                        )}
+                      </div>
+                    </form>
+
+                    {/* Tabla de Muestras Principal */}
+                    <div className="lg:col-span-7 space-y-2">
+                      <div className="border border-[#fbbf24]/30 rounded overflow-hidden bg-black/40">
+                        <div className="max-h-[220px] overflow-y-auto">
+                          <table className="w-full text-left border-collapse text-xs">
+                            <thead>
+                              <tr className="bg-black/80 text-[#fbbf24] font-mono border-b border-[#fbbf24]/30">
+                                <th className="p-2.5 uppercase">Pista & Carátula</th>
+                                <th className="p-2.5 uppercase">Límite</th>
+                                <th className="p-2.5 text-right uppercase">Acciones</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {cancionesHero.map((song) => (
+                                <tr key={song.id} className="border-b border-[#fbbf24]/10 hover:bg-black/60 text-gray-200">
+                                  <td className="p-2.5">
+                                    <div className="flex items-center gap-2">
+                                      <img src={song.portada || "/Somos todos.jpg"} alt={song.titulo} className="w-8 h-8 rounded border border-[#fbbf24]/40 object-cover shrink-0" />
+                                      <div>
+                                        <div className="font-bold text-white text-xs">{song.titulo}</div>
+                                        <div className="text-[9px] text-[#fbbf24] font-mono">{song.artista}</div>
+                                      </div>
+                                    </div>
+                                  </td>
+                                  <td className="p-2.5 whitespace-nowrap">
+                                    <span className="text-[9px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded font-mono border border-amber-500/30">0:30 MAX</span>
+                                  </td>
+                                  <td className="p-2.5 text-right space-x-2 whitespace-nowrap">
+                                    <button
+                                      onClick={() => seleccionarEditarCancionHero(song)}
+                                      className="text-amber-400 hover:text-white transition-colors"
+                                      title="Editar"
+                                    >
+                                      <i className="fas fa-edit"></i>
+                                    </button>
+                                    <button
+                                      onClick={() => eliminarCancionHero(song.id)}
+                                      className="text-red-400 hover:text-red-300 transition-colors"
+                                      title="Eliminar"
+                                    >
+                                      <i className="fas fa-trash-alt"></i>
+                                    </button>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 🏰 2. CANCIONES DEL GRIMORIO DE LAS MAZMORRAS (CATÁLOGO COMPLETO) */}
+                <div className="border-t border-[#735f3d]/30 pt-6 mt-6">
+                  <div className="flex justify-between items-center mb-3 border-b border-[#735f3d]/20 pb-2">
+                    <h4 className="text-[#8da382] text-xs font-mono uppercase tracking-wider font-bold flex items-center gap-2">
+                      <span>🏰 CANCIONES DE LAS MAZMORRAS (Grimorio Completo / Álbumes e Inéditas)</span>
+                    </h4>
+                    <span className="text-[9px] bg-[#8da382]/20 text-[#8da382] px-2 py-0.5 rounded font-mono uppercase border border-[#8da382]/30">
+                      Pistas Completas
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                    {/* Formulario Canción Mazmorras */}
                     <form onSubmit={guardarCancionDungeon} className="lg:col-span-5 bg-black/40 p-4 border border-[#735f3d]/20 rounded space-y-3">
                       <h5 className="text-[#8da382] text-[11px] font-mono uppercase tracking-wider border-b border-[#735f3d]/10 pb-1 mb-2">
-                        {editCancionId ? "🖋️ Editar Canción" : "➕ Añadir Canción"}
+                        {editCancionId ? "🖋️ Editar Canción del Grimorio" : "➕ Añadir al Grimorio"}
                       </h5>
                       <div>
                         <label className="text-[9px] text-gray-400 font-mono block">Título de la Canción</label>

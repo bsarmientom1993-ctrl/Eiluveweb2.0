@@ -79,16 +79,20 @@ const CANCIONES = [
 ];
 
 export default function Home() {
+  const [cancionesHeroState, setCancionesHeroState] = useState(CANCIONES);
   const [indiceCancion, setIndiceCancion] = useState(0);
   const [reproduciendo, setReproduciendo] = useState(false);
   const [progreso, setProgreso] = useState(0);
   const [tiempoActual, setTiempoActual] = useState("0:00");
   const [portalActivo, setPortalActivo] = useState(false);
-  const [tiempoTotal, setTiempoTotal] = useState("0:00");
+  const [tiempoTotal, setTiempoTotal] = useState("0:30");
   const [cargando, setCargando] = useState(true);
   const [mazmorrasAbierta, setMazmorrasAbierta] = useState(false);
   const [dashboardAbierto, setDashboardAbierto] = useState(false);
   const [esMovil, setEsMovil] = useState(false);
+
+  const listaCanciones = cancionesHeroState && cancionesHeroState.length > 0 ? cancionesHeroState : CANCIONES;
+  const cancionActualHero = listaCanciones[indiceCancion] || listaCanciones[0] || CANCIONES[0];
 
   // Estados dinámicos gestionados desde el Dashboard y persistidos en localStorage
   const [heroBg, setHeroBg] = useState("/hero_background.jpg");
@@ -323,6 +327,9 @@ Somos Todos, Somos Eilúve.`,
 
       const savedMensajesContacto = localStorage.getItem("eiluve_mensajes_contacto");
       if (savedMensajesContacto) setMensajesContacto(JSON.parse(savedMensajesContacto));
+
+      const savedCancionesHero = localStorage.getItem("eiluve_canciones_hero");
+      if (savedCancionesHero) setCancionesHeroState(JSON.parse(savedCancionesHero));
     }
   }, []);
 
@@ -330,6 +337,7 @@ Somos Todos, Somos Eilúve.`,
   useEffect(() => {
     const sincronizarSupabase = async () => {
       const mapeoClaves = [
+        { key: "eiluve_canciones_hero", setter: setCancionesHeroState },
         { key: "eiluve_mazmorras_data", setter: setMazmorrasData },
         { key: "eiluve_conciertos", setter: setConciertos },
         { key: "eiluve_bio", setter: setBio },
@@ -654,7 +662,7 @@ Somos Todos, Somos Eilúve.`,
       {/* Reproductor de Audio Oculto */}
       <audio
         ref={reproductorRef}
-        src={CANCIONES[indiceCancion].enlace}
+        src={cancionActualHero.enlace}
         onTimeUpdate={manejarActualizacionTiempo}
         onLoadedMetadata={manejarMetadatosCargados}
         onEnded={manejarFinAudio}
@@ -797,13 +805,13 @@ Somos Todos, Somos Eilúve.`,
           <Presentacion
             presentacion={presentacion}
             heroBg={heroBg}
-            activeCover={CANCIONES[indiceCancion].portada || "/Somos todos.jpg"}
+            activeCover={cancionActualHero.portada || "/Somos todos.jpg"}
             socialLinks={links}
           />
         </main>
 
         <Widgets
-          cancionActual={CANCIONES[indiceCancion]}
+          cancionActual={cancionActualHero}
           reproduciendo={reproduciendo}
           alternarReproduccion={alternarReproduccion}
           progreso={progreso}
