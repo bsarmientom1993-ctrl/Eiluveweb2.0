@@ -45,32 +45,36 @@ const ACTIVAR_PARALLAX = false;
 // 2. Configura el campo 'enlace' con la ruta del archivo (ej: enlace: "/somos_todos.mp3")
 const CANCIONES = [
   {
-    titulo: "Somos Todos",
+    id: 1,
+    titulo: "Somos Todos (Muestra 30s)",
     artista: "Eiluvë",
-    enlace: "/somos-todos.mp3",
-    portada: "/somos-todos.jpg",
-    duracion: "6:12",
+    enlace: "/album/04-somos-todos.mp3",
+    portada: "/Somos todos.jpg",
+    duracion: "0:30",
   },
   {
-    titulo: "Tú Voz",
+    id: 2,
+    titulo: "Tu Voz (Adelanto Místico 30s)",
     artista: "Eiluvë",
-    enlace: "/tu-voz.mp3",
-    portada: "/Portada.jpg",
-    duracion: "7:05",
+    enlace: "/album/10-tu-voz.mp3",
+    portada: "/Tu voz.jpg",
+    duracion: "0:30",
   },
   {
-    titulo: "Quizás manaña",
+    id: 3,
+    titulo: "Quizás Mañana (Preview Folk 30s)",
     artista: "Eiluvë",
-    enlace: "/quizas-manana.mp3",
-    portada: "/Portada.jpg",
-    duracion: "5:44",
+    enlace: "/album/07-quizas-manana.mp3",
+    portada: "/Quizas mañana.jpg",
+    duracion: "0:30",
   },
   {
-    titulo: "El matriqui del diablo",
+    id: 4,
+    titulo: "El Matriqui del Diablo (Snippet 30s)",
     artista: "Eiluvë",
-    enlace: "/el-matriqui-del-diablo.mp3",
-    portada: "/el-matriqui-del-diablo.jpg",
-    duracion: "5:44",
+    enlace: "/album/08-paiza.mp3",
+    portada: "/El matriqui del diablo.jpg",
+    duracion: "0:30",
   }
 ];
 
@@ -486,17 +490,19 @@ Somos Todos, Somos Eilúve.`,
     reproducirCancion(nuevoIndice);
   };
 
-  // Manejar el desplazamiento desde la barra de progreso
+  const LIMITE_PREVIEW_SEGUNDOS = 30;
+
+  // Manejar el desplazamiento desde la barra de progreso (limitado a 30s)
   const desplazar = (porcentaje) => {
-    if (!reproductorRef.current || !reproductorRef.current.duration) return;
-    const nuevoTiempo = porcentaje * reproductorRef.current.duration;
+    if (!reproductorRef.current) return;
+    const nuevoTiempo = porcentaje * LIMITE_PREVIEW_SEGUNDOS;
     reproductorRef.current.currentTime = nuevoTiempo;
-    setProgress(porcentaje * 100);
+    setProgreso(porcentaje * 100);
   };
 
   const adelantarDiezSegundos = () => {
     if (!reproductorRef.current) return;
-    reproductorRef.current.currentTime = Math.min(reproductorRef.current.duration, reproductorRef.current.currentTime + 10);
+    reproductorRef.current.currentTime = Math.min(LIMITE_PREVIEW_SEGUNDOS - 0.5, reproductorRef.current.currentTime + 10);
   };
 
   const retrocederDiezSegundos = () => {
@@ -504,27 +510,27 @@ Somos Todos, Somos Eilúve.`,
     reproductorRef.current.currentTime = Math.max(0, reproductorRef.current.currentTime - 10);
   };
 
-  const setProgress = (valor) => {
-    setProgreso(valor);
-  };
-
-  // Actualizar la barra y el tiempo actual
+  // Actualizar la barra y el tiempo actual (con límite estricto de 30s)
   const manejarActualizacionTiempo = () => {
     if (!reproductorRef.current) return;
     const actual = reproductorRef.current.currentTime;
-    const total = reproductorRef.current.duration || 0;
+
+    if (actual >= LIMITE_PREVIEW_SEGUNDOS) {
+      reproductorRef.current.pause();
+      reproductorRef.current.currentTime = 0;
+      setReproduciendo(false);
+      siguienteCancion();
+      return;
+    }
 
     setTiempoActual(formatearTiempo(actual));
-
-    if (total > 0) {
-      setProgreso((actual / total) * 100);
-    }
+    setProgreso((actual / LIMITE_PREVIEW_SEGUNDOS) * 100);
+    setTiempoTotal("0:30");
   };
 
-  // Actualizar duración del audio al cargarse metadatos
+  // Fijar duración del audio de muestra a 0:30
   const manejarMetadatosCargados = () => {
-    if (!reproductorRef.current) return;
-    setTiempoTotal(formatearTiempo(reproductorRef.current.duration));
+    setTiempoTotal("0:30");
   };
 
   // Reproducir la siguiente canción automáticamente cuando termine la actual
