@@ -147,6 +147,24 @@ export default function Dashboard({
   const [galeriaImg3, setGaleriaImg3] = useState(galeria?.[2] || "");
   const [galeriaImg4, setGaleriaImg4] = useState(galeria?.[3] || "");
 
+  const [supabaseConectado, setSupabaseConectado] = useState(true);
+
+  // Verificar estado de conexión con la nube de Supabase al cargar el Dashboard
+  useEffect(() => {
+    if (abierto) {
+      fetch("/api/store?key=eiluve_conciertos")
+        .then((res) => res.json())
+        .then((json) => {
+          if (json && json.configured === false) {
+            setSupabaseConectado(false);
+          } else {
+            setSupabaseConectado(true);
+          }
+        })
+        .catch(() => setSupabaseConectado(false));
+    }
+  }, [abierto]);
+
   // Campos para Añadir/Editar Conciertos
   const [editId, setEditId] = useState(null);
   const [cFecha, setCFecha] = useState(() => {
@@ -2020,6 +2038,19 @@ export default function Dashboard({
                 <span className="text-gray-600">•</span>
                 <span className="text-[#8da382]">{usuarioActual ? usuarioActual.nombre : "Administrador Maestro"} ({usuarioActual ? usuarioActual.rol : "Maestro del Portal"})</span>
               </p>
+              <div className="mt-1.5">
+                {supabaseConectado ? (
+                  <span className="text-[10px] bg-emerald-950/60 text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30 font-mono inline-flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    ☁️ Sincronización en la Nube Activa (Supabase Conectado)
+                  </span>
+                ) : (
+                  <span className="text-[10px] bg-amber-950/80 text-amber-300 px-2 py-0.5 rounded border border-amber-500/50 font-mono inline-flex items-center gap-1.5" title="Faltan las variables de entorno NEXT_PUBLIC_SUPABASE_URL y NEXT_PUBLIC_SUPABASE_ANON_KEY en Vercel">
+                    <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+                    ⚠️ Modo Solo Navegador (Configura Supabase en Vercel para sincronizar otros dispositivos)
+                  </span>
+                )}
+              </div>
             </div>
             <div className="flex items-center gap-2">
               <button
