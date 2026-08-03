@@ -848,6 +848,7 @@ export default function Dashboard({
     };
     setBio(nuevaBio);
     localStorage.setItem("eiluve_bio", JSON.stringify(nuevaBio));
+    guardarEnSupabase("eiluve_bio", nuevaBio);
     alert("¡Leyenda rúnica guardada con éxito!");
   };
 
@@ -861,6 +862,7 @@ export default function Dashboard({
     };
     setPresentacion(nuevaPres);
     localStorage.setItem("eiluve_presentacion", JSON.stringify(nuevaPres));
+    guardarEnSupabase("eiluve_presentacion", nuevaPres);
     alert("¡Textos de presentación de página principal guardados con éxito!");
   };
 
@@ -872,6 +874,7 @@ export default function Dashboard({
     };
     setMerch(nuevoMerch);
     localStorage.setItem("eiluve_merch", JSON.stringify(nuevoMerch));
+    guardarEnSupabase("eiluve_merch", nuevoMerch);
     alert("¡Fotos y enlaces de merchandising guardados con éxito!");
   };
 
@@ -885,6 +888,7 @@ export default function Dashboard({
     ];
     setGaleria(nuevaGaleria);
     localStorage.setItem("eiluve_galeria", JSON.stringify(nuevaGaleria));
+    guardarEnSupabase("eiluve_galeria", nuevaGaleria);
     alert("¡Mini galería de fotos guardada con éxito!");
   };
 
@@ -904,6 +908,8 @@ export default function Dashboard({
     setHeroBg(heroBgPath);
     localStorage.setItem("eiluve_links", JSON.stringify(nuevosLinks));
     localStorage.setItem("eiluve_hero_bg", heroBgPath);
+    guardarEnSupabase("eiluve_links", nuevosLinks);
+    guardarEnSupabase("eiluve_hero_bg", heroBgPath);
 
     // Guardar la foto de la banda de la biografía que se edita en esta misma pestaña
     const nuevaBio = {
@@ -921,6 +927,7 @@ export default function Dashboard({
     };
     setBio(nuevaBio);
     localStorage.setItem("eiluve_bio", JSON.stringify(nuevaBio));
+    guardarEnSupabase("eiluve_bio", nuevaBio);
 
     alert("¡Enlaces, fondo del portal y foto de la banda guardados con éxito!");
   };
@@ -973,6 +980,7 @@ export default function Dashboard({
 
     setNoticias(nuevasNoticias);
     localStorage.setItem("eiluve_noticias", JSON.stringify(nuevasNoticias));
+    guardarEnSupabase("eiluve_noticias", nuevasNoticias);
 
     // Reset
     setNoticiaFecha("");
@@ -1004,6 +1012,7 @@ export default function Dashboard({
       const nuevas = noticias.filter((n) => n.id !== id);
       setNoticias(nuevas);
       localStorage.setItem("eiluve_noticias", JSON.stringify(nuevas));
+      guardarEnSupabase("eiluve_noticias", nuevas);
       registrarLogAuditoria(`Eliminó la crónica "${borrada?.titulo || id}"`, "Crónicas");
     }
   };
@@ -1029,6 +1038,7 @@ export default function Dashboard({
 
     setNoticias(items);
     localStorage.setItem("eiluve_noticias", JSON.stringify(items));
+    guardarEnSupabase("eiluve_noticias", items);
     setDraggedIndex(null);
   };
 
@@ -1045,6 +1055,7 @@ export default function Dashboard({
     };
     setMazmorrasData(nuevosDatos);
     localStorage.setItem("eiluve_mazmorras_data", JSON.stringify(nuevosDatos));
+    guardarEnSupabase("eiluve_mazmorras_data", nuevosDatos);
     alert("¡Código del sello rúnico actualizado con éxito!");
   };
 
@@ -1085,6 +1096,7 @@ export default function Dashboard({
 
     setMazmorrasData(nuevosDatos);
     localStorage.setItem("eiluve_mazmorras_data", JSON.stringify(nuevosDatos));
+    guardarEnSupabase("eiluve_mazmorras_data", nuevosDatos);
 
     // Reset
     setMNombre("");
@@ -1111,6 +1123,7 @@ export default function Dashboard({
       };
       setMazmorrasData(nuevosDatos);
       localStorage.setItem("eiluve_mazmorras_data", JSON.stringify(nuevosDatos));
+      guardarEnSupabase("eiluve_mazmorras_data", nuevosDatos);
     }
   };
 

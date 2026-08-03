@@ -347,7 +347,9 @@ Somos Todos, Somos Eilúve.`,
         { key: "eiluve_links", setter: setLinks },
         { key: "eiluve_hero_bg", setter: setHeroBg },
         { key: "eiluve_destacados", setter: setDestacados },
-        { key: "eiluve_frases_carga", setter: setFrasesCarga }
+        { key: "eiluve_frases_carga", setter: setFrasesCarga },
+        { key: "eiluve_galeria", setter: setGaleria },
+        { key: "eiluve_nfc_codes", setter: setNfcCodes }
       ];
 
       for (const item of mapeoClaves) {
