@@ -776,7 +776,10 @@ export default function Dashboard({
 
   // Funciones para gestionar integrantes de biografía (destacados)
   const agregarIntegrante = () => {
-    if (!nuevoDestTitulo.trim() || !nuevoDestSubtitulo.trim()) return;
+    if (!nuevoDestTitulo.trim() || !nuevoDestSubtitulo.trim()) {
+      alert("Por favor introduce el nombre y rol del integrante.");
+      return;
+    }
     const nuevo = {
       titulo: nuevoDestTitulo.trim(),
       subtitulo: nuevoDestSubtitulo.trim(),
@@ -791,6 +794,14 @@ export default function Dashboard({
     }
     setDestacados(actualizados);
     localStorage.setItem("eiluve_destacados", JSON.stringify(actualizados));
+    guardarEnSupabase("eiluve_destacados", actualizados);
+
+    // Guardar también en bio
+    const nuevaBio = { ...bio, destacados: actualizados };
+    setBio(nuevaBio);
+    localStorage.setItem("eiluve_bio", JSON.stringify(nuevaBio));
+    guardarEnSupabase("eiluve_bio", nuevaBio);
+
     setNuevoDestTitulo("");
     setNuevoDestSubtitulo("");
     setNuevoDestColor("#735f3d");
@@ -809,6 +820,14 @@ export default function Dashboard({
       const actualizados = destacados.filter((_, i) => i !== index);
       setDestacados(actualizados);
       localStorage.setItem("eiluve_destacados", JSON.stringify(actualizados));
+      guardarEnSupabase("eiluve_destacados", actualizados);
+
+      // Guardar también en bio
+      const nuevaBio = { ...bio, destacados: actualizados };
+      setBio(nuevaBio);
+      localStorage.setItem("eiluve_bio", JSON.stringify(nuevaBio));
+      guardarEnSupabase("eiluve_bio", nuevaBio);
+
       if (editIntegranteIndex === index) {
         setEditIntegranteIndex(null);
         setNuevoDestTitulo("");
@@ -824,6 +843,7 @@ export default function Dashboard({
     const actualizadas = [...frases, nuevaFrase.trim()];
     setFrases(actualizadas);
     localStorage.setItem("eiluve_frases_carga", JSON.stringify(actualizadas));
+    guardarEnSupabase("eiluve_frases_carga", actualizadas);
     setNuevaFrase("");
   };
 
@@ -831,33 +851,37 @@ export default function Dashboard({
     const actualizadas = frases.filter((_, i) => i !== index);
     setFrases(actualizadas);
     localStorage.setItem("eiluve_frases_carga", JSON.stringify(actualizadas));
+    guardarEnSupabase("eiluve_frases_carga", actualizadas);
   };
 
   // Guardar Cambios de Biografía
   const guardarBio = () => {
-    const nuevosDestacados = [
-      { titulo: dest1T, subtitulo: dest1S, colorBorde: "#735f3d" },
-      { titulo: dest2T, subtitulo: dest2S, colorBorde: "#8da382" }
-    ];
+    const listaIntegrantes = destacados && destacados.length > 0
+      ? destacados
+      : [
+          { titulo: dest1T || "Valerius", subtitulo: dest1S || "Voz y Zanfoña", colorBorde: "#735f3d" },
+          { titulo: dest2T || "El Bestiario", subtitulo: dest2S || "Batería Jurásica", colorBorde: "#8da382" }
+        ];
+
     const nuevaBio = {
       titulo: bioTitulo,
       cita: bioCita,
       historia: bioHistoria,
       imagenRuta: bioImg,
       imagenAlt: "Banda Eiluvë en el bosque",
-      destacados: nuevosDestacados
+      destacados: listaIntegrantes
     };
     setBio(nuevaBio);
     localStorage.setItem("eiluve_bio", JSON.stringify(nuevaBio));
     guardarEnSupabase("eiluve_bio", nuevaBio);
 
     if (setDestacados) {
-      setDestacados(nuevosDestacados);
-      localStorage.setItem("eiluve_destacados", JSON.stringify(nuevosDestacados));
-      guardarEnSupabase("eiluve_destacados", nuevosDestacados);
+      setDestacados(listaIntegrantes);
+      localStorage.setItem("eiluve_destacados", JSON.stringify(listaIntegrantes));
+      guardarEnSupabase("eiluve_destacados", listaIntegrantes);
     }
 
-    alert("¡Leyenda rúnica e integrantes destacados guardados con éxito!");
+    alert("¡Leyenda rúnica e integrantes del clan guardados con éxito!");
   };
 
   // Guardar Cambios del Hero (Presentación)
