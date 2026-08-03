@@ -835,21 +835,29 @@ export default function Dashboard({
 
   // Guardar Cambios de Biografía
   const guardarBio = () => {
+    const nuevosDestacados = [
+      { titulo: dest1T, subtitulo: dest1S, colorBorde: "#735f3d" },
+      { titulo: dest2T, subtitulo: dest2S, colorBorde: "#8da382" }
+    ];
     const nuevaBio = {
       titulo: bioTitulo,
       cita: bioCita,
       historia: bioHistoria,
       imagenRuta: bioImg,
       imagenAlt: "Banda Eiluvë en el bosque",
-      destacados: [
-        { titulo: dest1T, subtitulo: dest1S, colorBorde: "#735f3d" },
-        { titulo: dest2T, subtitulo: dest2S, colorBorde: "#8da382" }
-      ]
+      destacados: nuevosDestacados
     };
     setBio(nuevaBio);
     localStorage.setItem("eiluve_bio", JSON.stringify(nuevaBio));
     guardarEnSupabase("eiluve_bio", nuevaBio);
-    alert("¡Leyenda rúnica guardada con éxito!");
+
+    if (setDestacados) {
+      setDestacados(nuevosDestacados);
+      localStorage.setItem("eiluve_destacados", JSON.stringify(nuevosDestacados));
+      guardarEnSupabase("eiluve_destacados", nuevosDestacados);
+    }
+
+    alert("¡Leyenda rúnica e integrantes destacados guardados con éxito!");
   };
 
   // Guardar Cambios del Hero (Presentación)

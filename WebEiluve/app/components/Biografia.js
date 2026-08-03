@@ -40,7 +40,11 @@ export default function Biografia({ bio, galeria = [], destacados = [] }) {
     "/biografia/bio4.jpg"
   ];
 
-  const destacadosLista = destacados && destacados.length > 0 ? destacados : (data.destacados || []);
+  const destacadosLista = (bio && bio.destacados && bio.destacados.length > 0)
+    ? bio.destacados
+    : (destacados && destacados.length > 0)
+      ? destacados
+      : (CONFIG_LEYENDA.destacados || []);
 
   const [fotoPrincipal, setFotoPrincipal] = useState(galeriaFotos[0]);
   const [imgAnim, setImgAnim] = useState(false);
