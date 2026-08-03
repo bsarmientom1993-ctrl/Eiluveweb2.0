@@ -357,8 +357,14 @@ Somos Todos, Somos Eilúve.`,
           const res = await fetch(`/api/store?key=${item.key}`);
           const resJson = await res.json();
           if (resJson && resJson.configured && resJson.data) {
-            item.setter(resJson.data);
-            localStorage.setItem(item.key, typeof resJson.data === "string" ? resJson.data : JSON.stringify(resJson.data));
+            let parsedData = resJson.data;
+            if (typeof parsedData === "string") {
+              try {
+                parsedData = JSON.parse(parsedData);
+              } catch (e) {}
+            }
+            item.setter(parsedData);
+            localStorage.setItem(item.key, typeof parsedData === "string" ? parsedData : JSON.stringify(parsedData));
           }
         } catch (e) {
           // Si no hay conexión o falla la API, mantiene la hidratación local
