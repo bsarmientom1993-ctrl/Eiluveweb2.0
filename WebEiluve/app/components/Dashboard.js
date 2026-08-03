@@ -1393,6 +1393,33 @@ export default function Dashboard({
     }
   };
 
+  // Sincronizar todos los datos del dashboard a Supabase manualmente
+  const sincronizarTodoASupabase = async () => {
+    try {
+      const mapa = [
+        { key: "eiluve_bio", value: bio },
+        { key: "eiluve_conciertos", value: conciertos },
+        { key: "eiluve_noticias", value: noticias },
+        { key: "eiluve_presentacion", value: presentacion },
+        { key: "eiluve_merch", value: merch },
+        { key: "eiluve_mazmorras_data", value: mazmorrasData },
+        { key: "eiluve_galeria", value: galeria },
+        { key: "eiluve_links", value: links },
+        { key: "eiluve_hero_bg", value: heroBg },
+        { key: "eiluve_canciones_hero", value: cancionesHero }
+      ];
+
+      for (const item of mapa) {
+        if (item.value !== undefined && item.value !== null) {
+          await guardarEnSupabase(item.key, item.value);
+        }
+      }
+      alert("¡Todos los datos del portal (biografía, integrantes, fotos, canciones) han sido sincronizados exitosamente con Supabase! Ahora se verán en todos los teléfonos y dispositivos.");
+    } catch (e) {
+      alert("Error al sincronizar con la nube de Supabase.");
+    }
+  };
+
   // Agregar o Editar Código NFC
   const guardarNfcCode = (e) => {
     e.preventDefault();
@@ -2066,6 +2093,15 @@ export default function Dashboard({
               </div>
             </div>
             <div className="flex items-center gap-2">
+              {supabaseConectado && (
+                <button
+                  onClick={sincronizarTodoASupabase}
+                  className="py-1.5 px-3 border border-emerald-500/60 bg-emerald-950/40 hover:bg-emerald-500 text-emerald-300 hover:text-black text-xs font-mono rounded transition-all flex items-center gap-1.5 cursor-pointer font-bold shadow-[0_0_10px_rgba(16,185,129,0.2)]"
+                  title="Enviar toda la biografía, fotos, canciones e integrantes a Supabase para que se vean en celulares"
+                >
+                  ☁️ Sincronizar Todo a Nube
+                </button>
+              )}
               <button
                 onClick={() => {
                   const dataCompleta = {
