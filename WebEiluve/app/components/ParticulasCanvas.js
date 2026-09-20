@@ -270,8 +270,8 @@ export default function ParticulasCanvas() {
     redimensionarCanvas();
 
     const esMovilCanvas = typeof window !== "undefined" && window.innerWidth < 768;
-    const maxParticulas = esMovilCanvas ? 28 : 70;
-    const cantidadParticulas = Math.min(maxParticulas, Math.floor(canvas.width / (esMovilCanvas ? 20 : 16)));
+    const maxParticulas = esMovilCanvas ? 16 : 70;
+    const cantidadParticulas = Math.min(maxParticulas, Math.floor(canvas.width / (esMovilCanvas ? 25 : 16)));
     for (let i = 0; i < cantidadParticulas; i++) {
       particulas.push(new Particula());
     }
