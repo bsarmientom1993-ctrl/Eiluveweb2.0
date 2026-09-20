@@ -1051,9 +1051,15 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
   };
 
 
-  // CONTROL DE TABS: Transición 3D de Volteo de Página de Libro
+  // CONTROL DE TABS: Transición 3D de Volteo de Página de Libro (Instantáneo en Móvil)
   const cambiarPestanaConLibro = (nuevaPestana) => {
     if (nuevaPestana === pestanaActiva || paginaVolteando) return;
+
+    const esMovil = typeof window !== "undefined" && window.innerWidth < 768;
+    if (esMovil) {
+      setPestanaActiva(nuevaPestana);
+      return;
+    }
 
     setPestanaSiguiente(nuevaPestana);
     setPaginaVolteando(true);
@@ -2537,93 +2543,88 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
               </button>
             </div>
 
-            {/* Placa Horizontal de Pestañas Rúnicas (Proporcionada al 100% para Todas las Pantallas) */}
-            <div className="w-full p-1 sm:p-2 bg-[#080604] border-2 border-[#523d26]/80 rounded-md shadow-[inset_0_0_20px_rgba(0,0,0,0.95)] z-30 overflow-x-auto">
-              <div className="grid grid-cols-3 sm:grid-cols-5 gap-1 sm:gap-2 md:gap-3 w-full min-w-[300px]">
+            {/* Placa Horizontal de Pestañas Rúnicas (Adaptada para Móviles y Escritorio) */}
+            <div className="w-full p-1.5 sm:p-2 bg-[#080604] border-2 border-[#523d26]/80 rounded-md shadow-[inset_0_0_20px_rgba(0,0,0,0.95)] z-30 overflow-x-auto">
+              <div className="flex sm:grid sm:grid-cols-5 gap-1 sm:gap-2 md:gap-3 w-full min-w-full justify-between">
                 
                 {/* Tab 1: Grimorio */}
                 <button
                   onClick={() => cambiarPestanaConLibro("audios")}
-                  className={`group w-full min-w-0 px-1 sm:px-2 py-1.5 sm:py-2.5 text-[9px] sm:text-xs md:text-sm tracking-wider font-bold uppercase transition-all duration-300 font-serif rounded flex items-center justify-center gap-1 border ${
+                  className={`group flex-1 min-w-[56px] sm:min-w-0 px-1 sm:px-2 py-2 sm:py-2.5 text-[9px] sm:text-xs md:text-sm tracking-wider font-bold uppercase transition-all duration-300 font-serif rounded flex flex-col sm:flex-row items-center justify-center gap-1 border shrink-0 ${
                     pestanaActiva === "audios"
                       ? "bg-gradient-to-b from-[#4d3a1f] via-[#2c2010] to-[#120c06] text-[#fef08a] border-[#fbbf24] shadow-[0_0_15px_rgba(251,191,36,0.5),inset_0_0_8px_rgba(251,191,36,0.3)] scale-[1.02]"
                       : "bg-[#0f0c08] text-[#a89575]/80 border-[#3b2b1a]/60 hover:text-[#fef08a] hover:border-[#735f3d] hover:bg-[#1a130b]"
                   }`}
                   style={{ fontFamily: "'Cinzel', serif" }}
                 >
-                  <span className="text-amber-400 text-xs sm:text-sm md:text-base group-hover:scale-125 transition-transform duration-300 filter drop-shadow-[0_0_6px_rgba(251,191,36,0.7)] shrink-0">
+                  <span className="text-amber-400 text-sm sm:text-base group-hover:scale-125 transition-transform duration-300 filter drop-shadow-[0_0_6px_rgba(251,191,36,0.7)] shrink-0">
                     <i className="fas fa-book-skull"></i>
                   </span>
-                  <span className="text-[9px] sm:text-xs text-amber-500/90 font-serif select-none font-bold shrink-0 hidden xs:inline">ᚠ</span>
-                  <span className="truncate">Grimorio</span>
+                  <span className="truncate text-[9px] sm:text-xs">Grimorio</span>
                 </button>
 
                 {/* Tab 2: Visiones */}
                 <button
                   onClick={() => cambiarPestanaConLibro("fotos")}
-                  className={`group w-full min-w-0 px-1 sm:px-2 py-1.5 sm:py-2.5 text-[9px] sm:text-xs md:text-sm tracking-wider font-bold uppercase transition-all duration-300 font-serif rounded flex items-center justify-center gap-1 border ${
+                  className={`group flex-1 min-w-[56px] sm:min-w-0 px-1 sm:px-2 py-2 sm:py-2.5 text-[9px] sm:text-xs md:text-sm tracking-wider font-bold uppercase transition-all duration-300 font-serif rounded flex flex-col sm:flex-row items-center justify-center gap-1 border shrink-0 ${
                     pestanaActiva === "fotos"
                       ? "bg-gradient-to-b from-[#0e3b4a] via-[#07212b] to-[#040e13] text-[#7dd3fc] border-cyan-400 shadow-[0_0_15px_rgba(56,189,248,0.5),inset_0_0_8px_rgba(56,189,248,0.3)] scale-[1.02]"
                       : "bg-[#0f0c08] text-[#a89575]/80 border-[#3b2b1a]/60 hover:text-[#7dd3fc] hover:border-cyan-700 hover:bg-[#0a171e]"
                   }`}
                   style={{ fontFamily: "'Cinzel', serif" }}
                 >
-                  <span className="text-cyan-400 text-xs sm:text-sm md:text-base group-hover:scale-125 transition-transform duration-300 filter drop-shadow-[0_0_6px_rgba(56,189,248,0.7)] shrink-0">
+                  <span className="text-cyan-400 text-sm sm:text-base group-hover:scale-125 transition-transform duration-300 filter drop-shadow-[0_0_6px_rgba(56,189,248,0.7)] shrink-0">
                     <i className="fas fa-eye"></i>
                   </span>
-                  <span className="text-[9px] sm:text-xs text-cyan-400/90 font-serif select-none font-bold shrink-0 hidden xs:inline">ᚦ</span>
-                  <span className="truncate">Visiones</span>
+                  <span className="truncate text-[9px] sm:text-xs">Visiones</span>
                 </button>
 
                 {/* Tab 3: Rituales */}
                 <button
                   onClick={() => cambiarPestanaConLibro("clips")}
-                  className={`group w-full min-w-0 px-1 sm:px-2 py-1.5 sm:py-2.5 text-[9px] sm:text-xs md:text-sm tracking-wider font-bold uppercase transition-all duration-300 font-serif rounded flex items-center justify-center gap-1 border ${
+                  className={`group flex-1 min-w-[56px] sm:min-w-0 px-1 sm:px-2 py-2 sm:py-2.5 text-[9px] sm:text-xs md:text-sm tracking-wider font-bold uppercase transition-all duration-300 font-serif rounded flex flex-col sm:flex-row items-center justify-center gap-1 border shrink-0 ${
                     pestanaActiva === "clips"
                       ? "bg-gradient-to-b from-[#4a240c] via-[#281205] to-[#120701] text-[#fed7aa] border-orange-400 shadow-[0_0_15px_rgba(249,115,22,0.5),inset_0_0_8px_rgba(249,115,22,0.3)] scale-[1.02]"
                       : "bg-[#0f0c08] text-[#a89575]/80 border-[#3b2b1a]/60 hover:text-[#fed7aa] hover:border-orange-700 hover:bg-[#1a0e06]"
                   }`}
                   style={{ fontFamily: "'Cinzel', serif" }}
                 >
-                  <span className="text-orange-500 text-xs sm:text-sm md:text-base group-hover:scale-125 transition-transform duration-300 filter drop-shadow-[0_0_6px_rgba(249,115,22,0.8)] animate-pulse shrink-0">
+                  <span className="text-orange-500 text-sm sm:text-base group-hover:scale-125 transition-transform duration-300 filter drop-shadow-[0_0_6px_rgba(249,115,22,0.8)] animate-pulse shrink-0">
                     <i className="fas fa-fire-alt"></i>
                   </span>
-                  <span className="text-[9px] sm:text-xs text-orange-400/90 font-serif select-none font-bold shrink-0 hidden xs:inline">ᛉ</span>
-                  <span className="truncate">Rituales</span>
+                  <span className="truncate text-[9px] sm:text-xs">Rituales</span>
                 </button>
 
                 {/* Tab 4: Alianza */}
                 <button
                   onClick={() => cambiarPestanaConLibro("contacto")}
-                  className={`group w-full min-w-0 px-1 sm:px-2 py-1.5 sm:py-2.5 text-[9px] sm:text-xs md:text-sm tracking-wider font-bold uppercase transition-all duration-300 font-serif rounded flex items-center justify-center gap-1 border ${
+                  className={`group flex-1 min-w-[56px] sm:min-w-0 px-1 sm:px-2 py-2 sm:py-2.5 text-[9px] sm:text-xs md:text-sm tracking-wider font-bold uppercase transition-all duration-300 font-serif rounded flex flex-col sm:flex-row items-center justify-center gap-1 border shrink-0 ${
                     pestanaActiva === "contacto"
                       ? "bg-gradient-to-b from-[#0c3b28] via-[#052115] to-[#020e08] text-[#a7f3d0] border-emerald-400 shadow-[0_0_15px_rgba(52,211,153,0.5),inset_0_0_8px_rgba(52,211,153,0.3)] scale-[1.02]"
                       : "bg-[#0f0c08] text-[#a89575]/80 border-[#3b2b1a]/60 hover:text-[#a7f3d0] hover:border-emerald-700 hover:bg-[#091a12]"
                   }`}
                   style={{ fontFamily: "'Cinzel', serif" }}
                 >
-                  <span className="text-emerald-400 text-xs sm:text-sm md:text-base group-hover:scale-125 transition-transform duration-300 filter drop-shadow-[0_0_6px_rgba(52,211,153,0.7)] shrink-0">
+                  <span className="text-emerald-400 text-sm sm:text-base group-hover:scale-125 transition-transform duration-300 filter drop-shadow-[0_0_6px_rgba(52,211,153,0.7)] shrink-0">
                     <i className="fas fa-shield-halved"></i>
                   </span>
-                  <span className="text-[9px] sm:text-xs text-emerald-400/90 font-serif select-none font-bold shrink-0 hidden xs:inline">ᛗ</span>
-                  <span className="truncate">Alianza</span>
+                  <span className="truncate text-[9px] sm:text-xs">Alianza</span>
                 </button>
 
                 {/* Tab 5: Buzón */}
                 <button
                   onClick={() => cambiarPestanaConLibro("buzon")}
-                  className={`group w-full min-w-0 px-1 sm:px-2 py-1.5 sm:py-2.5 text-[9px] sm:text-xs md:text-sm tracking-wider font-bold uppercase transition-all duration-300 font-serif rounded flex items-center justify-center gap-1 border ${
+                  className={`group flex-1 min-w-[56px] sm:min-w-0 px-1 sm:px-2 py-2 sm:py-2.5 text-[9px] sm:text-xs md:text-sm tracking-wider font-bold uppercase transition-all duration-300 font-serif rounded flex flex-col sm:flex-row items-center justify-center gap-1 border shrink-0 ${
                     pestanaActiva === "buzon"
                       ? "bg-gradient-to-b from-[#3b124a] via-[#1f0929] to-[#0c0312] text-[#f5d0fe] border-purple-400 shadow-[0_0_15px_rgba(192,132,252,0.5),inset_0_0_8px_rgba(192,132,252,0.3)] scale-[1.02]"
                       : "bg-[#0f0c08] text-[#a89575]/80 border-[#3b2b1a]/60 hover:text-[#f5d0fe] hover:border-purple-700 hover:bg-[#15071c]"
                   }`}
                   style={{ fontFamily: "'Cinzel', serif" }}
                 >
-                  <span className="text-purple-400 text-xs sm:text-sm md:text-base group-hover:scale-125 transition-transform duration-300 filter drop-shadow-[0_0_6px_rgba(192,132,252,0.7)] shrink-0">
+                  <span className="text-purple-400 text-sm sm:text-base group-hover:scale-125 transition-transform duration-300 filter drop-shadow-[0_0_6px_rgba(192,132,252,0.7)] shrink-0">
                     <i className="fas fa-feather-pointed"></i>
                   </span>
-                  <span className="text-[9px] sm:text-xs text-purple-400/90 font-serif select-none font-bold shrink-0 hidden xs:inline">ᚺ</span>
-                  <span className="truncate">Buzón</span>
+                  <span className="truncate text-[9px] sm:text-xs">Buzón</span>
                 </button>
 
               </div>
