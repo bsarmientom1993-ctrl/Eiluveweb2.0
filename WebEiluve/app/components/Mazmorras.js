@@ -187,7 +187,7 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
   // Efecto para generar partículas aleatorias al cargar el componente (Optimizado para el fondo en móviles)
   useEffect(() => {
     const esMovil = typeof window !== "undefined" && window.innerWidth < 768;
-    const numParticulas = esMovil ? 15 : 30;
+    const numParticulas = esMovil ? 0 : 30;
     const nuevasParticulas = Array.from({ length: numParticulas }).map((_, i) => ({
       id: i,
       left: Math.random() * 100,
@@ -2430,13 +2430,13 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
           </div>
 
           <div 
-            className={`relative z-10 w-full max-w-[1240px] bg-black/65 backdrop-blur-[4px] border-2 p-4 sm:p-6 md:p-8 rounded-md overflow-hidden animate-[scaleUp_0.5s_ease-out_forwards] ${
-              modoEclipse ? "animate-eclipse" : "animate-neon-border"
+            className={`relative z-10 w-full max-w-[1240px] bg-[#0c0907]/98 md:bg-black/65 md:backdrop-blur-[4px] border-2 p-3 sm:p-6 md:p-8 rounded-md overflow-hidden animate-[scaleUp_0.5s_ease-out_forwards] ${
+              modoEclipse ? "animate-eclipse" : "md:animate-neon-border"
             }`}
 
             style={{
               borderColor: modoEclipse ? undefined : "var(--laser-color-1)",
-              boxShadow: modoEclipse ? undefined : "0 0 35px -5px var(--laser-color-1), 0 0 80px -15px var(--laser-color-2), 0 0 100px rgba(0,0,0,0.95)",
+              boxShadow: modoEclipse ? undefined : "0 0 15px rgba(0,0,0,0.8)",
               "--laser-color-1": modoMagico === 1 ? "#22d3ee" : modoMagico === 2 ? "#c084fc" : modoMagico === 3 ? "#34d399" : "#fbbf24",
               "--laser-color-2": modoMagico === 1 ? "#06b6d4" : modoMagico === 2 ? "#a855f7" : modoMagico === 3 ? "#10b981" : "#fb923c"
             }}
@@ -2446,8 +2446,8 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
             <div className="absolute inset-0 opacity-[0.02] bg-[linear-gradient(90deg,#735f3d_1px,transparent_1px),linear-gradient(#735f3d_1px,transparent_1px)] [background-size:60px_35px] pointer-events-none"></div>
 
             
-            {/* PORTAL RÚNICO TRASERO GIGANTE */}
-            <div className="absolute -right-32 -top-32 w-[600px] h-[600px] pointer-events-none z-0 select-none flex items-center justify-center">
+            {/* PORTAL RÚNICO TRASERO GIGANTE (OPTIMIZADO DESKTOP SOLO PARA MÁXIMA VELOCIDAD EN EN MÓVIL) */}
+            <div className="hidden md:flex absolute -right-32 -top-32 w-[600px] h-[600px] pointer-events-none z-0 select-none items-center justify-center">
               <svg 
                 viewBox="0 0 200 200" 
                 className={`w-full h-full portal-runico-fondo transition-colors duration-1000 ${obtenerColorPortal(modoMagico)}`}
