@@ -713,7 +713,7 @@ Somos Todos, Somos Eilúve.`,
   }, []);
 
   return (
-    <div className="relative h-screen overflow-y-auto scroll-smooth md:snap-y md:snap-mandatory bg-[#060a13] text-[#dfdcd3] font-sans">
+    <div className="relative min-h-screen w-full overflow-x-hidden bg-[#060a13] text-[#dfdcd3] font-sans">
       {/* Portal de Transición Mágica */}
       <PortalTransicion activo={portalActivo} />
 

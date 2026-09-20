@@ -57,28 +57,22 @@ export default function BarraNavegacion() {
   return (
     <>
       <nav 
-        className={`fixed left-1/2 -translate-x-1/2 z-50 nav-flotante flex items-center justify-between transition-all duration-500 max-lg:!bg-transparent max-lg:!border-none max-lg:!backdrop-blur-none max-lg:!shadow-none ${
+        className={`fixed left-1/2 -translate-x-1/2 z-50 nav-flotante flex items-center justify-between transition-all duration-500 max-lg:bg-[#060a13]/90 max-lg:border max-lg:border-[#735f3d]/40 max-lg:shadow-2xl max-lg:rounded-full ${
           scrolled 
-            ? "top-3 py-2.5 scrolled px-6 md:px-8 w-[92%] max-w-[1300px]" 
-            : "top-6 py-3.5 px-6 w-[88%] md:w-[70%] lg:w-[60%] max-w-[800px]"
-        } ${isMobileHomeHidden ? "max-lg:opacity-0 max-lg:pointer-events-none" : "max-lg:opacity-100"}`}
+            ? "top-3 py-2 sm:py-2.5 scrolled px-4 sm:px-6 md:px-8 w-[94%] sm:w-[92%] max-w-[1300px]" 
+            : "top-4 sm:top-6 py-2.5 sm:py-3.5 px-4 sm:px-6 w-[94%] sm:w-[88%] md:w-[70%] lg:w-[60%] max-w-[800px]"
+        }`}
       >
-        {/* Logotipo Flotante Adaptativo (Inactivo/Solo visual al hacer scroll, oculto en móviles para evitar colisiones con títulos) */}
+        {/* Logotipo Flotante Adaptativo */}
         <div 
-          className="hidden lg:flex transition-all duration-500 items-center overflow-hidden flex-shrink-0"
+          className="flex lg:flex transition-all duration-500 items-center overflow-hidden flex-shrink-0"
           style={{
-            width: scrolled ? "120px" : "0px",
-            opacity: scrolled ? 1 : 0,
-            marginRight: scrolled ? "16px" : "0px"
+            width: "110px",
+            opacity: 1,
+            marginRight: "8px"
           }}
         >
-          <div 
-            className="relative select-none" 
-            style={{
-              width: "120px",
-              height: "50px"
-            }}
-          >
+          <a href="#home" className="relative select-none block w-[110px] h-[38px]">
             <Image
               src="/logo_eiluve.png"
               alt="Eiluvë Logo"
@@ -87,7 +81,7 @@ export default function BarraNavegacion() {
               unoptimized
               priority
             />
-          </div>
+          </a>
         </div>
 
         {/* Menú Central (Escritorio - Mayor Separación) */}
@@ -211,10 +205,10 @@ export default function BarraNavegacion() {
         <div className="lg:hidden flex items-center">
           <button
             onClick={alternarMenuMovil}
-            className="w-11 h-11 rounded-full bg-[#060a13]/90 border border-[#735f3d]/40 shadow-xl text-[#d1b880] hover:text-white focus:outline-none flex items-center justify-center transition-all hover:scale-105 active:scale-95"
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#060a13]/90 border border-[#735f3d]/60 shadow-xl text-[#d1b880] hover:text-white focus:outline-none flex items-center justify-center transition-all hover:scale-105 active:scale-95"
             aria-label="Alternar Menú"
           >
-            <i className="fas fa-bars text-lg"></i>
+            <i className="fas fa-bars text-sm sm:text-base"></i>
           </button>
         </div>
       </nav>
