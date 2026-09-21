@@ -538,31 +538,40 @@ Somos Todos, Somos Eilúve.`,
   };
 
   // Reproducir una canción específica por su índice
-  const reproducirCancion = (indice) => {
+  const reproducirCancion = (indice, autoPlay = true) => {
     window.dispatchEvent(new Event("eiluve_detener_dungeon_audio"));
     setIndiceCancion(indice);
-    setReproduciendo(true);
+    setProgreso(0);
+    setTiempoActual("0:00");
 
-    // Pequeño timeout para permitir que se actualice la ruta en el elemento html de audio
-    setTimeout(() => {
+    if (autoPlay) {
+      setReproduciendo(true);
+      setTimeout(() => {
+        if (reproductorRef.current) {
+          reproductorRef.current.load();
+          reproductorRef.current.play().catch((error) => {
+            console.log("Reproducción de audio bloqueada o con error:", error);
+          });
+        }
+      }, 50);
+    } else {
+      setReproduciendo(false);
       if (reproductorRef.current) {
-        reproductorRef.current.load();
-        reproductorRef.current.play().catch((error) => {
-          console.log("Reproducción de audio bloqueada o con error:", error);
-        });
+        reproductorRef.current.pause();
+        reproductorRef.current.currentTime = 0;
       }
-    }, 50);
+    }
   };
 
   // Siguiente / Anterior canción
   const siguienteCancion = () => {
     const nuevoIndice = (indiceCancion + 1) % CANCIONES.length;
-    reproducirCancion(nuevoIndice);
+    reproducirCancion(nuevoIndice, reproduciendo);
   };
 
   const anteriorCancion = () => {
     const nuevoIndice = (indiceCancion - 1 + CANCIONES.length) % CANCIONES.length;
-    reproducirCancion(nuevoIndice);
+    reproducirCancion(nuevoIndice, reproduciendo);
   };
 
   const LIMITE_PREVIEW_SEGUNDOS = 30;
@@ -585,16 +594,28 @@ Somos Todos, Somos Eilúve.`,
     reproductorRef.current.currentTime = Math.max(0, reproductorRef.current.currentTime - 10);
   };
 
-  // Actualizar la barra y el tiempo actual (con límite estricto de 30s)
+  // Actualizar la barra y el tiempo actual (con límite de 30s y Fade In / Fade Out)
   const manejarActualizacionTiempo = () => {
     if (!reproductorRef.current) return;
     const actual = reproductorRef.current.currentTime;
 
+    // --- EFECTO FADE IN (0s a 3s) Y FADE OUT (26s a 30s) ---
+    let volumenCalculado = 1.0;
+    if (actual < 3) {
+      volumenCalculado = Math.max(0, actual / 3.0); // Fade in suave en 3s
+    } else if (actual > 26) {
+      volumenCalculado = Math.max(0, (LIMITE_PREVIEW_SEGUNDOS - actual) / 4.0); // Fade out suave en 4s
+    }
+    reproductorRef.current.volume = Math.min(1, Math.max(0, volumenCalculado));
+
+    // --- LÍMITE ESTRICTO DE 30 SEGUNDOS Y SIN REPRODUCCIÓN AUTOMÁTICA AL FINALIZAR ---
     if (actual >= LIMITE_PREVIEW_SEGUNDOS) {
       reproductorRef.current.pause();
       reproductorRef.current.currentTime = 0;
+      reproductorRef.current.volume = 1;
       setReproduciendo(false);
-      siguienteCancion();
+      setProgreso(0);
+      setTiempoActual("0:00");
       return;
     }
 
@@ -608,9 +629,16 @@ Somos Todos, Somos Eilúve.`,
     setTiempoTotal("0:30");
   };
 
-  // Reproducir la siguiente canción automáticamente cuando termine la actual
+  // Cuando finalice el archivo de audio (sin reproducción automática al terminar)
   const manejarFinAudio = () => {
-    siguienteCancion();
+    if (reproductorRef.current) {
+      reproductorRef.current.pause();
+      reproductorRef.current.currentTime = 0;
+      reproductorRef.current.volume = 1;
+    }
+    setReproduciendo(false);
+    setProgreso(0);
+    setTiempoActual("0:00");
   };
 
   // Configurar Intersection Observer para animaciones en scroll (Aleatorias por Sección)

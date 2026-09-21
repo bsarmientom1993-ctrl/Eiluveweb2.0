@@ -582,14 +582,36 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
     }
   }, [fansRegistrados, fanActual]);
 
-  // Actualización del progreso del reproductor
+  // Actualización del progreso del reproductor (limitado a 30s con Fade In y Fade Out)
   useEffect(() => {
-
     const audio = audioRefDungeon.current;
     if (!audio) return;
 
+    const LIMITE_PREVIEW = 30;
+
     const actualizarProgreso = () => {
-      const porcentaje = (audio.currentTime / audio.duration) * 100;
+      const actual = audio.currentTime;
+
+      // Fade In (0 a 3s) y Fade Out (26 a 30s)
+      let volumenCalculado = 1.0;
+      if (actual < 3) {
+        volumenCalculado = Math.max(0, actual / 3.0);
+      } else if (actual > 26) {
+        volumenCalculado = Math.max(0, (LIMITE_PREVIEW - actual) / 4.0);
+      }
+      audio.volume = Math.min(1, Math.max(0, volumenCalculado));
+
+      // Límite estricto de 30 segundos sin reproducción automática al terminar
+      if (actual >= LIMITE_PREVIEW) {
+        audio.pause();
+        audio.currentTime = 0;
+        audio.volume = 1;
+        setReproduciendoDungeon(false);
+        setProgresoAudio(0);
+        return;
+      }
+
+      const porcentaje = (actual / LIMITE_PREVIEW) * 100;
       setProgresoAudio(isNaN(porcentaje) ? 0 : porcentaje);
     };
 
@@ -1084,9 +1106,11 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
     }
   };
 
+  const LIMITE_PREVIEW_DUNGEON = 30;
+
   const adelantarDungeon = () => {
     if (!audioRefDungeon.current) return;
-    audioRefDungeon.current.currentTime = Math.min(audioRefDungeon.current.duration, audioRefDungeon.current.currentTime + 10);
+    audioRefDungeon.current.currentTime = Math.min(LIMITE_PREVIEW_DUNGEON - 0.5, audioRefDungeon.current.currentTime + 10);
   };
 
   const retrocederDungeon = () => {
@@ -1095,24 +1119,24 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
   };
 
   const manejarClickProgresoDungeon = (e) => {
-    if (!audioRefDungeon.current || !audioRefDungeon.current.duration) return;
+    if (!audioRefDungeon.current) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
     const ancho = rect.width;
     const porcentaje = Math.max(0, Math.min(1, clickX / ancho));
-    audioRefDungeon.current.currentTime = porcentaje * audioRefDungeon.current.duration;
+    audioRefDungeon.current.currentTime = porcentaje * LIMITE_PREVIEW_DUNGEON;
     setProgresoAudio(porcentaje * 100);
   };
 
   const manejarTouchProgresoDungeon = (e) => {
-    if (!audioRefDungeon.current || !audioRefDungeon.current.duration) return;
+    if (!audioRefDungeon.current) return;
     const touch = e.touches[0];
     if (!touch) return;
     const rect = e.currentTarget.getBoundingClientRect();
     const clickX = touch.clientX - rect.left;
     const ancho = rect.width;
     const porcentaje = Math.max(0, Math.min(1, clickX / ancho));
-    audioRefDungeon.current.currentTime = porcentaje * audioRefDungeon.current.duration;
+    audioRefDungeon.current.currentTime = porcentaje * LIMITE_PREVIEW_DUNGEON;
     setProgresoAudio(porcentaje * 100);
   };
 
