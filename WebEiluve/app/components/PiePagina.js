@@ -43,7 +43,7 @@ export default function PiePagina() {
         </div>
 
         <div className="flex flex-col md:flex-row justify-center items-center text-[10px] md:text-xs text-gray-500 tracking-[0.2em] gap-4 md:gap-10 px-4">
-          <span>© 2026 EILUVË. TODOS LOS DERECHOS RESERVADOS.</span>
+          <span>© 2026 EILÚVE. TODOS LOS DERECHOS RESERVADOS.</span>
           <div className="flex gap-4 border-t md:border-t-0 md:border-l border-gray-800 pt-4 md:pt-0 md:pl-10">
             <button
               onClick={() => abrirDocumento("aviso")}
@@ -133,14 +133,14 @@ export default function PiePagina() {
                   <section className="space-y-2">
                     <h4 className="font-bold text-[#d1b880] uppercase tracking-wide">1. Datos Identificativos</h4>
                     <p>
-                      En cumplimiento con los deberes de información contemplados en las legislaciones vigentes de comercio electrónico y protección de datos, se informa que el presente sitio web es la plataforma oficial de la banda musical <strong>Eiluvë</strong> (en adelante, &ldquo;Eiluvë&rdquo;). Para cualquier consulta o contacto legal, puede utilizar el formulario oficial disponible en esta web.
+                      En cumplimiento con los deberes de información contemplados en las legislaciones vigentes de comercio electrónico y protección de datos, se informa que el presente sitio web es la plataforma oficial de la banda musical <strong>Eilúve</strong> (en adelante, &ldquo;Eilúve&rdquo;). Para cualquier consulta o contacto legal, puede utilizar el formulario oficial disponible en esta web.
                     </p>
                   </section>
 
                   <section className="space-y-2">
                     <h4 className="font-bold text-[#d1b880] uppercase tracking-wide">2. Propiedad Intelectual e Industrial</h4>
                     <p>
-                      Todos los derechos de propiedad intelectual e industrial sobre la música, obras líricas, composiciones de sonido, fotografías, obras audiovisuales, artes gráficas, logotipos, símbolos rúnicos e ilustraciones presentes en este sitio web pertenecen en su totalidad a Eiluvë o a terceros que han autorizado expresamente su inclusión. Queda estrictamente prohibida la reproducción, copia, distribución, comunicación pública o transformación no autorizada de estos materiales sin el consentimiento escrito previo de Eiluvë.
+                      Todos los derechos de propiedad intelectual e industrial sobre la música, obras líricas, composiciones de sonido, fotografías, obras audiovisuales, artes gráficas, logotipos, símbolos rúnicos e ilustraciones presentes en este sitio web pertenecen en su totalidad a Eilúve o a terceros que han autorizado expresamente su inclusión. Queda estrictamente prohibida la reproducción, copia, distribución, comunicación pública o transformación no autorizada de estos materiales sin el consentimiento escrito previo de Eilúve.
                     </p>
                   </section>
 
@@ -154,7 +154,7 @@ export default function PiePagina() {
                   <section className="space-y-2">
                     <h4 className="font-bold text-[#d1b880] uppercase tracking-wide">4. Enlaces a Plataformas de Terceros</h4>
                     <p>
-                      Esta web contiene enlaces directos a plataformas musicales y redes sociales oficiales (Spotify, YouTube, Apple Music, Instagram, Facebook, TikTok). Eiluvë no ejerce control alguno sobre dichos sitios externos y no se responsabiliza de las políticas, prácticas o contenidos prestados por los mismos.
+                      Esta web contiene enlaces directos a plataformas musicales y redes sociales oficiales (Spotify, YouTube, Apple Music, Instagram, Facebook, TikTok). Eilúve no ejerce control alguno sobre dichos sitios externos y no se responsabiliza de las políticas, prácticas o contenidos prestados por los mismos.
                     </p>
                   </section>
                 </>
@@ -167,7 +167,7 @@ export default function PiePagina() {
                   <section className="space-y-2">
                     <h4 className="font-bold text-[#d1b880] uppercase tracking-wide">1. Responsable del Tratamiento</h4>
                     <p>
-                      El responsable del tratamiento de los datos personales recabados a través de este sitio web es el equipo de gestión oficial de la banda <strong>Eiluvë</strong>.
+                      El responsable del tratamiento de los datos personales recabados a través de este sitio web es el equipo de gestión oficial de la banda <strong>Eilúve</strong>.
                     </p>
                   </section>
 
@@ -193,7 +193,7 @@ export default function PiePagina() {
                   <section className="space-y-2">
                     <h4 className="font-bold text-[#d1b880] uppercase tracking-wide">4. Cesión de Datos y Cookies</h4>
                     <p>
-                      Eiluvë no venderá, alquilará ni cederá sus datos personales a terceros bajo ninguna circunstancia. La web únicamente utiliza almacenamiento técnico local (<code>localStorage</code>) para guardar preferencias de volumen, reproducción y acceso a la alianza rúnica, sin emplear cookies publicitarias o de rastreo invasivo.
+                      Eilúve no venderá, alquilará ni cederá sus datos personales a terceros bajo ninguna circunstancia. La web únicamente utiliza almacenamiento técnico local (<code>localStorage</code>) para guardar preferencias de volumen, reproducción y acceso a la alianza rúnica, sin emplear cookies publicitarias o de rastreo invasivo.
                     </p>
                   </section>
 
