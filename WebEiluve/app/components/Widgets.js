@@ -96,8 +96,8 @@ export default function Widgets({
             {/* Imagen de portada con zoom sutil */}
             <div className="w-16 h-16 bg-black/50 border border-[#735f3d]/40 overflow-hidden relative rounded-lg flex-shrink-0 shadow-inner">
               <Image
-                src={cancionActual.portada || "/Somos todos.jpg"}
-                alt="Portada La Taberna y el Bosque"
+                src="/Portada.jpg"
+                alt="Portada Escucha Nuestro Disco"
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-700"
                 unoptimized
@@ -109,12 +109,12 @@ export default function Widgets({
                 <span className="text-[9px] text-[#735f3d] font-serif tracking-[0.25em] uppercase block mb-0.5">
                   NUEVO ÁLBUM
                 </span>
-                <h3 className="font-serif text-[#d1b880] text-base font-bold leading-tight tracking-wide mb-0.5 transition-colors group-hover:text-white">
-                  LA TABERNA Y EL BOSQUE
+                <h3 className="font-serif text-[#d1b880] text-sm font-bold leading-tight tracking-wide mb-0.5 transition-colors group-hover:text-white uppercase">
+                  ESCUCHA NUESTRO DISCO
                 </h3>
               </div>
               <span className="text-[8.5px] text-[#8da382] font-bold tracking-[0.15em] uppercase">
-                YA DISPONIBLE
+                ÁLBUM HOMÓNIMO
               </span>
             </div>
           </div>
