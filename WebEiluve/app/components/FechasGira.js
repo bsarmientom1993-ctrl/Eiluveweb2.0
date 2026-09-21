@@ -240,8 +240,8 @@ export default function FechasGira({ conciertos = [] }) {
                 <text x="350" y="320" fill="#735f3d" opacity="0.25" className="text-[28px] font-serif tracking-[12px] uppercase select-none pointer-events-none">MAGNOLIA SILVA</text>
                 <text x="750" y="480" fill="#735f3d" opacity="0.2" className="text-[20px] font-serif tracking-[8px] uppercase select-none pointer-events-none">OCEANUS</text>
 
-                {/* Nodos de Concierto Interactivos (Solo se muestran conciertos próximos en el mapa) */}
-                {conciertos.filter(c => !esFechaPasada(c)).map((concierto) => {
+                {/* Nodos de Concierto Interactivos (Muestra todos los conciertos en el mapa) */}
+                {conciertos.map((concierto) => {
                   const estaActivo = conciertoActivoMapa?.id === concierto.id;
                   const esPasado = esFechaPasada(concierto);
                   return (
@@ -484,26 +484,37 @@ export default function FechasGira({ conciertos = [] }) {
                   </div>
                 </div>
 
-                <div className="bg-[#060a13] p-4 border border-[#735f3d]/30 rounded-lg">
-                  <span className="text-[10px] text-[#8da382] font-mono tracking-widest block uppercase mb-2">Tributos de Entrada</span>
-                  <div className="flex justify-between items-center text-sm mb-1">
-                    <span className="text-gray-400">Pase General:</span>
-                    <span className="font-bold text-[#d1b880]">{conciertoSeleccionado.precioGeneral}€</span>
+                {esFechaPasada(conciertoSeleccionado) ? (
+                  <div className="bg-[#060a13] p-5 border border-[#fbbf24]/40 rounded-lg text-center space-y-2">
+                    <span className="text-[#fbbf24] text-xl block select-none animate-pulse">✦</span>
+                    <h4 className="font-serif text-sm text-[#d1b880] uppercase tracking-wider font-bold" style={{ fontFamily: "'Cinzel', serif" }}>
+                      RITUAL CULMINADO
+                    </h4>
+                    <p className="text-xs text-gray-300 font-serif leading-relaxed italic">
+                      Este concierto ya ha finalizado con gran éxito. Te invitamos a estar atento a nuestras próximas presentaciones y fechas de gira para unirte al clan en nuestros siguientes rituales.
+                    </p>
                   </div>
-                  <div className="flex justify-between items-center text-sm">
-                    <span className="text-gray-400">VIP del Bosque:</span>
-                    <span className="font-bold text-[#fbbf24]">{conciertoSeleccionado.precioVip}€</span>
-                  </div>
-                </div>
+                ) : (
+                  <>
+                    <div className="bg-[#060a13] p-4 border border-[#735f3d]/30 rounded-lg">
+                      <span className="text-[10px] text-[#8da382] font-mono tracking-widest block uppercase mb-2">Tributos de Entrada</span>
+                      <div className="flex justify-between items-center text-sm mb-1">
+                        <span className="text-gray-400">Pase General:</span>
+                        <span className="font-bold text-[#d1b880]">{conciertoSeleccionado.precioGeneral}€</span>
+                      </div>
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-gray-400">VIP del Bosque:</span>
+                        <span className="font-bold text-[#fbbf24]">{conciertoSeleccionado.precioVip}€</span>
+                      </div>
+                    </div>
 
-                <div className="bg-[#060a13] p-4 border border-[#735f3d]/20 rounded-lg text-center">
-                  <p className="text-xs text-gray-400 italic">
-                    {esFechaPasada(conciertoSeleccionado) 
-                      ? "Este ritual ya fue consagrado y ha finalizado en la fecha pactada."
-                      : '"Las runas y los pases se consagrarán directamente en las puertas físicas de la taberna del evento."'
-                    }
-                  </p>
-                </div>
+                    <div className="bg-[#060a13] p-4 border border-[#735f3d]/20 rounded-lg text-center">
+                      <p className="text-xs text-gray-400 italic">
+                        &ldquo;Las runas y los pases se consagrarán directamente en las puertas físicas de la taberna del evento.&rdquo;
+                      </p>
+                    </div>
+                  </>
+                )}
               </div>
 
               <button
