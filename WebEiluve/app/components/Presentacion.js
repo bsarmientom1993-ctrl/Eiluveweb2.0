@@ -318,13 +318,6 @@ export default function Presentacion({ presentacion, heroBg, activeCover, social
                 className="object-contain"
               />
             </div>
-
-            <button
-              onClick={() => setModalFotoAbierto(false)}
-              className="w-full py-2.5 bg-[#d1b880] text-[#060a13] font-bold text-center tracking-widest uppercase hover:bg-white transition-all duration-300 rounded-lg text-xs"
-            >
-              Volver al Bosque
-            </button>
           </div>
         </div>
       )}
