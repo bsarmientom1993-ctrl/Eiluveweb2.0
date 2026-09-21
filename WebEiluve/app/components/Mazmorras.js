@@ -83,6 +83,8 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
 
   // Audio Player de las Mazmorras
   const [cancionActivaDungeon, setCancionActivaDungeon] = useState(null);
+  const [colaAleatoriaDungeon, setColaAleatoriaDungeon] = useState([]);
+  const [posicionColaDungeon, setPosicionColaDungeon] = useState(-1);
   const [reproduciendoDungeon, setReproduciendoDungeon] = useState(false);
   const [progresoAudio, setProgresoAudio] = useState(0);
   const audioRefDungeon = useRef(null);
@@ -582,7 +584,7 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
     }
   }, [fansRegistrados, fanActual]);
 
-  // Actualización del progreso del reproductor (limitado a 30s con Fade In y Fade Out)
+  // Actualización del progreso del reproductor (Fade In 0-4s, Fade Out 25-30s cosenoidal suave y avance de cola)
   useEffect(() => {
     const audio = audioRefDungeon.current;
     if (!audio) return;
@@ -592,22 +594,20 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
     const actualizarProgreso = () => {
       const actual = audio.currentTime;
 
-      // Fade In (0 a 3s) y Fade Out (26 a 30s)
+      // Fade In suave (0 a 4s) y Fade Out suave (25 a 30s) usando curva cosenoidal
       let volumenCalculado = 1.0;
-      if (actual < 3) {
-        volumenCalculado = Math.max(0, actual / 3.0);
-      } else if (actual > 26) {
-        volumenCalculado = Math.max(0, (LIMITE_PREVIEW - actual) / 4.0);
+      if (actual < 4) {
+        const p = Math.max(0, Math.min(1, actual / 4.0));
+        volumenCalculado = 0.5 * (1 - Math.cos(p * Math.PI));
+      } else if (actual > 25) {
+        const p = Math.max(0, Math.min(1, (LIMITE_PREVIEW - actual) / 5.0));
+        volumenCalculado = 0.5 * (1 - Math.cos(p * Math.PI));
       }
       audio.volume = Math.min(1, Math.max(0, volumenCalculado));
 
-      // Límite estricto de 30 segundos sin reproducción automática al terminar
+      // Límite de 30 segundos y avance a la siguiente canción aleatoria
       if (actual >= LIMITE_PREVIEW) {
-        audio.pause();
-        audio.currentTime = 0;
-        audio.volume = 1;
-        setReproduciendoDungeon(false);
-        setProgresoAudio(0);
+        avanzarEnColaDungeon();
         return;
       }
 
@@ -617,7 +617,7 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
 
     audio.addEventListener("timeupdate", actualizarProgreso);
     return () => audio.removeEventListener("timeupdate", actualizarProgreso);
-  }, [cancionActivaDungeon]);
+  }, [cancionActivaDungeon, colaAleatoriaDungeon, posicionColaDungeon]);
 
   // Sincronización en tiempo real para el buzón del fanático
   useEffect(() => {
@@ -1094,6 +1094,70 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
     }, 700);
   };
 
+  // Mezclador aleatorio Fisher-Yates para Las Mazmorras
+  const mezclarDungeon = (arreglo, elementoInicial = null) => {
+    const copia = [...arreglo];
+    for (let i = copia.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [copia[i], copia[j]] = [copia[j], copia[i]];
+    }
+    if (elementoInicial) {
+      const idx = copia.findIndex((item) => item.id === elementoInicial.id);
+      if (idx !== -1) {
+        copia.splice(idx, 1);
+        copia.unshift(elementoInicial);
+      }
+    }
+    return copia;
+  };
+
+  const seleccionarYReproducir = (cancion, omitirCola = false) => {
+    if (alIniciarReproduccion) alIniciarReproduccion();
+    setCancionActivaDungeon(cancion);
+    setReproduciendoDungeon(true);
+
+    if (!omitirCola) {
+      const nuevaCola = mezclarDungeon(albumCompleto, cancion);
+      setColaAleatoriaDungeon(nuevaCola);
+      setPosicionColaDungeon(0);
+    }
+    
+    setTimeout(() => {
+      if (audioRefDungeon.current) {
+        audioRefDungeon.current.load();
+        audioRefDungeon.current.play().catch(() => {});
+      }
+    }, 50);
+  };
+
+  const avanzarEnColaDungeon = () => {
+    let cola = colaAleatoriaDungeon;
+    let pos = posicionColaDungeon;
+
+    if (cola.length === 0 || pos === -1) {
+      cola = mezclarDungeon(albumCompleto, cancionActivaDungeon);
+      pos = 0;
+    }
+
+    const siguientePos = pos + 1;
+    if (siguientePos < cola.length) {
+      setColaAleatoriaDungeon(cola);
+      setPosicionColaDungeon(siguientePos);
+      seleccionarYReproducir(cola[siguientePos], true);
+    } else {
+      // Han terminado todas las canciones de la cola aleatoria en Mazmorras
+      if (audioRefDungeon.current) {
+        audioRefDungeon.current.pause();
+        audioRefDungeon.current.currentTime = 0;
+        audioRefDungeon.current.volume = 1;
+      }
+      setReproduciendoDungeon(false);
+      setProgresoAudio(0);
+      setColaAleatoriaDungeon([]);
+      setPosicionColaDungeon(-1);
+    }
+  };
+
   const alternarReproduccionDungeon = () => {
     if (!audioRefDungeon.current) return;
     if (reproduciendoDungeon) {
@@ -1101,8 +1165,20 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
       setReproduciendoDungeon(false);
     } else {
       if (alIniciarReproduccion) alIniciarReproduccion();
-      audioRefDungeon.current.play().catch(() => {});
-      setReproduciendoDungeon(true);
+
+      let cola = colaAleatoriaDungeon;
+      let pos = posicionColaDungeon;
+
+      if (cola.length === 0 || pos >= cola.length || pos === -1) {
+        cola = mezclarDungeon(albumCompleto, cancionActivaDungeon);
+        pos = 0;
+        setColaAleatoriaDungeon(cola);
+        setPosicionColaDungeon(0);
+        seleccionarYReproducir(cola[0], true);
+      } else {
+        audioRefDungeon.current.play().catch(() => {});
+        setReproduciendoDungeon(true);
+      }
     }
   };
 
@@ -1138,19 +1214,6 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
     const porcentaje = Math.max(0, Math.min(1, clickX / ancho));
     audioRefDungeon.current.currentTime = porcentaje * LIMITE_PREVIEW_DUNGEON;
     setProgresoAudio(porcentaje * 100);
-  };
-
-  const seleccionarYReproducir = (cancion) => {
-    if (alIniciarReproduccion) alIniciarReproduccion();
-    setCancionActivaDungeon(cancion);
-    setReproduciendoDungeon(true);
-    
-    setTimeout(() => {
-      if (audioRefDungeon.current) {
-        audioRefDungeon.current.load();
-        audioRefDungeon.current.play().catch(() => {});
-      }
-    }, 50);
   };
 
   const abrirClipVideo = (url) => {
@@ -2731,7 +2794,7 @@ export default function Mazmorras({ abierta, alCerrar, passcode = "bsm669", miem
                   <audio 
                     src={cancionActivaDungeon.enlace} 
                     ref={audioRefDungeon}
-                    onEnded={() => setReproduciendoDungeon(false)}
+                    onEnded={avanzarEnColaDungeon}
                     crossOrigin="anonymous"
                   />
                 )}

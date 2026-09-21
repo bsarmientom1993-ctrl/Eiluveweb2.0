@@ -81,6 +81,8 @@ const CANCIONES = [
 export default function Home() {
   const [cancionesHeroState, setCancionesHeroState] = useState(CANCIONES);
   const [indiceCancion, setIndiceCancion] = useState(0);
+  const [colaAleatoriaHero, setColaAleatoriaHero] = useState([]);
+  const [posicionColaHero, setPosicionColaHero] = useState(-1);
   const [reproduciendo, setReproduciendo] = useState(false);
   const [progreso, setProgreso] = useState(0);
   const [tiempoActual, setTiempoActual] = useState("0:00");
@@ -514,27 +516,27 @@ Somos Todos, Somos Eilúve.`,
     return `${minutos}:${segsRestantes < 10 ? "0" : ""}${segsRestantes}`;
   };
 
+  // Mezclador aleatorio Fisher-Yates
+  const mezclarIndicesHero = (tamano, indiceInicial = null) => {
+    const indices = Array.from({ length: tamano }, (_, i) => i);
+    for (let i = indices.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [indices[i], indices[j]] = [indices[j], indices[i]];
+    }
+    if (indiceInicial !== null && indices.includes(indiceInicial)) {
+      const pos = indices.indexOf(indiceInicial);
+      indices.splice(pos, 1);
+      indices.unshift(indiceInicial);
+    }
+    return indices;
+  };
+
   // Función para pausar el reproductor principal si empieza el audio de Las Mazmorras
   const detenerAudioPrincipal = () => {
     if (reproductorRef.current) {
       reproductorRef.current.pause();
     }
     setReproduciendo(false);
-  };
-
-  // Controles de Play y Pause
-  const alternarReproduccion = () => {
-    if (!reproductorRef.current) return;
-    if (reproduciendo) {
-      reproductorRef.current.pause();
-      setReproduciendo(false);
-    } else {
-      window.dispatchEvent(new Event("eiluve_detener_dungeon_audio"));
-      reproductorRef.current.play().catch((error) => {
-        console.log("Reproducción de audio bloqueada o con error:", error);
-      });
-      setReproduciendo(true);
-    }
   };
 
   // Reproducir una canción específica por su índice
@@ -563,15 +565,77 @@ Somos Todos, Somos Eilúve.`,
     }
   };
 
-  // Siguiente / Anterior canción
+  // Avanzar a la siguiente canción en la cola aleatoria (o finalizar al terminar todas)
+  const avanzarEnColaHero = () => {
+    let cola = colaAleatoriaHero;
+    let pos = posicionColaHero;
+
+    if (cola.length === 0 || pos === -1) {
+      cola = mezclarIndicesHero(listaCanciones.length, indiceCancion);
+      pos = 0;
+    }
+
+    const siguientePos = pos + 1;
+    if (siguientePos < cola.length) {
+      setColaAleatoriaHero(cola);
+      setPosicionColaHero(siguientePos);
+      reproducirCancion(cola[siguientePos], true);
+    } else {
+      // Han finalizado todas las canciones cargadas en la cola aleatoria
+      if (reproductorRef.current) {
+        reproductorRef.current.pause();
+        reproductorRef.current.currentTime = 0;
+        reproductorRef.current.volume = 1;
+      }
+      setReproduciendo(false);
+      setProgreso(0);
+      setTiempoActual("0:00");
+      setColaAleatoriaHero([]);
+      setPosicionColaHero(-1);
+    }
+  };
+
+  // Controles de Play y Pause (Inicia cola aleatoria de todas las canciones cargadas)
+  const alternarReproduccion = () => {
+    if (!reproductorRef.current) return;
+    if (reproduciendo) {
+      reproductorRef.current.pause();
+      setReproduciendo(false);
+    } else {
+      window.dispatchEvent(new Event("eiluve_detener_dungeon_audio"));
+
+      let cola = colaAleatoriaHero;
+      let pos = posicionColaHero;
+
+      if (cola.length === 0 || pos >= cola.length || pos === -1) {
+        cola = mezclarIndicesHero(listaCanciones.length, indiceCancion);
+        pos = 0;
+        setColaAleatoriaHero(cola);
+        setPosicionColaHero(0);
+        reproducirCancion(cola[0], true);
+      } else {
+        reproductorRef.current.play().catch((error) => {
+          console.log("Reproducción de audio bloqueada o con error:", error);
+        });
+        setReproduciendo(true);
+      }
+    }
+  };
+
+  // Siguiente / Anterior canción en la cola aleatoria
   const siguienteCancion = () => {
-    const nuevoIndice = (indiceCancion + 1) % CANCIONES.length;
-    reproducirCancion(nuevoIndice, reproduciendo);
+    avanzarEnColaHero();
   };
 
   const anteriorCancion = () => {
-    const nuevoIndice = (indiceCancion - 1 + CANCIONES.length) % CANCIONES.length;
-    reproducirCancion(nuevoIndice, reproduciendo);
+    if (posicionColaHero > 0 && colaAleatoriaHero.length > 0) {
+      const prevPos = posicionColaHero - 1;
+      setPosicionColaHero(prevPos);
+      reproducirCancion(colaAleatoriaHero[prevPos], true);
+    } else {
+      const prevIndice = (indiceCancion - 1 + listaCanciones.length) % listaCanciones.length;
+      reproducirCancion(prevIndice, true);
+    }
   };
 
   const LIMITE_PREVIEW_SEGUNDOS = 30;
@@ -594,28 +658,25 @@ Somos Todos, Somos Eilúve.`,
     reproductorRef.current.currentTime = Math.max(0, reproductorRef.current.currentTime - 10);
   };
 
-  // Actualizar la barra y el tiempo actual (con límite de 30s y Fade In / Fade Out)
+  // Actualizar la barra y el tiempo actual (Fade In suave 0-4s, Fade Out suave 25-30s con curva cosenoidal)
   const manejarActualizacionTiempo = () => {
     if (!reproductorRef.current) return;
     const actual = reproductorRef.current.currentTime;
 
-    // --- EFECTO FADE IN (0s a 3s) Y FADE OUT (26s a 30s) ---
+    // --- EFECTO FADE IN Y FADE OUT ULTRA SUAVE (Curva cosenoidal en 0-4s y 25-30s) ---
     let volumenCalculado = 1.0;
-    if (actual < 3) {
-      volumenCalculado = Math.max(0, actual / 3.0); // Fade in suave en 3s
-    } else if (actual > 26) {
-      volumenCalculado = Math.max(0, (LIMITE_PREVIEW_SEGUNDOS - actual) / 4.0); // Fade out suave en 4s
+    if (actual < 4) {
+      const p = Math.max(0, Math.min(1, actual / 4.0));
+      volumenCalculado = 0.5 * (1 - Math.cos(p * Math.PI));
+    } else if (actual > 25) {
+      const p = Math.max(0, Math.min(1, (LIMITE_PREVIEW_SEGUNDOS - actual) / 5.0));
+      volumenCalculado = 0.5 * (1 - Math.cos(p * Math.PI));
     }
     reproductorRef.current.volume = Math.min(1, Math.max(0, volumenCalculado));
 
-    // --- LÍMITE ESTRICTO DE 30 SEGUNDOS Y SIN REPRODUCCIÓN AUTOMÁTICA AL FINALIZAR ---
+    // --- LÍMITE DE 30 SEGUNDOS Y AVANCE A LA SIGUIENTE CANCIÓN ALEATORIA EN COLA ---
     if (actual >= LIMITE_PREVIEW_SEGUNDOS) {
-      reproductorRef.current.pause();
-      reproductorRef.current.currentTime = 0;
-      reproductorRef.current.volume = 1;
-      setReproduciendo(false);
-      setProgreso(0);
-      setTiempoActual("0:00");
+      avanzarEnColaHero();
       return;
     }
 
@@ -629,16 +690,9 @@ Somos Todos, Somos Eilúve.`,
     setTiempoTotal("0:30");
   };
 
-  // Cuando finalice el archivo de audio (sin reproducción automática al terminar)
+  // Cuando finalice el archivo de audio (avanza a la siguiente canción aleatoria)
   const manejarFinAudio = () => {
-    if (reproductorRef.current) {
-      reproductorRef.current.pause();
-      reproductorRef.current.currentTime = 0;
-      reproductorRef.current.volume = 1;
-    }
-    setReproduciendo(false);
-    setProgreso(0);
-    setTiempoActual("0:00");
+    avanzarEnColaHero();
   };
 
   // Configurar Intersection Observer para animaciones en scroll (Aleatorias por Sección)
