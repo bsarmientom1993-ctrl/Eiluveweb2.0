@@ -228,12 +228,12 @@ export default function Presentacion({ presentacion, heroBg, activeCover, social
             onClick={() => setModalFotoAbierto(true)}
             className="w-[200px] h-[200px] bg-black/65 border-2 border-[#d1b880]/30 rounded-lg p-2.5 shadow-[0_0_25px_rgba(0,0,0,0.85)] cursor-pointer hover:border-[#fbbf24] hover:scale-103 active:scale-97 transition-all duration-500 relative group overflow-hidden animate-pulse"
             style={{ animationDuration: "3.5s" }}
-            title="Toca para ampliar o ver el fondo"
+            title="Toca para ampliar la portada"
           >
             <div className="relative w-full h-full rounded overflow-hidden border border-[#735f3d]/25">
               <Image
-                src={activeCover || "/Somos todos.jpg"}
-                alt="Portada La Taberna y el Bosque"
+                src="/Portada.jpg"
+                alt="Portada Oficial Eiluvë"
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-1000"
                 unoptimized
@@ -248,7 +248,7 @@ export default function Presentacion({ presentacion, heroBg, activeCover, social
             </div>
           </div>
           <span className="text-[10px] text-[#735f3d] font-serif uppercase tracking-[0.2em] font-semibold">
-            LA TABERNA Y EL BOSQUE
+            PORTADA OFICIAL
           </span>
         </div>
 
