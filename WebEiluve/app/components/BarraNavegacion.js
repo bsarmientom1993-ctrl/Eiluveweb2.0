@@ -63,16 +63,15 @@ export default function BarraNavegacion() {
             : "top-4 sm:top-6 py-2.5 sm:py-3.5 px-4 sm:px-6 w-[94%] sm:w-[88%] md:w-[70%] lg:w-[60%] max-w-[800px]"
         }`}
       >
-        {/* Logotipo Flotante Adaptativo */}
+        {/* Logotipo Flotante Adaptativo (Oculto en inicio para no duplicar el logo central grande) */}
         <div 
-          className="flex lg:flex transition-all duration-500 items-center overflow-hidden flex-shrink-0"
-          style={{
-            width: "110px",
-            opacity: 1,
-            marginRight: "8px"
-          }}
+          className={`flex transition-all duration-500 items-center overflow-hidden flex-shrink-0 ${
+            scrolled 
+              ? "w-[95px] sm:w-[120px] opacity-100 mr-2 sm:mr-4" 
+              : "w-0 opacity-0 mr-0 pointer-events-none"
+          }`}
         >
-          <a href="#home" className="relative select-none block w-[110px] h-[38px]">
+          <a href="#home" className="relative select-none block w-[95px] sm:w-[120px] h-[34px] sm:h-[45px]">
             <Image
               src="/logo_eiluve.png"
               alt="Eiluvë Logo"
